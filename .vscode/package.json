@@ -1,0 +1,9 @@
+{
+    "name": "meu-projeto",
+    "version": "1.0.0",
+    "scripts": {
+      "start": "npm run pull && node index.js",
+      "pull": "git pull origin main"
+    }
+  }
+  
