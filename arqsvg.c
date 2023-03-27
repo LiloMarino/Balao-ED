@@ -18,7 +18,6 @@ void preparaDecoracao(char *deco, int decoLen, char *corBorda, char *corPreenchi
 {
     char decoracao[250];
     decoracao[0] = '\0';
-    
     if (corBorda != NULL)
     {
         strcat(decoracao, "stroke=\"");
