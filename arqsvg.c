@@ -7,7 +7,7 @@ typedef void *ArqSvg;
 
 ArqSvg abreEscritaSvg(char *fn)
 {
-    ArqSvg fsvg;
+    ArqSvg fsvg;ola
     strcat(fn, ".svg");
     fsvg = fopen(fn, "w");
     fprintf(fsvg, "<svg>\n");
