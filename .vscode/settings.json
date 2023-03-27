@@ -17,10 +17,6 @@
             "binaryArgs": []
         }
     ],
-    "terminal.integrated.shellArgs.windows": [
-        "/K",
-        "npm run pull"
-    ],
     "files.associations": {
         "string.h": "c",
         "stdio.h": "c",
