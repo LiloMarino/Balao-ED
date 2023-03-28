@@ -37,15 +37,21 @@ int LengthLista(Lista L)
     return lista->length;
 }
 
-/*void PrintLista(Lista inicio)
+void PrintLista(Lista L)
 {
-    ListaDupla *p = (ListaDupla *)ini;
+    ListaDupla *p;
     printf("\n");
     printf("====== Lista ======\n");
-    for (p = (ListaDupla *)ini; p != NULL; p = p->prox)
+    for (p = ((ListaInfo *)L)->inicio; p != NULL; p = p->prox)
         printf("%d ID: %d\n", p->valor, p->ID);
+    if (p != NULL)
+    {
+        printf("Inicio: %d ID: %d\n", ((ListaInfo *)L)->inicio->valor, ((ListaInfo *)L)->inicio->ID);
+        printf("Fim: %d ID: %d\n", ((ListaInfo *)L)->final->valor, ((ListaInfo *)L)->final->ID);
+    }
+    printf("Tamanho: %d\n", ((ListaInfo *)L)->length);
     printf("\n");
-}*/
+}
 
 void AddElemento(Lista L, int valor)
 {
@@ -78,12 +84,12 @@ void AddElemento(Lista L, int valor)
     }
 }
 
-/*void InsereElemento(Lista ini, int valor, int ID)
+void InsereElemento(Lista L, int valor, int ID)
 {
-    ListaDupla *p = *(ListaDupla **)ini;
-    if (*(ListaDupla **)ini == NULL)
+    ListaDupla *p = ((ListaInfo *)L)->inicio;
+    if (((ListaInfo *)L)->inicio == NULL)
     {
-        AddElemento(ini, valor);
+        AddElemento(L, valor);
         return;
     }
     else
@@ -95,7 +101,7 @@ void AddElemento(Lista L, int valor)
             p = p->prox;
             if (p == NULL)
             {
-                AddElemento(ini, valor);
+                AddElemento(L, valor);
                 return;
             }
         }
@@ -103,7 +109,7 @@ void AddElemento(Lista L, int valor)
         p->ant = aux;
         aux->prox = p;
         aux->ID = p->ID;
-
+        ((ListaInfo *)L)->length++;
         // Ajeita o ID das próximas
         p->ID++;
         while (p->prox != NULL)
@@ -114,11 +120,11 @@ void AddElemento(Lista L, int valor)
         if (ID == 0)
         {
 
-            *(ListaDupla **)ini = aux;
+            ((ListaInfo *)L)->inicio = aux;
         }
         else
         {
-            p = *(ListaDupla **)ini;
+            p = ((ListaInfo *)L)->inicio;
             while (p->ID != ID - 1)
             {
                 p = p->prox;
@@ -128,16 +134,16 @@ void AddElemento(Lista L, int valor)
     }
 }
 
-void EditaElemento(Lista inicio, int novovalor, int ID)
+void EditaElemento(Lista L, int novovalor, int ID)
 {
-    ListaDupla *p = (ListaDupla *)ini;
+    ListaDupla *p = ((ListaInfo *)L)->inicio;
     while (p->ID != ID)
     {
         p = p->prox;
     }
     p->valor = novovalor;
 }
-*/
+
 void RemoveElemento(Lista L, int ID)
 {
     ListaDupla *rmv, *p;
@@ -150,6 +156,12 @@ void RemoveElemento(Lista L, int ID)
     if (ID == 0)
     {
         ((ListaInfo *)L)->inicio = rmv->prox;
+        if (rmv->prox != NULL)
+        {
+            p = p->prox;
+            p->ant = NULL;
+            p->ID--;
+        }
     }
     else
     {
@@ -163,26 +175,29 @@ void RemoveElemento(Lista L, int ID)
             p->prox->ant = p;
         }
     }
-    if (rmv->ID+1 == ((ListaInfo *)L)->length)
+    if (rmv->ID + 1 == ((ListaInfo *)L)->length)
     {
-        ((ListaInfo *)L)->final = p;
+        ((ListaInfo *)L)->final = rmv->ant;
     }
     ((ListaInfo *)L)->length--;
     free(rmv);
 
     // Ajeita o ID das próximas
-    while (p->prox != NULL)
+    if (((ListaInfo *)L)->length != 0)
     {
-        p = p->prox;
-        p->ID--;
+        while (p->prox != NULL)
+        {
+            p = p->prox;
+            p->ID--;
+        }
     }
 }
-/*
-int BuscaID(Lista inicio, int valor)
+
+int BuscaID(Lista L, int valor)
 {
     int ID;
     ListaDupla *p;
-    p = (ListaDupla *)ini;
+    p = ((ListaInfo *)L)->inicio;
     while (p->prox != NULL)
     {
         if (p->valor == valor)
@@ -195,11 +210,11 @@ int BuscaID(Lista inicio, int valor)
     return ID;
 }
 
-int BuscaValor(Lista inicio, int ID)
+int BuscaValor(Lista L, int ID)
 {
     int val;
     ListaDupla *p;
-    p = (ListaDupla *)ini;
+    p = ((ListaInfo *)L)->inicio;
     while (p->ID != ID)
     {
         if (p->prox == NULL)
@@ -212,11 +227,11 @@ int BuscaValor(Lista inicio, int ID)
     return val;
 }
 
-void LimpaLista(Lista inicio)
+void LimpaLista(Lista L)
 {
     ListaDupla *rmv, *p;
-    rmv = *(ListaDupla **)ini;
-    p = *(ListaDupla **)ini;
+    rmv = ((ListaInfo *)L)->inicio;
+    p = ((ListaInfo *)L)->inicio;
     while (p->prox != NULL)
     {
         p = p->prox;
@@ -224,5 +239,7 @@ void LimpaLista(Lista inicio)
         rmv = p;
     }
     free(rmv);
-    *(ListaDupla **)ini = NULL;
-}*/
+    ((ListaInfo *)L)->inicio = NULL;
+    ((ListaInfo *)L)->final = NULL;
+    ((ListaInfo *)L)->length = 0;
+}

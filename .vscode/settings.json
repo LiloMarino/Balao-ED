@@ -15,6 +15,11 @@
             "cwd": "d:\\Desktop\\Faculdade\\EstruturadeDados",
             "binaryPath": "d:\\Desktop\\Faculdade\\EstruturadeDados\\projetosvg",
             "binaryArgs": []
+        },
+        {
+            "cwd": "d:\\Desktop\\Faculdade\\EstruturadeDados",
+            "binaryPath": "d:\\Desktop\\Faculdade\\EstruturadeDados\\ted",
+            "binaryArgs": []
         }
     ],
     "files.associations": {

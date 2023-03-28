@@ -18,7 +18,7 @@ int main()
     RemoveElemento(inicio, 2);
     RemoveElemento(inicio, 2);
     RemoveElemento(inicio, 2);
-/*    InsereElemento(inicio, 40, 2);
+    InsereElemento(inicio, 40, 2);
     InsereElemento(inicio, 30, 2);
     printf("Digite 1 para ver a lista\n"
            "Digite 2 para adicionar um elemento ao final da lista\n"
@@ -42,19 +42,19 @@ int main()
         case 2:
             printf("Digite o valor:");
             scanf("%d", &val);
-            AddElemento(&inicio, val);
+            AddElemento(inicio, val);
             break;
         case 3:
             printf("Digite o valor:");
             scanf("%d", &val);
             printf("Digite o ID:");
             scanf("%d", &pos);
-            InsereElemento(&inicio, val, pos);
+            InsereElemento(inicio, val, pos);
             break;
         case 4:
             printf("Digite o ID:");
             scanf("%d", &pos);
-            RemoveElemento(&inicio, pos);
+            RemoveElemento(inicio, pos);
             break;
         case 5:
             printf("Digite o ID:");
@@ -76,7 +76,7 @@ int main()
             EditaElemento(inicio, val, pos);
             break;
         case 8:
-            LimpaLista(&inicio);
+            LimpaLista(inicio);
             break;
         case 0:
             break;
@@ -86,5 +86,4 @@ int main()
         }
 
     } while (n != 0);
-    */
 }

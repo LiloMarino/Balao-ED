@@ -1,5 +1,5 @@
 # Nome do projeto
-PROJETO = projetosvg
+PROJETO = ted
 
 # Arquivos fonte
 FONTES = learquivo.c arqsvg.c main.c path.c listadupla.c
