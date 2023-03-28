@@ -30,7 +30,7 @@ typedef void *Clausura;
 /** Retorna uma lista vazia. A lista pode definir um limite maximo de 
 elementos armazenados (capacidade). Caso capacidade < 0, o tamanho da lista é 
 ilimitado */
-Lista createLista(int capacidade);
+Lista CreateLista(int capacidade);
 
 /* Retorna o numero de elementos da lista. */
 int lengthLst(Lista L);

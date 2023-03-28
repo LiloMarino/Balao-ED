@@ -1,6 +1,7 @@
 #include "listadupla.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 struct StListaDupla
 {
@@ -31,7 +32,7 @@ Lista CreateLista(int capacidade)
     return lista;
 }
 
-int LengthLista(Lista L)
+int lengthLst(Lista L)
 {
     ListaInfo *lista = (ListaInfo *)L;
     return lista->length;
@@ -84,13 +85,12 @@ void AddElemento(Lista L, int valor)
     }
 }
 
-void InsereElemento(Lista L, int valor, int ID)
+bool InsereElemento(Lista L, int valor, int ID)
 {
     ListaDupla *p = ((ListaInfo *)L)->inicio;
     if (((ListaInfo *)L)->inicio == NULL)
     {
-        AddElemento(L, valor);
-        return;
+        return false;
     }
     else
     {
@@ -132,9 +132,10 @@ void InsereElemento(Lista L, int valor, int ID)
             p->prox = (ListaDupla *)aux;
         }
     }
+    return true;
 }
 
-void EditaElemento(Lista L, int novovalor, int ID)
+bool EditaElemento(Lista L, int novovalor, int ID)
 {
     ListaDupla *p = ((ListaInfo *)L)->inicio;
     while (p->ID != ID)
@@ -144,7 +145,7 @@ void EditaElemento(Lista L, int novovalor, int ID)
     p->valor = novovalor;
 }
 
-void RemoveElemento(Lista L, int ID)
+bool RemoveElemento(Lista L, int ID)
 {
     ListaDupla *rmv, *p;
     p = ((ListaInfo *)L)->inicio;
@@ -193,7 +194,7 @@ void RemoveElemento(Lista L, int ID)
     }
 }
 
-int BuscaID(Lista L, int valor)
+bool BuscaID(Lista L, int valor)
 {
     int ID;
     ListaDupla *p;
@@ -210,7 +211,7 @@ int BuscaID(Lista L, int valor)
     return ID;
 }
 
-int BuscaValor(Lista L, int ID)
+bool BuscaValor(Lista L, int ID)
 {
     int val;
     ListaDupla *p;
@@ -238,7 +239,10 @@ void LimpaLista(Lista L)
         free(rmv);
         rmv = p;
     }
-    free(rmv);
+    if (rmv != NULL)
+    {
+        free(rmv);
+    }
     ((ListaInfo *)L)->inicio = NULL;
     ((ListaInfo *)L)->final = NULL;
     ((ListaInfo *)L)->length = 0;
