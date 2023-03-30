@@ -5,7 +5,7 @@
 
 struct StListaDupla
 {
-    int valor;
+    Item info;
     int ID;
     struct StListaDupla *prox;
     struct StListaDupla *ant;
@@ -19,8 +19,16 @@ struct StInfoLista
     int length;
 };
 
+struct StIterator
+{
+    struct StListaDupla *curr;
+    bool reverso;
+};
+
 typedef struct StListaDupla ListaDupla;
 typedef struct StInfoLista ListaInfo;
+
+typedef struct StIterator Iterator;
 
 Lista CreateLista(int capacidade)
 {
@@ -29,6 +37,10 @@ Lista CreateLista(int capacidade)
     lista->final = NULL;
     lista->capac = capacidade;
     lista->length = 0;
+    if (capacidade < 0)
+    {
+        lista->capac = CAPAC_ILIMITADA;
+    }
     return lista;
 }
 
@@ -38,54 +50,130 @@ int lengthLst(Lista L)
     return lista->length;
 }
 
+int maxLengthLst(Lista L)
+{
+    if (((ListaInfo *)L)->capac == CAPAC_ILIMITADA)
+    {
+        return -1;
+    }
+    else
+    {
+        return ((ListaInfo *)L)->capac;
+    }
+}
+
+bool isEmptyLst(Lista L)
+{
+    return ((ListaInfo *)L)->length == 0;
+}
+
+bool isFullLst(Lista L)
+{
+    if (((ListaInfo *)L)->capac == CAPAC_ILIMITADA)
+    {
+        return false;
+    }
+    else
+    {
+        return ((ListaInfo *)L)->length == ((ListaInfo *)L)->capac;
+    }
+}
+
+void RemoveElemento(Lista L, Posic P)
+{
+    ListaDupla *rmv,*rmvprox;
+    rmv = (ListaDupla *)P;
+    if (rmv->ID == 0)
+    {
+        ((ListaInfo *)L)->inicio = rmv->prox;
+        if (rmv->prox != NULL)
+        {
+            rmvprox = rmv->prox;
+            rmvprox->ant = rmv->ant;
+            rmvprox->ID--;
+        }
+    }
+    else
+    {
+        if (rmv->prox != NULL)
+        {
+            proc->prox->ant = proc;
+        }
+    }
+    if (rmv->ID + 1 == ((ListaInfo *)L)->length)
+    {
+        ((ListaInfo *)L)->final = rmv->ant;
+    }
+    ((ListaInfo *)L)->length--;
+    free(rmv);
+
+    // Ajeita o ID das próximas
+    if (((ListaInfo *)L)->length != 0)
+    {
+        while (rmvprox->prox != NULL)
+        {
+            rmvprox = rmvprox->prox;
+            rmvprox->ID--;
+        }
+    }
+}
+
 void PrintLista(Lista L)
 {
     ListaDupla *p;
     printf("\n");
     printf("====== Lista ======\n");
     for (p = ((ListaInfo *)L)->inicio; p != NULL; p = p->prox)
-        printf("%d ID: %d\n", p->valor, p->ID);
+        printf("%d ID: %d\n", *(int *)p->info, p->ID);
     if (p != NULL)
     {
-        printf("Inicio: %d ID: %d\n", ((ListaInfo *)L)->inicio->valor, ((ListaInfo *)L)->inicio->ID);
-        printf("Fim: %d ID: %d\n", ((ListaInfo *)L)->final->valor, ((ListaInfo *)L)->final->ID);
+        printf("Inicio:Item info %d ID: %d\n", *(int *)((ListaInfo *)L)->inicio->info, ((ListaInfo *)L)->inicio->ID);
+        printf("Fim: %d ID: %d\n", *(int *)((ListaInfo *)L)->final->info, ((ListaInfo *)L)->final->ID);
     }
     printf("Tamanho: %d\n", ((ListaInfo *)L)->length);
     printf("\n");
 }
 
-void AddElemento(Lista L, int valor)
+Posic AddElemento(Lista L, Item info)
 {
-    ListaDupla *aux;
-    aux = malloc(sizeof(ListaDupla));
-    aux->valor = valor;
-    aux->prox = NULL;
-    aux->ant = NULL;
-    aux->ID = 0;
-    if (((ListaInfo *)L)->inicio == NULL)
+    if (((ListaInfo *)L)->length >= ((ListaInfo *)L)->capac)
     {
-        ((ListaInfo *)L)->inicio = aux;
-        ((ListaInfo *)L)->final = aux;
-        ((ListaInfo *)L)->length++;
+        return NIL;
     }
     else
     {
-        ListaDupla *p;
-        p = ((ListaInfo *)L)->inicio;
-        aux->ID++;
-        while (p->prox != NULL)
+        ListaDupla *aux;
+        aux = malloc(sizeof(ListaDupla));
+        aux->info = info;
+        aux->prox = NULL;
+        aux->ant = NULL;
+        aux->ID = 0;
+        if (((ListaInfo *)L)->inicio == NULL)
         {
-            p = p->prox;
-            aux->ID++;
+            ((ListaInfo *)L)->inicio = aux;
+            ((ListaInfo *)L)->final = aux;
+            ((ListaInfo *)L)->length++;
         }
-        aux->ant = p;
-        p->prox = aux;
-        ((ListaInfo *)L)->length++;
-        ((ListaInfo *)L)->final = aux;
+        else
+        {
+            ListaDupla *p;
+            p = ((ListaInfo *)L)->inicio;
+            aux->ID++;
+            while (p->prox != NULL)
+            {
+                p = p->prox;
+                aux->ID++;
+            }
+            aux->ant = p;
+            p->prox = aux;
+            ((ListaInfo *)L)->length++;
+            ((ListaInfo *)L)->final = aux;
+        }
+        return aux;
     }
 }
 
-bool InsereElemento(Lista L, int valor, int ID)
+bool InsereElemento(Lista L, Item info, int ID)
 {
     ListaDupla *p = ((ListaInfo *)L)->inicio;
     if (((ListaInfo *)L)->inicio == NULL)
@@ -95,13 +183,13 @@ bool InsereElemento(Lista L, int valor, int ID)
     else
     {
         ListaDupla *aux = malloc(sizeof(ListaDupla));
-        aux->valor = valor;
+        aux->info = info;
         while (p->ID != ID)
         {
             p = p->prox;
             if (p == NULL)
             {
-                AddElemento(L, valor);
+                AddElemento(L, info);
                 return;
             }
         }
@@ -110,6 +198,7 @@ bool InsereElemento(Lista L, int valor, int ID)
         aux->prox = p;
         aux->ID = p->ID;
         ((ListaInfo *)L)->length++;
+
         // Ajeita o ID das próximas
         p->ID++;
         while (p->prox != NULL)
@@ -145,56 +234,7 @@ bool EditaElemento(Lista L, int novovalor, int ID)
     p->valor = novovalor;
 }
 
-bool RemoveElemento(Lista L, int ID)
-{
-    ListaDupla *rmv, *p;
-    p = ((ListaInfo *)L)->inicio;
-    rmv = ((ListaInfo *)L)->inicio;
-    while (rmv->ID != ID)
-    {
-        rmv = rmv->prox;
-    }
-    if (ID == 0)
-    {
-        ((ListaInfo *)L)->inicio = rmv->prox;
-        if (rmv->prox != NULL)
-        {
-            p = p->prox;
-            p->ant = NULL;
-            p->ID--;
-        }
-    }
-    else
-    {
-        while (p->ID != ID - 1)
-        {
-            p = p->prox;
-        }
-        p->prox = rmv->prox;
-        if (rmv->prox != NULL)
-        {
-            p->prox->ant = p;
-        }
-    }
-    if (rmv->ID + 1 == ((ListaInfo *)L)->length)
-    {
-        ((ListaInfo *)L)->final = rmv->ant;
-    }
-    ((ListaInfo *)L)->length--;
-    free(rmv);
-
-    // Ajeita o ID das próximas
-    if (((ListaInfo *)L)->length != 0)
-    {
-        while (p->prox != NULL)
-        {
-            p = p->prox;
-            p->ID--;
-        }
-    }
-}
-
-bool BuscaID(Lista L, int valor)
+bool BuscaID(Lista L, Item info)
 {
     int ID;
     ListaDupla *p;
