@@ -24,7 +24,7 @@ bool leLinha(ArqCmds ac, char **buf, int *bufLen)
     {
         fscanf(ac, "%299[^\n]", linha);
         fgetc(ac);
-        *buf = malloc(strlen(linha) + 1);
+        *buf = malloc((strlen(linha) + 1)*sizeof(char);
         strcpy(*buf, linha);
         char *palavra = strtok(*buf, " ");
         *bufLen = 0;
