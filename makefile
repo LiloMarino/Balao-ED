@@ -5,7 +5,13 @@ PROJETO = ted
 OUTPUT = output/
 
 # Arquivos fonte
-FONTES = learquivo.c arqsvg.c main.c path.c listadupla.c
+FONTES = learquivo.c arqsvg.c path.c listadupla.c main.c
+
+# Pasta de saída
+OUTPUT = output/
+
+# Cria a pasta de saída se ela não existir
+$(shell mkdir -p $(OUTPUT))
 
 # Arquivos objeto na pasta de saída
 OBJETOS = $(addprefix $(OUTPUT), $(FONTES:.c=.o))
@@ -27,10 +33,6 @@ $(OUTPUT)%.o: %.c
 
 # Inclui as dependências dos arquivos objeto
 -include $(OBJETOS:.o=.d)
-
-# Cria a pasta de saída se ela não existir
-$(OUTPUT):
-	mkdir -p $(OUTPUT)
 
 # Regra para limpar os arquivos objeto e o executável
 clean:

@@ -4,13 +4,13 @@
 #include <stdbool.h>
 
 /**
-Uma lista e´ uma colecao ordenada de itens (ou seja, um elemento possui um 
+Uma lista e´ uma colecao ordenada de itens (ou seja, um elemento possui um
 antecessor e um sucessor)  em que seus elementos podem
-ser acessados atraves de sua posicao (tipo Posic). 
+ser acessados atraves de sua posicao (tipo Posic).
 Uma lista sem nenhum elemento (comprimento 0) e' denominada lista vazia.
 
-Uma instancia do tipo Posic indica a posicao de um item dentro da lista. 
-Este tipo possui um valor invalido que indica nao se referir a nenhum item. 
+Uma instancia do tipo Posic indica a posicao de um item dentro da lista.
+Este tipo possui um valor invalido que indica nao se referir a nenhum item.
 Tal valor invalido e' denotado por NIL.
 
 Este modulo prove diversos iteradores: 1 deles genérico e 3 comuns a linguagens
@@ -45,24 +45,30 @@ bool isEmptyLst(Lista L);
    tiver sido criada com uma capacidade máxima e lenght(L) == maxLength(L). */
 bool isFullLst(Lista L);
 
+/**  Adiciona o item info no final da lista L. O comprimento da lista e' acrescido de 1 elemento.
+Retorna um indicador para o elemento acrescentado; ou NIL, se a lista estiver
+cheia */
+Posic AddElemento(Lista L, Item info);
+
 /** Remove o elemento da lista L indicado por p.  p deve indicar um elemento existente em L. O comprimento da lista e' diminuido de 1 elemento. */
 void RemoveElemento(Lista L, Posic p);
 
 /** Retorna o valor do item da lista indicado por p.
     p deve indicar um elemento existente em L. */
-Item getLst(Lista L, Posic p);
+Item getLst(Posic p);
 
 /** Insere o item info na posicao imediatamente anterior ao
 item indicado por p. O comprimento da lista e' acrescido de 1 elemento.
-Retorna um indicador para o elemento acrescentado. p deve indicar um 
-elemento existente em L.*/
-Posic insertBefore(Lista L,Posic p, Item info);
+Retorna um indicador para o elemento acrescentado. p deve indicar um
+elemento existente em L.
+**/
+Posic insertBefore(Lista L, Posic p, Item info);
 
 /** Insere o item info na posicao imediatamente posterior ao
 item indicado por p. O comprimento da lista e' acrescido de 1 elemento.
-Retorna um indicador para o elemento acrescentado. p deve indicar um 
+Retorna um indicador para o elemento acrescentado. p deve indicar um
 elemento existente em L.*/
-Posic insertAfterLst(Lista L,Posic p, Item info);
+Posic insertAfterLst(Lista L, Posic p, Item info);
 
 /** Retorna o indicador do primeiro elemento de L. Se
 length(L)=0, retorna NIL. */
@@ -71,7 +77,7 @@ Posic getFirstLst(Lista L);
 /** Retorna o indicador do elemento de L seguinte ao elemento
 indicado por p. Se p for o ultimo elemento da lista, retorna NIL.
 p deve indicar um elemento existente em L.*/
-Posic getNextLst(Lista L,Posic p);
+Posic getNextLst(Lista L, Posic p);
 
 /** Retorna o indicador do ultimo elemento de L. Se
 length(L)=0, retorna NIL.*/
@@ -80,53 +86,70 @@ Posic getLastLst(Lista L);
 /** Retorna o indicador do elemento de L anterior ao elemento
 indicado por p. Se p for o primeiro elemento da lista, retorna NIL.
 p deve indicar um elemento existente em L. */
-Posic getPreviousLst(Lista L,Posic p);
+Posic getPreviousLst(Lista L, Posic p);
 
-/*Imprime a lista no terminal mostrando seus valores e IDs
-Exemplo:
-====== Lista ======
-10 ID: 0
-20 ID: 1
-30 ID: 2
-40 ID: 3
-50 ID: 4
-*/
+/* Imprime a lista no terminal mostrando seus endereços e IDs */
 void PrintLista(Lista L);
-
-/*Adiciona o elemento no final da lista e retorna
-um indicador para o elemento acrescentado ou NIL,
-se a lista estiver cheia.
-Exemplo adicionando elemento 10 e o 20:
-"Inicio -> NULL"
-"Inicio -> 10 -> NULL"
-"Inicio -> 10 -> 20 -> NULL"
-*/
-Posic AddElemento(Lista L, Item info);
-
-/*Insere o elemento na posição definida pelo ID e move
-o elemento dessa posição para frente
-e retorna falso caso não seja possível adicionar nessa posição
-Exemplo inserindo no ID 1 o elemento 15:
-"Inicio -> 10 ID:0 -> 20 ID: 1 -> 30 ID: 2 -> NULL"
-"Inicio -> 10 ID:0 -> 15 ID: 1 -> 20 ID: 2 -> 30 ID: 3 -> NULL"
-*/
-bool InsereElemento(Lista L, Item info, int ID);
-
-/*Edita o elemento na posição definida pelo ID
-e retorna falso caso não seja possível editar nessa posição
-Editando o valor do elemento 20 com ID 1 para 15:
-"Inicio -> 10 ID:0 -> 20 ID: 1 -> 30 ID: 2 -> NULL"
-"Inicio -> 10 ID:0 -> 15 ID: 1 -> 30 ID: 2 -> NULL"
-*/
-bool EditaElemento(Lista L, int novovalor, int ID);
-
-/*Retorna o valor da célula com o ID igual ao especificado*/
-bool BuscaValor(Lista L, int ID);
-
-/*Retorna o ID da célula com o valor igual ao especificado*/
-bool BuscaID(Lista L, Item info);
 
 /*Limpa a lista*/
 void LimpaLista(Lista L);
+
+/**
+ ** Iteradores
+ **
+ ** (nota: existe uma certa redundancia com getFirst, getLast,
+ **  getNext e getPrevious).
+ **/
+
+/**
+   Retorna um iterador sobre a lista L.
+   O iterador "anda" do inicio ate' o fim, caso reverso for falso;
+   do fim para o inicio, se reverso for verdadeiro.
+ */
+Iterador createIterador(Lista L, bool reverso);
+
+/**
+   Retorna verdadeiro caso o iterador esteja esgotado,
+   i.e., todos os item ja' tenham sido retornados; falso,
+   caso contrario.
+ */
+bool isIteratorEmpty(Lista L, Iterador it);
+
+/**
+   Retorna o proximo item. O iterador nao deve estar esgotado.
+   Caso o item retornado seja o ultima, subsequentes invocacoes
+   a isIteratorEmpty retornam verdadeiro.
+ */
+Item getIteratorNext(Lista L, Iterador it);
+
+/**
+   Libera os recursos usados pelo iterador.
+ */
+void killIterator(Lista L, Iterador it);
+
+/**
+ ** High-order functions
+ **/
+
+typedef Item (*Apply)(Item item);
+typedef bool (*Check)(Item item);
+typedef void (*ApplyClosure)(Item item, Clausura c);
+
+/** Cria uma nova lista. Aplica a funcao f a cada item de L
+    e insere o resultado na nova lista.
+ */
+Lista map(Lista L, Apply f);
+
+/**
+   Cria uma nova lista contendo os itens de L para os quais a
+   invocacao da funcao f retornar verdeira.
+ */
+Lista filter(Lista L, Check f);
+
+/**
+   Aplica a funcao f a cada elemento de L, possivelmente, atualizando
+   o conteudo de c.
+ */
+void fold(Lista L, ApplyClosure f, Clausura c);
 
 #endif

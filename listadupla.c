@@ -27,8 +27,7 @@ struct StIterator
 
 typedef struct StListaDupla ListaDupla;
 typedef struct StInfoLista ListaInfo;
-
-typedef struct StIterator Iterator;
+typedef struct StIterator IteratorInfo;
 
 Lista CreateLista(int capacidade)
 {
@@ -79,63 +78,9 @@ bool isFullLst(Lista L)
     }
 }
 
-void RemoveElemento(Lista L, Posic P)
-{
-    ListaDupla *rmv,*rmvprox;
-    rmv = (ListaDupla *)P;
-    if (rmv->ID == 0)
-    {
-        ((ListaInfo *)L)->inicio = rmv->prox;
-        if (rmv->prox != NULL)
-        {
-            rmvprox = rmv->prox;
-            rmvprox->ant = rmv->ant;
-            rmvprox->ID--;
-        }
-    }
-    else
-    {
-        if (rmv->prox != NULL)
-        {
-            proc->prox->ant = proc;
-        }
-    }
-    if (rmv->ID + 1 == ((ListaInfo *)L)->length)
-    {
-        ((ListaInfo *)L)->final = rmv->ant;
-    }
-    ((ListaInfo *)L)->length--;
-    free(rmv);
-
-    // Ajeita o ID das próximas
-    if (((ListaInfo *)L)->length != 0)
-    {
-        while (rmvprox->prox != NULL)
-        {
-            rmvprox = rmvprox->prox;
-            rmvprox->ID--;
-        }
-    }
-}
-
-void PrintLista(Lista L)
-{
-    ListaDupla *p;
-    printf("\n");
-    printf("====== Lista ======\n");
-    for (p = ((ListaInfo *)L)->inicio; p != NULL; p = p->prox)
-        printf("%d ID: %d\n", *(int *)p->info, p->ID);
-    if (p != NULL)
-    {
-        printf("Inicio:Item info %d ID: %d\n", *(int *)((ListaInfo *)L)->inicio->info, ((ListaInfo *)L)->inicio->ID);
-        printf("Fim: %d ID: %d\n", *(int *)((ListaInfo *)L)->final->info, ((ListaInfo *)L)->final->ID);
-    }
-    printf("Tamanho: %d\n", ((ListaInfo *)L)->length);
-    printf("\n");
-}
-
 Posic AddElemento(Lista L, Item info)
 {
+    // Verifica se a lista está cheia
     if (((ListaInfo *)L)->length >= ((ListaInfo *)L)->capac)
     {
         return NIL;
@@ -148,124 +93,217 @@ Posic AddElemento(Lista L, Item info)
         aux->prox = NULL;
         aux->ant = NULL;
         aux->ID = 0;
+
+        // Verifica se a lista está vazia
         if (((ListaInfo *)L)->inicio == NULL)
         {
             ((ListaInfo *)L)->inicio = aux;
-            ((ListaInfo *)L)->final = aux;
-            ((ListaInfo *)L)->length++;
         }
         else
         {
             ListaDupla *p;
-            p = ((ListaInfo *)L)->inicio;
-            aux->ID++;
-            while (p->prox != NULL)
-            {
-                p = p->prox;
-                aux->ID++;
-            }
+            p = ((ListaInfo *)L)->final;
             aux->ant = p;
             p->prox = aux;
-            ((ListaInfo *)L)->length++;
-            ((ListaInfo *)L)->final = aux;
+            aux->ID = p->ID++;
         }
+        ((ListaInfo *)L)->length++;
+        ((ListaInfo *)L)->final = aux;
         return aux;
     }
 }
 
-bool InsereElemento(Lista L, Item info, int ID)
+void RemoveElemento(Lista L, Posic p)
 {
-    ListaDupla *p = ((ListaInfo *)L)->inicio;
-    if (((ListaInfo *)L)->inicio == NULL)
-    {
-        return false;
-    }
-    else
-    {
-        ListaDupla *aux = malloc(sizeof(ListaDupla));
-        aux->info = info;
-        while (p->ID != ID)
-        {
-            p = p->prox;
-            if (p == NULL)
-            {
-                AddElemento(L, info);
-                return;
-            }
-        }
-        aux->ant = p->ant;
-        p->ant = aux;
-        aux->prox = p;
-        aux->ID = p->ID;
-        ((ListaInfo *)L)->length++;
+    ListaDupla *rmv, *aux;
+    rmv = (ListaDupla *)p;
 
-        // Ajeita o ID das próximas
-        p->ID++;
-        while (p->prox != NULL)
+    // Verifica se é o primeiro elemento da lista
+    if (rmv->ID == 0)
+    {
+        if (rmv->prox != NULL)
         {
-            p = p->prox;
-            p->ID++;
-        }
-        if (ID == 0)
-        {
-
-            ((ListaInfo *)L)->inicio = aux;
+            ((ListaInfo *)L)->inicio = rmv->prox;
+            rmv->prox->ant = rmv->ant;
+            aux = rmv->prox;
+            aux->ID--;
         }
         else
         {
-            p = ((ListaInfo *)L)->inicio;
-            while (p->ID != ID - 1)
-            {
-                p = p->prox;
-            }
-            p->prox = (ListaDupla *)aux;
+            ((ListaInfo *)L)->inicio = NULL;
         }
     }
-    return true;
-}
-
-bool EditaElemento(Lista L, int novovalor, int ID)
-{
-    ListaDupla *p = ((ListaInfo *)L)->inicio;
-    while (p->ID != ID)
+    else if (rmv->prox != NULL)
     {
-        p = p->prox;
+        rmv->prox->ant = rmv->ant;
+        rmv->ant->prox = rmv->prox;
+        aux = rmv->prox;
+        aux->ID--;
     }
-    p->valor = novovalor;
-}
 
-bool BuscaID(Lista L, Item info)
-{
-    int ID;
-    ListaDupla *p;
-    p = ((ListaInfo *)L)->inicio;
-    while (p->prox != NULL)
+    // Se for o último elemento da lista
+    if (rmv->ID + 1 == ((ListaInfo *)L)->length)
     {
-        if (p->valor == valor)
+        ((ListaInfo *)L)->final = rmv->ant;
+    }
+    ((ListaInfo *)L)->length--;
+    free(rmv);
+
+    // Ajeita o ID das próximas
+    if (((ListaInfo *)L)->length != 0)
+    {
+        while (aux->prox != NULL)
         {
-            break;
+            aux = aux->prox;
+            aux->ID--;
         }
-        p = p->prox;
     }
-    ID = p->ID;
-    return ID;
 }
 
-bool BuscaValor(Lista L, int ID)
+Item getLst(Posic p)
 {
-    int val;
-    ListaDupla *p;
-    p = ((ListaInfo *)L)->inicio;
-    while (p->ID != ID)
+    ListaDupla *aux = (ListaDupla *)p;
+    return aux->info;
+}
+
+Posic insertBefore(Lista L, Posic p, Item info)
+{
+    // Verifica se a lista está cheia
+    if (((ListaInfo *)L)->length >= ((ListaInfo *)L)->capac)
     {
-        if (p->prox == NULL)
-        {
-            break;
-        }
-        p = p->prox;
+        return NIL;
     }
-    val = p->valor;
-    return val;
+    else
+    {
+        // Insere um item na lista antes do item indicado por p
+        ListaDupla *aux = (ListaDupla *)p;
+        ListaDupla *new = malloc(sizeof(ListaDupla));
+        new->info = info;
+        new->prox = aux;
+        aux->ant = new;
+        new->ant = aux->ant;
+        new->ID = aux->ID;
+        if (new->ant != NULL)
+        {
+            new->ant->prox = new;
+        }
+        else
+        {
+            ((ListaInfo *)L)->inicio = new;
+        }
+        ((ListaInfo *)L)->length++;
+
+        // Ajeita o ID das próximas
+        aux->ID++;
+        while (aux->prox != NULL)
+        {
+            aux = aux->prox;
+            aux->ID++;
+        }
+        return new;
+    }
+}
+
+Posic insertAfterLst(Lista L, Posic p, Item info)
+{
+    // Verifica se a lista está cheia
+    if (((ListaInfo *)L)->length >= ((ListaInfo *)L)->capac)
+    {
+        return NIL;
+    }
+    else
+    {
+        // Insere um item na lista depois do item indicado por p
+        ListaDupla *aux = (ListaDupla *)p;
+        ListaDupla *new = malloc(sizeof(ListaDupla));
+        new->info = info;
+        new->ant = aux;
+        aux->prox = new;
+        new->prox = aux->prox;
+        new->ID = aux->ID;
+        if (new->prox != NULL)
+        {
+            new->prox->ant = new;
+        }
+        else
+        {
+            ((ListaInfo *)L)->final = new;
+        }
+        ((ListaInfo *)L)->length++;
+
+        // Ajeita o ID das próximas
+        aux->ID++;
+        while (aux->prox != NULL)
+        {
+            aux = aux->prox;
+            aux->ID++;
+        }
+        return new;
+    }
+}
+
+Posic getFirstLst(Lista L)
+{
+    if (((ListaInfo *)L)->length == 0)
+    {
+        return NIL;
+    }
+    else
+    {
+        return ((ListaInfo *)L)->inicio;
+    }
+}
+
+Posic getNextLst(Lista L, Posic p)
+{
+    if (((ListaInfo *)L)->final == p)
+    {
+        return NIL;
+    }
+    else
+    {
+        return ((ListaDupla *)p)->prox;
+    }
+}
+
+Posic getLastLst(Lista L)
+{
+    if (((ListaInfo *)L)->length == 0)
+    {
+        return NIL;
+    }
+    else
+    {
+        return ((ListaInfo *)L)->final;
+    }
+}
+
+Posic getPreviousLst(Lista L, Posic p)
+{
+    if (((ListaInfo *)L)->inicio == p)
+    {
+        return NIL;
+    }
+    else
+    {
+        return ((ListaDupla *)p)->ant;
+    }
+}
+
+void PrintLista(Lista L)
+{
+    ListaDupla *p;
+    printf("\n");
+    printf("====== Lista ======\n");
+    for (p = ((ListaInfo *)L)->inicio; p != NULL; p = p->prox)
+        printf("%p ID: %d\n", p->info, p->ID);
+    if (p != NULL)
+    {
+        printf("Inicio: %p ID: %d\n", ((ListaInfo *)L)->inicio->info, ((ListaInfo *)L)->inicio->ID);
+        printf("Fim: %p ID: %d\n", ((ListaInfo *)L)->final->info, ((ListaInfo *)L)->final->ID);
+    }
+    printf("Tamanho: %d\n", ((ListaInfo *)L)->length);
+    printf("\n");
 }
 
 void LimpaLista(Lista L)
@@ -286,4 +324,18 @@ void LimpaLista(Lista L)
     ((ListaInfo *)L)->inicio = NULL;
     ((ListaInfo *)L)->final = NULL;
     ((ListaInfo *)L)->length = 0;
+}
+
+Iterador createIterador(Lista L, bool reverso)
+{
+    IteratorInfo *it = malloc(sizeof(IteratorInfo));
+    if (reverso)    
+    {
+        it->curr = ((ListaInfo *)L)->final;
+    }
+    else
+    {
+        it->curr = ((ListaInfo *)L)->inicio;
+    }
+    return it;
 }
