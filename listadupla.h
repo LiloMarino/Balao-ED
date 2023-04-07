@@ -30,7 +30,7 @@ typedef void *Clausura;
 /** Retorna uma lista vazia. A lista pode definir um limite maximo de
 elementos armazenados (capacidade). Caso capacidade < 0, o tamanho da lista é
 ilimitado */
-Lista CreateLista(int capacidade);
+Lista createLst(int capacidade);
 
 /* Retorna o numero de elementos da lista. */
 int lengthLst(Lista L);
@@ -130,7 +130,7 @@ Item getIteratorNext(Lista L, Iterador it);
 /**
    Libera os recursos usados pelo iterador.
  */
-void killIterator(Lista L, Iterador it);
+void killIterator(Iterador it);
 
 /**
  ** High-order functions

@@ -2,7 +2,9 @@
 #define LE_ARQUIVOS__
 
 #include <stdbool.h>
-/* EXERCICIO: escrever a descricao do modulo e das operacoes */
+
+/*Conjunto de funções que são capazes de ler o arquivo e separar as palavras separadas por espaço
+escritas nele*/
 
 typedef void *ArqCmds;
 
@@ -10,8 +12,7 @@ typedef void *ArqCmds;
 portanto é necessário acrescentar a extensão do arquivo*/
 ArqCmds abreArquivoCmd(char *fn);
 
-/*Le uma linha do arquivo e atribui por referência ao ponteiro buf
-OBS: tem que dar free(buf) antes de usar a função novamente*/
+/*Le uma linha do arquivo e atribui por referência ao ponteiro buf*/
 bool leLinha (ArqCmds ac,char **buf, int *bufLen);
 
 /*Separa os parâmetros da linha delimtados por espaço em várias palavras 

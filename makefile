@@ -5,7 +5,7 @@ PROJETO = ted
 OUTPUT = output/
 
 # Arquivos fonte
-FONTES = learquivo.c arqsvg.c path.c listadupla.c main.c
+FONTES = learquivo.c arqsvg.c path.c listadupla.c geo.c main.c 
 
 # Pasta de saída
 OUTPUT = output/

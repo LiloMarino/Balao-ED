@@ -72,13 +72,13 @@ podem preparadas por meio da operacao preparaDecoracao.
 void escreveLinhaSvg(ArqSvg fsvg, double x1, double y1, double x2, double y2, char *deco);
 
 
-/* Font style: 
+/* Font style: */
 const char *FS_NORMAL = "normal";
 const char *FS_ITALIC = "italic";
 const char *FS_OBLIQUE = "oblique";
-*/
 
-/* Font weight 
+
+/* Font weight */
 
 const char *FW_NORMAL = "normal";
 const char *FW_BOLD = "bold";
@@ -88,7 +88,6 @@ const char *FW_LIGHTER = "lighter";
 const char *TA_START = "start";
 const char *TA_MIDDLE = "middle";
 const char *TA_END = "end";
-*/
 
 /*
   Preenche o vetor "deco" (com capacidade de "decoLen" caracteres) com atributos

@@ -28,6 +28,8 @@
         "stdlib.h": "c",
         "locale.h": "c",
         "listadupla.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "learquivo.h": "c",
+        "geo.h": "c"
     }
 }

@@ -10,6 +10,9 @@ ArqSvg abreEscritaSvg(char *fn)
     ArqSvg fsvg;
     strcat(fn, ".svg");
     fsvg = fopen(fn, "w");
+    if(fsvg == NULL) {
+        return NULL;
+    }
     fprintf(fsvg, "<svg>\n");
     return fsvg;
 }

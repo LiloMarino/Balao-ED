@@ -29,7 +29,7 @@ typedef struct StListaDupla ListaDupla;
 typedef struct StInfoLista ListaInfo;
 typedef struct StIterator IteratorInfo;
 
-Lista CreateLista(int capacidade)
+Lista createLst(int capacidade)
 {
     ListaInfo *lista = malloc(sizeof(ListaInfo));
     lista->inicio = NULL;
@@ -397,7 +397,7 @@ Item getIteratorNext(Lista L, Iterador it)
     return valor;
 }
 
-void killIterator(Lista L, Iterador it)
+void killIterator(Iterador it)
 {
     free(it);
 }
@@ -410,7 +410,7 @@ void killIterator(Lista L, Iterador it)
 // Ela retorna uma nova lista com os elementos transformados pela função "f".
 Lista map(Lista L, Apply f)
 {
-    Lista novaLista = CreateLista(((ListaInfo *)L)->capac);
+    Lista novaLista = createLst(((ListaInfo *)L)->capac);
     Iterador it = createIterador(L, false);
     while (!isIteratorEmpty(L, it))
     {
@@ -425,7 +425,7 @@ Lista map(Lista L, Apply f)
 // A função retorna uma nova lista contendo apenas os itens que satisfazem a condição.
 Lista filter(Lista L, Check f)
 {
-    Lista novaLista = CreateLista(((ListaInfo *)L)->capac);
+    Lista novaLista = createLst(((ListaInfo *)L)->capac);
     Iterador it = createIterador(L, false);
     while (!isIteratorEmpty(L, it))
     {
