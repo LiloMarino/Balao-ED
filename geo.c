@@ -35,7 +35,7 @@ struct StTexto
 {
     int ID;
     double x, y;
-    char *corb, *corp, *txto;
+    char *corb, *corp, *txto, *fFamily, *fWeight, *fSize;
     char a;
 };
 
@@ -55,30 +55,42 @@ ArqGeo abreLeituraGeo(char *fn)
 void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 {
     char comando[3];
-    char *linha;
-    int *buflen;
+    char *linha = NULL;
+    int *buflen = NULL;
+    EstiloTxt *style = malloc(sizeof(EstiloTxt));
     while (leLinha(fgeo, &linha, buflen))
     {
         sscanf(linha, "%s", comando);
         if (strcmp(comando, "c") == 0)
         {
-            sscanf(linha, "%s %d %d %d %s %s", comando, &i, &x, &y, corb, corp);
+            Circulo *c = malloc(sizeof(Circulo));
+            sscanf(linha, "%s %d %lf %lf %lf %s %s", comando, &c->ID, &c->x, &c->y, &c->raio, c->corb, c->corp);
+            insertLst(Circ,c);
         }
         else if (strcmp(comando, "r") == 0)
         {
-            sscanf(linha, "%s %d %d %d %d %s %s", comando, &i, &x, &y, &w, &h, corb, corp);
+            Retangulo *r = malloc(sizeof(Retangulo));
+            sscanf(linha, "%s %d %lf %lf %lf %lf %s %s", comando, &r->ID, &r->x, &r->y, &r->larg, &r->alt, r->corb, r->corp);
+            insertLst(Ret,r);
         }
         else if (strcmp(comando, "l") == 0)
         {
-            sscanf(linha, "%s %d %d %d %d %d %s", comando, &i, &x1, &y1, &x2, &y2, corb);
+            Linha *l = malloc(sizeof(Linha));
+            sscanf(linha, "%s %d %lf %lf %lf %lf %s", comando, &l->ID, &l->x1, &l->y1, &l->x2, &l->y2, l->cor);
+            insertLst(Lin,l);
         }
         else if (strcmp(comando, "ts") == 0)
         {
-            sscanf(linha, "%s %s %s %d", comando, fFamily, fWeight, &fSize);
+            sscanf(linha, "%s %s %s %s", comando, style->fFamily, style->fWeight, style->fSize);
         }
         else if (strcmp(comando, "t") == 0)
         {
-            sscanf(linha, "%s %d %d %d %s %s %c %[^\n]", comando, &i, &x, &y, corb, corp, &a, txto);
+            Texto *t = malloc(sizeof(Texto));
+            sscanf(linha, "%s %d %lf %lf %s %s %c %[^\n]", comando,&t->ID,&t->x, &t->y, t->corb, t->corp, &t->a, t->txto);
+            t->fFamily = style->fFamily;
+            t->fWeight = style->fWeight;
+            t->fSize = style->fSize;
+            insertLst(Tex,t);
         }
         else
         {
