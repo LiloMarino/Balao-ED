@@ -1,2 +1,2 @@
-output/main.o: main.c listadupla.h
-listadupla.h:
+output/main.o: main.c learquivo.h
+learquivo.h:

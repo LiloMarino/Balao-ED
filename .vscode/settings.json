@@ -27,6 +27,7 @@
         "stdio.h": "c",
         "stdlib.h": "c",
         "locale.h": "c",
-        "listadupla.h": "c"
+        "listadupla.h": "c",
+        "stdbool.h": "c"
     }
 }

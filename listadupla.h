@@ -45,13 +45,18 @@ bool isEmptyLst(Lista L);
    tiver sido criada com uma capacidade máxima e lenght(L) == maxLength(L). */
 bool isFullLst(Lista L);
 
-/**  Adiciona o item info no final da lista L. O comprimento da lista e' acrescido de 1 elemento.
+/**  Insere o item info no final da lista L. O comprimento da
+lista e' acrescido de 1 elemento. 
 Retorna um indicador para o elemento acrescentado; ou NIL, se a lista estiver
 cheia */
-Posic AddElemento(Lista L, Item info);
+Posic insertLst(Lista L, Item info);
+
+/** Remove e retorna o primeiro elemento da lista L. 
+    A lista nao pode  estar vazia */
+Item popLst(Lista L);
 
 /** Remove o elemento da lista L indicado por p.  p deve indicar um elemento existente em L. O comprimento da lista e' diminuido de 1 elemento. */
-void RemoveElemento(Lista L, Posic p);
+void removeLst(Lista L, Posic p);
 
 /** Retorna o valor do item da lista indicado por p.
     p deve indicar um elemento existente em L. */
@@ -59,14 +64,14 @@ Item getLst(Posic p);
 
 /** Insere o item info na posicao imediatamente anterior ao
 item indicado por p. O comprimento da lista e' acrescido de 1 elemento.
-Retorna um indicador para o elemento acrescentado. p deve indicar um
-elemento existente em L.
-**/
-Posic insertBefore(Lista L, Posic p, Item info);
+Retorna um indicador para o elemento acrescentado. p deve indicar um 
+elemento existente em L.*/
+Posic insertBefore(Lista L,Posic p, Item info);
+ 
 
 /** Insere o item info na posicao imediatamente posterior ao
 item indicado por p. O comprimento da lista e' acrescido de 1 elemento.
-Retorna um indicador para o elemento acrescentado. p deve indicar um
+Retorna um indicador para o elemento acrescentado. p deve indicar um 
 elemento existente em L.*/
 Posic insertAfterLst(Lista L, Posic p, Item info);
 
@@ -91,8 +96,8 @@ Posic getPreviousLst(Lista L, Posic p);
 /* Imprime a lista no terminal mostrando seus endereços e IDs */
 void PrintLista(Lista L);
 
-/*Limpa a lista*/
-void LimpaLista(Lista L);
+/** Libera toda memoria alocada pela lista. */
+void killLst(Lista L);
 
 /**
  ** Iteradores

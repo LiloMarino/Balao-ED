@@ -78,7 +78,7 @@ bool isFullLst(Lista L)
     }
 }
 
-Posic AddElemento(Lista L, Item info)
+Posic insertLst(Lista L, Item info)
 {
     // Verifica se a lista está cheia
     if (((ListaInfo *)L)->length >= ((ListaInfo *)L)->capac)
@@ -113,7 +113,32 @@ Posic AddElemento(Lista L, Item info)
     }
 }
 
-void RemoveElemento(Lista L, Posic p)
+Item popLst(Lista L)
+{
+    ListaInfo *lista = (ListaInfo *)L;
+    // Verifica se a lista está vazia
+    if (lista->inicio == NULL)
+    {
+        printf("Erro: Lista vazia\n");
+        exit(1);
+    }
+    ListaDupla *aux = lista->inicio;
+    lista->inicio = aux->prox;
+    if (lista->inicio != NULL)
+    {
+        lista->inicio->ant = NULL; // Se houver um segundo elemento na lista, atualiza o ponteiro ant do mesmo para NULL
+    }
+    else
+    {
+        lista->final = NULL; // Caso contrário, a lista ficou vazia e o ponteiro final também deve ser atualizado para NULL
+    }
+    Item item = aux->info; 
+    free(aux);            
+    lista->length--;       
+    return item;          
+}
+
+void removeLst(Lista L, Posic p)
 {
     ListaDupla *rmv, *aux;
     rmv = (ListaDupla *)p;
@@ -306,7 +331,7 @@ void PrintLista(Lista L)
     printf("\n");
 }
 
-void LimpaLista(Lista L)
+void killLst(Lista L)
 {
     ListaDupla *rmv, *p;
     rmv = ((ListaInfo *)L)->inicio;
@@ -326,10 +351,15 @@ void LimpaLista(Lista L)
     ((ListaInfo *)L)->length = 0;
 }
 
+/*
+ * Iterador
+ */
+
 Iterador createIterador(Lista L, bool reverso)
 {
     IteratorInfo *it = malloc(sizeof(IteratorInfo));
-    if (reverso)    
+    it->reverso = reverso;
+    if (reverso)
     {
         it->curr = ((ListaInfo *)L)->final;
     }
@@ -338,4 +368,84 @@ Iterador createIterador(Lista L, bool reverso)
         it->curr = ((ListaInfo *)L)->inicio;
     }
     return it;
+}
+
+bool isIteratorEmpty(Lista L, Iterador it)
+{
+    if (((IteratorInfo *)it)->reverso)
+    {
+        return (((IteratorInfo *)it)->curr == ((ListaDupla *)getFirstLst(L))->ant);
+    }
+    else
+    {
+        return (((IteratorInfo *)it)->curr == ((ListaDupla *)getLastLst(L))->prox);
+    }
+}
+
+Item getIteratorNext(Lista L, Iterador it)
+{
+    IteratorInfo *itimpl = (IteratorInfo *)it;
+    Item valor = itimpl->curr->info;
+    if (itimpl->reverso)
+    {
+        itimpl->curr = (ListaDupla *)getPreviousLst(L, itimpl->curr);
+    }
+    else
+    {
+        itimpl->curr = (ListaDupla *)getNextLst(L, itimpl->curr);
+    }
+    return valor;
+}
+
+void killIterator(Lista L, Iterador it)
+{
+    free(it);
+}
+
+/*
+ * High-order functions
+ */
+
+// A função "map" recebe uma lista "L" e um ponteiro para uma função "f" que será aplicada em cada elemento da lista.
+// Ela retorna uma nova lista com os elementos transformados pela função "f".
+Lista map(Lista L, Apply f)
+{
+    Lista novaLista = CreateLista(((ListaInfo *)L)->capac);
+    Iterador it = createIterador(L, false);
+    while (!isIteratorEmpty(L, it))
+    {
+        Item item = getIteratorNext(L, it);
+        insertLst(novaLista, f(item));
+    }
+    return novaLista;
+}
+
+// A função "filter" é similar à função "map", porém seleciona apenas os elementos que satisfazem a condição imposta por "f".
+// Ela recebe uma Lista "L" e um ponteiro para uma função "f" que retorna true ou false.
+// A função retorna uma nova lista contendo apenas os itens que satisfazem a condição.
+Lista filter(Lista L, Check f)
+{
+    Lista novaLista = CreateLista(((ListaInfo *)L)->capac);
+    Iterador it = createIterador(L, false);
+    while (!isIteratorEmpty(L, it))
+    {
+        Item item = getIteratorNext(L, it);
+        if (f(item))
+        {
+            insertLst(novaLista, item);
+        }
+    }
+    return novaLista;
+}
+
+// A função "fold" é usada para reduzir a lista L a um único valor, aplicando a função "f" sucessivamente em cada item da lista.
+// Ela recebe uma lista "L", um ponteiro para uma função "f" e uma Clausura "c".
+void fold(Lista L, ApplyClosure f, Clausura c)
+{
+    Iterador it = createIterador(L, false);
+    while (!isIteratorEmpty(L, it))
+    {
+        Item item = getIteratorNext(L, it);
+        f(item, c);
+    }
 }
