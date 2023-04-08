@@ -384,15 +384,14 @@ bool isIteratorEmpty(Lista L, Iterador it)
 
 Item getIteratorNext(Lista L, Iterador it)
 {
-    IteratorInfo *itimpl = (IteratorInfo *)it;
-    Item valor = itimpl->curr->info;
-    if (itimpl->reverso)
+    Item valor = ((IteratorInfo *)it)->curr->info;
+    if (((IteratorInfo *)it)->reverso)
     {
-        itimpl->curr = (ListaDupla *)getPreviousLst(L, itimpl->curr);
+        ((IteratorInfo *)it)->curr = (ListaDupla *)getPreviousLst(L, ((IteratorInfo *)it)->curr);
     }
     else
     {
-        itimpl->curr = (ListaDupla *)getNextLst(L, itimpl->curr);
+        ((IteratorInfo *)it)->curr = (ListaDupla *)getNextLst(L, ((IteratorInfo *)it)->curr);
     }
     return valor;
 }

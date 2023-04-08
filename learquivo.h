@@ -16,14 +16,14 @@ ArqCmds abreArquivoCmd(char *fn);
 bool leLinha (ArqCmds ac,char **buf, int *bufLen);
 
 /*Separa os parâmetros da linha delimtados por espaço em várias palavras 
-e retorna o parâmetro de índice i no paramI*/
-void getParametroI(char *buf, int i, char **paramI);
+e retorna o parâmetro de índice i*/
+char* getParametroI(char *buf, int i);
 
-/*Retorna em paramI todos os parâmetros depois de i
+/*Retorna todos os parâmetros depois de i
 Ex: Casa Amarela Verde
 i = 1
-*paramI = Amarela Verde*/
-void getParametroDepoisI(char *buf, int i, char **paramI);
+Retorna = Amarela Verde*/
+char* getParametroDepoisI(char *buf, int i);
 
 /*Fecha o arquivo aberto pela função abreArquivoCmd */
 void fechaArquivoCmd(ArqCmds ac);

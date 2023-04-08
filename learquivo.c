@@ -42,38 +42,32 @@ bool leLinha(ArqCmds ac, char **buf, int *bufLen)
     }
 }
 
-void getParametroI(char *buf, int i, char **paramI)
+char* getParametroI(char *buf, int i)
 {
-    if (*paramI != NULL)
-    {
-        free(*paramI);
-        *paramI = NULL;
-    }
+    char *paramI = NULL;
     char *bufcopia = strdup(buf);
-    *paramI = strtok(bufcopia, " ");
+    paramI = strtok(bufcopia, " ");
     for (int j = 0; j < i; j++)
     {
-        *paramI = strtok(NULL, " ");
+        paramI = strtok(NULL, " ");
     }
+    return paramI;
 }
 
-void getParametroDepoisI(char *buf, int i, char **paramI)
+char* getParametroDepoisI(char *buf, int i)
 {
-    if (*paramI != NULL)
-    {
-        free(*paramI);
-        *paramI = NULL;
-    }
+    char *paramI = NULL;
     char *bufcopia = strdup(buf);
     for (int j = 0; j < i-1; j++)
     {
         if (j == 0)
         {
-           *paramI = strtok(bufcopia, " ");
+           paramI = strtok(bufcopia, " ");
         }
-        *paramI = strtok(NULL, " ");
+        paramI = strtok(NULL, " ");
     }
-    *paramI = strtok(NULL, "");
+    paramI = strtok(NULL, "");
+    return paramI;
 }
 
 void fechaArquivoCmd(ArqCmds ac)

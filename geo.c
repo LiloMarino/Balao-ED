@@ -37,7 +37,7 @@ struct StTexto
     int ID;
     double x, y;
     char *corb, *corp, *txto, *fFamily, *fWeight, *fSize;
-    char a;
+    char *a;
 };
 
 typedef struct StCirculo Circulo;
@@ -68,29 +68,40 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
         if (strcmp(comando, "c") == 0)
         {
             Circulo *c = malloc(sizeof(Circulo));
-            sscanf(linha, "%s %d %lf %lf %lf %s %s", comando, &c->ID, &c->x, &c->y, &c->raio, c->corb, c->corp);
+            sscanf(linha, "%s %d %lf %lf %lf", comando, &c->ID, &c->x, &c->y, &c->raio);
+            c->corb = getParametroI(linha,5);
+            c->corp = getParametroI(linha,6);
             insertLst(Circ, c);
         }
         else if (strcmp(comando, "r") == 0)
         {
             Retangulo *r = malloc(sizeof(Retangulo));
-            sscanf(linha, "%s %d %lf %lf %lf %lf %s %s", comando, &r->ID, &r->x, &r->y, &r->larg, &r->alt, r->corb, r->corp);
+            sscanf(linha, "%s %d %lf %lf %lf %lf", comando, &r->ID, &r->x, &r->y, &r->larg, &r->alt);
+            r->corb = getParametroI(linha,6);
+            r->corp = getParametroI(linha,7);
             insertLst(Ret, r);
         }
         else if (strcmp(comando, "l") == 0)
         {
             Linha *l = malloc(sizeof(Linha));
-            sscanf(linha, "%s %d %lf %lf %lf %lf %s", comando, &l->ID, &l->x1, &l->y1, &l->x2, &l->y2, l->cor);
+            sscanf(linha, "%s %d %lf %lf %lf %lf", comando, &l->ID, &l->x1, &l->y1, &l->x2, &l->y2);
+            l->cor = getParametroI(linha,6);
             insertLst(Lin, l);
         }
         else if (strcmp(comando, "ts") == 0)
         {
-            sscanf(linha, "%s %s %s %s", comando, style->fFamily, style->fWeight, style->fSize);
+            style->fFamily = getParametroI(linha,1);
+            style->fWeight = getParametroI(linha,2);
+            style->fSize = getParametroI(linha,3);
         }
         else if (strcmp(comando, "t") == 0)
         {
             Texto *t = malloc(sizeof(Texto));
-            sscanf(linha, "%s %d %lf %lf %s %s %c %[^\n]", comando, &t->ID, &t->x, &t->y, t->corb, t->corp, &t->a, t->txto);
+            sscanf(linha, "%s %d %lf %lf", comando, &t->ID, &t->x, &t->y);
+            t->corb = getParametroI(linha,4);
+            t->corp = getParametroI(linha,5);
+            t->a = getParametroI(linha,6);
+            t->txto = getParametroDepoisI(linha,7);
             t->fFamily = style->fFamily;
             t->fWeight = style->fWeight;
             t->fSize = style->fSize;
@@ -141,11 +152,11 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
 {
     Texto *t = (Texto *)info;
     char *deco = NULL, *fontWeight, *textAnchor;
-    if (t->a == 'i')
+    if (*(t->a) == 'i')
     {
         textAnchor = strdup("start");
     }
-    else if (t->a == 'f')
+    else if (*(t->a) == 'f')
     {
         textAnchor = strdup("end");
     }
