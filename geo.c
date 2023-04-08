@@ -164,7 +164,7 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
     {
         textAnchor = strdup("middle");
     }
-
+    if(t->fWeight != NULL){
     if (strcmp(t->fWeight, "l") == 0)
     {
         fontWeight = strdup("lighter");
@@ -180,6 +180,7 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
     else
     {
         fontWeight = strdup("normal");
+    }
     }
     preparaDecoracaoTexto(deco, 0, t->fFamily, NULL, fontWeight, t->fSize, t->corb, t->corp, textAnchor);
     escreveTextoSvg(fsvg, t->x, t->y, t->txto, deco);

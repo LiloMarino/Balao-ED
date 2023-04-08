@@ -81,7 +81,7 @@ bool isFullLst(Lista L)
 Posic insertLst(Lista L, Item info)
 {
     // Verifica se a lista está cheia
-    if (((ListaInfo *)L)->length >= ((ListaInfo *)L)->capac)
+    if (isFullLst(L))
     {
         return NIL;
     }
@@ -194,7 +194,7 @@ Item getLst(Posic p)
 Posic insertBefore(Lista L, Posic p, Item info)
 {
     // Verifica se a lista está cheia
-    if (((ListaInfo *)L)->length >= ((ListaInfo *)L)->capac)
+    if (isFullLst(L))
     {
         return NIL;
     }
@@ -232,7 +232,7 @@ Posic insertBefore(Lista L, Posic p, Item info)
 Posic insertAfterLst(Lista L, Posic p, Item info)
 {
     // Verifica se a lista está cheia
-    if (((ListaInfo *)L)->length >= ((ListaInfo *)L)->capac)
+    if (isFullLst(L))
     {
         return NIL;
     }
