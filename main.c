@@ -8,7 +8,7 @@
 
 int main()
 {
-    ArqSvg B = abreEscritaSvg("teste");
+    ArqSvg B = abreEscritaSvg("teste.svg");
     ArqGeo A = abreLeituraGeo("02-planta-cidade.geo");
 
     Lista Cir = createLst(-1);

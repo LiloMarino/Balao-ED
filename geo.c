@@ -57,7 +57,7 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 {
     char comando[3];
     char *linha = NULL;
-    int *buflen = NULL;
+    int *buflen = malloc(sizeof(int));
     EstiloTxt *style = malloc(sizeof(EstiloTxt));
     style->fFamily = NULL;
     style->fWeight = NULL;
@@ -101,6 +101,8 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             printf("Comando desconhecido: %s\n", comando);
         }
     }
+    free(buflen);
+    free(style);
 }
 
 void fechaGeo(ArqGeo fgeo)
