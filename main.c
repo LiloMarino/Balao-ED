@@ -6,7 +6,8 @@
 #include "arqsvg.h"
 #include "listadupla.h"
 
-int main() {
+int main()
+{
     ArqSvg B = abreEscritaSvg("teste");
     ArqGeo A = abreLeituraGeo("02-planta-cidade.geo");
 
@@ -15,25 +16,27 @@ int main() {
     Lista Lin = createLst(-1);
     Lista Tex = createLst(-1);
 
+    InterpretaGeo(A, Cir, Ret, Tex, Lin);
 
-    InterpretaGeo(A,Cir,Ret,Tex,Lin);
+    Iterador J = createIterador(Ret, false);
 
-    Iterador J = createIterador(Ret,false);
+    while (!isIteratorEmpty(Ret, J))
+        CriaRetanguloSvg(B, getIteratorNext(Ret, J));
 
-    while(!isIteratorEmpty(Ret,J))escreveRetanguloSvg(B,getIteratorNext(Ret,J));
+    Iterador F = createIterador(Lin, false);
 
-    Iterador F = createIterador(Lin,false);
+    while (!isIteratorEmpty(Lin, F))
+        CriaLinhaSvg(B, getIteratorNext(Lin, F));
 
-    while(!isIteratorEmpty(Lin,F))escreveLinhaSvg(B,getIteratorNext(Lin,F));
+    Iterador K = createIterador(Cir, false);
 
-    Iterador K = createIterador(Cir,false);
+    while (!isIteratorEmpty(Cir, K))
+        CriaCirculoSvg(B, getIteratorNext(Cir, K));
 
-    while(!isIteratorEmpty(Cir,K))escreveCirculoSvg(B,getIteratorNext(Cir,K));
+    Iterador Z = createIterador(Tex, false);
 
-    Iterador Z = createIterador(Tex,false);
-
-    while(!isIteratorEmpty(Tex,Z))escreveTextoSvg(B,getIteratorNext(Tex,Z));
-        
+    while (!isIteratorEmpty(Tex, Z))
+        CriaTextoSvg(B, getIteratorNext(Tex, Z));
 
     killIterator(J);
     killIterator(F);

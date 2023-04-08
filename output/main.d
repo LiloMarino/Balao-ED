@@ -1,4 +1,4 @@
-output/main.o: main.c geo.h arqsvg.h listadupla.h
+output/main.o: main.c geo.h listadupla.h arqsvg.h
 geo.h:
-arqsvg.h:
 listadupla.h:
+arqsvg.h:

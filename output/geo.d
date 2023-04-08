@@ -1,4 +1,5 @@
-output/geo.o: geo.c geo.h leArquivo.h listadupla.h
+output/geo.o: geo.c geo.h listadupla.h arqsvg.h leArquivo.h
 geo.h:
-leArquivo.h:
 listadupla.h:
+arqsvg.h:
+leArquivo.h:

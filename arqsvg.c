@@ -83,7 +83,7 @@ void escreveLinhaSvg(ArqSvg fsvg, double x1, double y1, double x2, double y2, ch
     fprintf(fsvg, " <line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" %s", x1, y1, x2, y2, deco);
 }
 
-void preparaDecoracaoTexto(char *deco, int decoLen, char *fontFamily, char *fontStyle, char *fontWeight, char *fontSize, char *fontColor, char *textAnchor)
+void preparaDecoracaoTexto(char *deco, int decoLen, char *fontFamily, char *fontStyle, char *fontWeight, char *fontSize, char *corBorda, char *fontColor, char *textAnchor)
 {
     char decoracao[200];
     decoracao[0] = '\0';
@@ -109,6 +109,12 @@ void preparaDecoracaoTexto(char *deco, int decoLen, char *fontFamily, char *font
     {
         strcat(decoracao, "font-size=\"");
         strcat(decoracao, fontSize);
+        strcat(decoracao, "\" ");
+    }
+    if (corBorda != NULL)
+    {
+        strcat(decoracao, "stroke=\"");
+        strcat(decoracao, corBorda);
         strcat(decoracao, "\" ");
     }
     if (fontColor != NULL)
