@@ -125,7 +125,7 @@ void CriaRetanguloSvg(ArqSvg fsvg, Item info)
 {
     Retangulo *r = (Retangulo *)info;
     char *deco = NULL;
-    preparaDecoracao(deco, 0, r->corb, r->corp, NULL, -1, -1, -1);
+    preparaDecoracao(&deco, 0, r->corb, r->corp, NULL, -1, -1, -1);
     escreveRetanguloSvg(fsvg, r->x, r->y, r->larg, r->alt, deco);
     free(deco);
 }
@@ -134,7 +134,7 @@ void CriaCirculoSvg(ArqSvg fsvg, Item info)
 {
     Circulo *c = (Circulo *)info;
     char *deco = NULL;
-    preparaDecoracao(deco, 0, c->corb, c->corp, NULL, -1, -1, -1);
+    preparaDecoracao(&deco, 0, c->corb, c->corp, NULL, -1, -1, -1);
     escreveCirculoSvg(fsvg, c->x, c->y, c->raio, deco);
     free(deco);
 }
@@ -143,7 +143,7 @@ void CriaLinhaSvg(ArqSvg fsvg, Item info)
 {
     Linha *l = (Linha *)info;
     char *deco = NULL;
-    preparaDecoracao(deco, 0, NULL, l->cor, NULL, -1, -1, -1);
+    preparaDecoracao(&deco, 0, NULL, l->cor, NULL, -1, -1, -1);
     escreveLinhaSvg(fsvg, l->x1, l->y1, l->x2, l->y2, deco);
     free(deco);
 }
@@ -182,7 +182,7 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
         fontWeight = strdup("normal");
     }
     }
-    preparaDecoracaoTexto(deco, 0, t->fFamily, NULL, fontWeight, t->fSize, t->corb, t->corp, textAnchor);
+    preparaDecoracaoTexto(&deco, 0, t->fFamily, NULL, fontWeight, t->fSize, t->corb, t->corp, textAnchor);
     escreveTextoSvg(fsvg, t->x, t->y, t->txto, deco);
     free(fontWeight);
     free(textAnchor);

@@ -16,7 +16,7 @@ ArqSvg abreEscritaSvg(char *fn)
     return fsvg;
 }
 
-void preparaDecoracao(char *deco, int decoLen, char *corBorda, char *corPreenchimento, char *larguraBorda, double transparencia, double transparenciaPreenchimento, double transparenciaBorda)
+void preparaDecoracao(char **deco, int decoLen, char *corBorda, char *corPreenchimento, char *larguraBorda, double transparencia, double transparenciaPreenchimento, double transparenciaBorda)
 {
     char decoracao[250];
     decoracao[0] = '\0';
@@ -63,8 +63,8 @@ void preparaDecoracao(char *deco, int decoLen, char *corBorda, char *corPreenchi
         strcat(decoracao, "\" ");
     }
     decoLen = strlen(decoracao);
-    deco = malloc(decoLen * sizeof(char));
-    strcpy(deco, decoracao);
+    *deco = malloc(decoLen * sizeof(char));
+    strcpy(*deco, decoracao);
 }
 
 void escreveCirculoSvg(ArqSvg fsvg, double xc, double yc, double r, char *deco)
@@ -82,7 +82,7 @@ void escreveLinhaSvg(ArqSvg fsvg, double x1, double y1, double x2, double y2, ch
     fprintf(fsvg, " <line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" %s", x1, y1, x2, y2, deco);
 }
 
-void preparaDecoracaoTexto(char *deco, int decoLen, char *fontFamily, char *fontStyle, char *fontWeight, char *fontSize, char *corBorda, char *fontColor, char *textAnchor)
+void preparaDecoracaoTexto(char **deco, int decoLen, char *fontFamily, char *fontStyle, char *fontWeight, char *fontSize, char *corBorda, char *fontColor, char *textAnchor)
 {
     char decoracao[200];
     decoracao[0] = '\0';
@@ -129,8 +129,8 @@ void preparaDecoracaoTexto(char *deco, int decoLen, char *fontFamily, char *font
         strcat(decoracao, "\" ");
     }
     decoLen = strlen(decoracao);
-    deco = malloc(decoLen * sizeof(char));
-    strcpy(deco, decoracao);
+    *deco = malloc(decoLen * sizeof(char));
+    strcpy(*deco, decoracao);
 }
 
 void escreveTextoSvg(ArqSvg fsvg, double x, double y, char *txt, char *decoTxt)

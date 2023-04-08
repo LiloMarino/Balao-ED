@@ -40,7 +40,7 @@ atribuir NULL (para char *) ou valores negativos (double) ao respectivo parametr
     font weight: normal | bold | bolder | lighter
     text anchor: start | middle |end
  */
-void preparaDecoracao(char *deco, int decoLen,
+void preparaDecoracao(char **deco, int decoLen,
                       char *corBorda, char *corPreenchimento,
                       char *larguraBorda, double transparencia,
                       double transparenciaPreenchimento, double transparenciaBorda);
@@ -101,7 +101,7 @@ acima.
     font weight: normal | bold | bolder | lighter
     text anchor: start | middle |end
  */
-void preparaDecoracaoTexto(char *deco, int decoLen,
+void preparaDecoracaoTexto(char **deco, int decoLen,
                            char *fontFamily, char *fontStyle,
                            char *fontWeight, char *fontSize, char *corBorda,
                            char *fontColor, char *textAnchor);
