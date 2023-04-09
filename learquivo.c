@@ -25,6 +25,10 @@ bool leLinha(ArqCmds ac, char **buf)
     {
         fscanf(ac, "%299[^\n]", linha);
         fgetc(ac);
+        if(linha[0] == '\0')
+        {
+            return false;
+        }
         *buf = malloc((strlen(linha) + 1)*sizeof(char));
         strcpy(*buf, linha);
         return true;

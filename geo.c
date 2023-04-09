@@ -58,7 +58,7 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
     char comando[3];
     char *linha = NULL;
     EstiloTxt *style = malloc(sizeof(EstiloTxt));
-    style->fFamily = NULL;
+    style->fFamily = strdup("arial");
     style->fWeight = NULL;
     style->fSize = NULL;
     while (leLinha(fgeo, &linha))
@@ -68,48 +68,72 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
         {
             Circulo *c = malloc(sizeof(Circulo));
             sscanf(linha, "%s %d %lf %lf %lf", comando, &c->ID, &c->x, &c->y, &c->raio);
-            c->corb = getParametroI(linha,5);
-            c->corp = getParametroI(linha,6);
+            c->corb = getParametroI(linha, 5);
+            c->corp = getParametroI(linha, 6);
             insertLst(Circ, c);
         }
         else if (strcmp(comando, "r") == 0)
         {
             Retangulo *r = malloc(sizeof(Retangulo));
             sscanf(linha, "%s %d %lf %lf %lf %lf", comando, &r->ID, &r->x, &r->y, &r->larg, &r->alt);
-            r->corb = getParametroI(linha,6);
-            r->corp = getParametroI(linha,7);
+            r->corb = getParametroI(linha, 6);
+            r->corp = getParametroI(linha, 7);
             insertLst(Ret, r);
         }
         else if (strcmp(comando, "l") == 0)
         {
             Linha *l = malloc(sizeof(Linha));
             sscanf(linha, "%s %d %lf %lf %lf %lf", comando, &l->ID, &l->x1, &l->y1, &l->x2, &l->y2);
-            l->cor = getParametroI(linha,6);
+            l->cor = getParametroI(linha, 6);
             insertLst(Lin, l);
         }
         else if (strcmp(comando, "ts") == 0)
         {
-            style->fFamily = getParametroI(linha,1);
-            style->fWeight = getParametroI(linha,2);
-            style->fSize = getParametroI(linha,3);
+            if (style->fFamily != NULL)
+            {
+                free(style->fFamily);
+            }
+            if (style->fWeight != NULL)
+            {
+                free(style->fWeight);
+            }
+            if (style->fSize != NULL)
+            {
+                free(style->fSize);
+            }
+            style->fFamily = getParametroI(linha, 1);
+            style->fWeight = getParametroI(linha, 2);
+            style->fSize = getParametroI(linha, 3);
         }
         else if (strcmp(comando, "t") == 0)
         {
             Texto *t = malloc(sizeof(Texto));
             sscanf(linha, "%s %d %lf %lf", comando, &t->ID, &t->x, &t->y);
-            t->corb = getParametroI(linha,4);
-            t->corp = getParametroI(linha,5);
-            t->a = getParametroI(linha,6);
-            t->txto = getParametroDepoisI(linha,7);
-            t->fFamily = style->fFamily;
-            t->fWeight = style->fWeight;
-            t->fSize = style->fSize;
+            t->corb = getParametroI(linha, 4);
+            t->corp = getParametroI(linha, 5);
+            t->a = getParametroI(linha, 6);
+            t->txto = getParametroDepoisI(linha, 7);
+            t->fFamily = strdup(style->fFamily);
+            t->fWeight = strdup(style->fWeight);
+            t->fSize = strdup(style->fSize);
             insertLst(Tex, t);
         }
         else
         {
             printf("Comando desconhecido: %s\n", comando);
         }
+    }
+    if (style->fFamily != NULL)
+    {
+        free(style->fFamily);
+    }
+    if (style->fWeight != NULL)
+    {
+        free(style->fWeight);
+    }
+    if (style->fSize != NULL)
+    {
+        free(style->fSize);
     }
     free(style);
 }
@@ -139,7 +163,7 @@ void CriaLinhaSvg(ArqSvg fsvg, Item info)
 {
     Linha *l = (Linha *)info;
     char *deco = NULL;
-    preparaDecoracao(&deco, 0,l->cor,NULL, NULL, -1, -1, -1);
+    preparaDecoracao(&deco, 0, l->cor, NULL, NULL, -1, -1, -1);
     escreveLinhaSvg(fsvg, l->x1, l->y1, l->x2, l->y2, deco);
 }
 
@@ -159,23 +183,24 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
     {
         textAnchor = strdup("middle");
     }
-    if(t->fWeight != NULL){
-    if (strcmp(t->fWeight, "l") == 0)
+    if (t->fWeight != NULL)
     {
-        fontWeight = strdup("lighter");
-    }
-    else if (strcmp(t->fWeight, "b") == 0)
-    {
-        fontWeight = strdup("bold");
-    }
-    else if (strcmp(t->fWeight, "b+") == 0)
-    {
-        fontWeight = strdup("bolder");
-    }
-    else
-    {
-        fontWeight = strdup("normal");
-    }
+        if (strcmp(t->fWeight, "l") == 0)
+        {
+            fontWeight = strdup("lighter");
+        }
+        else if (strcmp(t->fWeight, "b") == 0)
+        {
+            fontWeight = strdup("bold");
+        }
+        else if (strcmp(t->fWeight, "b+") == 0)
+        {
+            fontWeight = strdup("bolder");
+        }
+        else
+        {
+            fontWeight = strdup("normal");
+        }
     }
     preparaDecoracaoTexto(&deco, 0, t->fFamily, NULL, fontWeight, t->fSize, t->corb, t->corp, textAnchor);
     escreveTextoSvg(fsvg, t->x, t->y, t->txto, deco);
