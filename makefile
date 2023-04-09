@@ -9,6 +9,7 @@ OUTPUT = output/
 
 # Cria a pasta de saída se ela não existir
 $(shell mkdir -p $(OUTPUT))
+$(shell cp 02-planta-cidade.geo $(OUTPUT))
 
 # Arquivos objeto na pasta de saída
 OBJETOS = $(addprefix $(OUTPUT), $(FONTES:.c=.o))
