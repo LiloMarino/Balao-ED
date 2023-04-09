@@ -7,12 +7,11 @@ typedef void *ArqSvg;
 
 ArqSvg abreEscritaSvg(char *fn)
 {
-    ArqSvg fsvg;
-    fsvg = fopen(fn, "w");
+    ArqSvg fsvg = fopen(fn, "w");
     if(fsvg == NULL) {
         return NULL;
     }
-    fprintf(fsvg, "<svg xmlns=""\"http://www.w3.org/2000/svg""\" width=""\"infinite""\" height=""\"infinite""\">\n");
+    fprintf(fsvg, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%%\" height=\"100%%\" viewBox=\"-100 -100 500 500\">\n");
     return fsvg;
 }
 
@@ -63,7 +62,7 @@ void preparaDecoracao(char **deco, int decoLen, char *corBorda, char *corPreench
         strcat(decoracao, "\" ");
     }
     decoLen = strlen(decoracao);
-    *deco = malloc(decoLen * sizeof(char));
+    *deco = malloc((decoLen+1) * sizeof(char));
     strcpy(*deco, decoracao);
 }
 
@@ -129,7 +128,7 @@ void preparaDecoracaoTexto(char **deco, int decoLen, char *fontFamily, char *fon
         strcat(decoracao, "\" ");
     }
     decoLen = strlen(decoracao);
-    *deco = malloc(decoLen * sizeof(char));
+    *deco = malloc((decoLen+1) * sizeof(char));
     strcpy(*deco, decoracao);
 }
 

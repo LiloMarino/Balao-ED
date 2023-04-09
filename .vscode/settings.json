@@ -25,6 +25,11 @@
             "cwd": "g:\\Outros computadores\\Meu laptop\\Faculdade\\EstruturadeDados\\output",
             "binaryPath": "g:\\Outros computadores\\Meu laptop\\Faculdade\\EstruturadeDados\\output\\ted",
             "binaryArgs": []
+        },
+        {
+            "cwd": "/mnt/g/Outros computadores/Meu laptop/Faculdade/EstruturadeDados/output",
+            "binaryPath": "/mnt/g/Outros computadores/Meu laptop/Faculdade/EstruturadeDados/output/ted",
+            "binaryArgs": []
         }
     ],
     "files.associations": {

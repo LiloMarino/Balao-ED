@@ -12,7 +12,7 @@ ArqCmds abreArquivoCmd(char *fn)
     return ac;
 }
 
-bool leLinha(ArqCmds ac, char **buf, int *bufLen)
+bool leLinha(ArqCmds ac, char **buf)
 {
     if (*buf != NULL)
     {
@@ -20,19 +20,12 @@ bool leLinha(ArqCmds ac, char **buf, int *bufLen)
         *buf = NULL;
     }
     char linha[300];
+    linha[0] = '\0';
     if (!feof(ac))
     {
         fscanf(ac, "%299[^\n]", linha);
         fgetc(ac);
         *buf = malloc((strlen(linha) + 1)*sizeof(char));
-        strcpy(*buf, linha);
-        char *palavra = strtok(*buf, " ");
-        *bufLen = 0;
-        while (palavra != NULL)
-        {
-            *bufLen += 1;
-            palavra = strtok(NULL, " ");
-        }
         strcpy(*buf, linha);
         return true;
     }
@@ -51,6 +44,8 @@ char* getParametroI(char *buf, int i)
     {
         paramI = strtok(NULL, " ");
     }
+    paramI = strdup(paramI);
+    free(bufcopia);
     return paramI;
 }
 

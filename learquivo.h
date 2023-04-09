@@ -13,7 +13,7 @@ portanto é necessário acrescentar a extensão do arquivo*/
 ArqCmds abreArquivoCmd(char *fn);
 
 /*Le uma linha do arquivo e atribui por referência ao ponteiro buf*/
-bool leLinha (ArqCmds ac,char **buf, int *bufLen);
+bool leLinha (ArqCmds ac,char **buf);
 
 /*Separa os parâmetros da linha delimtados por espaço em várias palavras 
 e retorna o parâmetro de índice i*/

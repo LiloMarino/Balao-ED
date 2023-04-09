@@ -57,12 +57,11 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 {
     char comando[3];
     char *linha = NULL;
-    int *buflen = malloc(sizeof(int));
     EstiloTxt *style = malloc(sizeof(EstiloTxt));
     style->fFamily = NULL;
     style->fWeight = NULL;
     style->fSize = NULL;
-    while (leLinha(fgeo, &linha, buflen))
+    while (leLinha(fgeo, &linha))
     {
         sscanf(linha, "%s", comando);
         if (strcmp(comando, "c") == 0)
@@ -112,7 +111,6 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             printf("Comando desconhecido: %s\n", comando);
         }
     }
-    free(buflen);
     free(style);
 }
 
