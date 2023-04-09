@@ -12,7 +12,7 @@ ArqSvg abreEscritaSvg(char *fn)
     if(fsvg == NULL) {
         return NULL;
     }
-    fprintf(fsvg, "<svg>\n");
+    fprintf(fsvg, "<svg xmlns=""\"http://www.w3.org/2000/svg""\" width=""\"infinite""\" height=""\"infinite""\">\n");
     return fsvg;
 }
 
@@ -69,17 +69,17 @@ void preparaDecoracao(char **deco, int decoLen, char *corBorda, char *corPreench
 
 void escreveCirculoSvg(ArqSvg fsvg, double xc, double yc, double r, char *deco)
 {
-    fprintf(fsvg, "  <circle cx=\"%f\" cy=\"%f\" r=\"%f\" %s/>\n", xc, yc, r, deco);
+    fprintf(fsvg, " <circle cx=\"%f\" cy=\"%f\" r=\"%f\" %s/>\n", xc, yc, r, deco);
 }
 
 void escreveRetanguloSvg(ArqSvg fsvg, double x, double y, double larg, double alt, char *deco)
 {
-    fprintf(fsvg, "  <rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" %s/>\n", x, y, larg, alt, deco);
+    fprintf(fsvg, " <rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" %s/>\n", x, y, larg, alt, deco);
 }
 
 void escreveLinhaSvg(ArqSvg fsvg, double x1, double y1, double x2, double y2, char *deco)
 {
-    fprintf(fsvg, " <line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" %s", x1, y1, x2, y2, deco);
+    fprintf(fsvg, " <line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" %s/>\n", x1, y1, x2, y2, deco);
 }
 
 void preparaDecoracaoTexto(char **deco, int decoLen, char *fontFamily, char *fontStyle, char *fontWeight, char *fontSize, char *corBorda, char *fontColor, char *textAnchor)
@@ -135,7 +135,7 @@ void preparaDecoracaoTexto(char **deco, int decoLen, char *fontFamily, char *fon
 
 void escreveTextoSvg(ArqSvg fsvg, double x, double y, char *txt, char *decoTxt)
 {
-    fprintf(fsvg, " <text x=\"%f\" y=\"%f\" %s>%s</text>", x, y, decoTxt, txt);
+    fprintf(fsvg, " <text x=\"%f\" y=\"%f\" %s>%s</text>\n", x, y, decoTxt, txt);
 }
 
 void fechaSvg(ArqSvg fsvg)

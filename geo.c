@@ -127,7 +127,6 @@ void CriaRetanguloSvg(ArqSvg fsvg, Item info)
     char *deco = NULL;
     preparaDecoracao(&deco, 0, r->corb, r->corp, NULL, -1, -1, -1);
     escreveRetanguloSvg(fsvg, r->x, r->y, r->larg, r->alt, deco);
-    free(deco);
 }
 
 void CriaCirculoSvg(ArqSvg fsvg, Item info)
@@ -136,22 +135,20 @@ void CriaCirculoSvg(ArqSvg fsvg, Item info)
     char *deco = NULL;
     preparaDecoracao(&deco, 0, c->corb, c->corp, NULL, -1, -1, -1);
     escreveCirculoSvg(fsvg, c->x, c->y, c->raio, deco);
-    free(deco);
 }
 
 void CriaLinhaSvg(ArqSvg fsvg, Item info)
 {
     Linha *l = (Linha *)info;
     char *deco = NULL;
-    preparaDecoracao(&deco, 0, NULL, l->cor, NULL, -1, -1, -1);
+    preparaDecoracao(&deco, 0,l->cor,NULL, NULL, -1, -1, -1);
     escreveLinhaSvg(fsvg, l->x1, l->y1, l->x2, l->y2, deco);
-    free(deco);
 }
 
 void CriaTextoSvg(ArqSvg fsvg, Item info)
 {
     Texto *t = (Texto *)info;
-    char *deco = NULL, *fontWeight, *textAnchor;
+    char *deco = NULL, *fontWeight = NULL, *textAnchor = NULL;
     if (*(t->a) == 'i')
     {
         textAnchor = strdup("start");
@@ -186,5 +183,4 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
     escreveTextoSvg(fsvg, t->x, t->y, t->txto, deco);
     free(fontWeight);
     free(textAnchor);
-    free(deco);
 }

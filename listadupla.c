@@ -105,9 +105,9 @@ Posic insertLst(Lista L, Item info)
             p = ((ListaInfo *)L)->final;
             aux->ant = p;
             p->prox = aux;
-            aux->ID = p->ID++;
+            aux->ID = (p->ID)++;
         }
-        ((ListaInfo *)L)->length++;
+        (((ListaInfo *)L)->length)++;
         ((ListaInfo *)L)->final = aux;
         return aux;
     }
@@ -134,7 +134,7 @@ Item popLst(Lista L)
     }
     Item item = aux->info; 
     free(aux);            
-    lista->length--;       
+    (lista->length)--;       
     return item;          
 }
 
@@ -151,7 +151,7 @@ void removeLst(Lista L, Posic p)
             ((ListaInfo *)L)->inicio = rmv->prox;
             rmv->prox->ant = rmv->ant;
             aux = rmv->prox;
-            aux->ID--;
+            (aux->ID)--;
         }
         else
         {
@@ -163,7 +163,7 @@ void removeLst(Lista L, Posic p)
         rmv->prox->ant = rmv->ant;
         rmv->ant->prox = rmv->prox;
         aux = rmv->prox;
-        aux->ID--;
+        (aux->ID)--;
     }
 
     // Se for o último elemento da lista
@@ -171,7 +171,7 @@ void removeLst(Lista L, Posic p)
     {
         ((ListaInfo *)L)->final = rmv->ant;
     }
-    ((ListaInfo *)L)->length--;
+    (((ListaInfo *)L)->length)--;
     free(rmv);
 
     // Ajeita o ID das próximas
@@ -180,7 +180,7 @@ void removeLst(Lista L, Posic p)
         while (aux->prox != NULL)
         {
             aux = aux->prox;
-            aux->ID--;
+            (aux->ID)--;
         }
     }
 }
@@ -216,14 +216,14 @@ Posic insertBefore(Lista L, Posic p, Item info)
         {
             ((ListaInfo *)L)->inicio = new;
         }
-        ((ListaInfo *)L)->length++;
+        (((ListaInfo *)L)->length)++;
 
         // Ajeita o ID das próximas
-        aux->ID++;
+        (aux->ID)++;
         while (aux->prox != NULL)
         {
             aux = aux->prox;
-            aux->ID++;
+            (aux->ID)++;
         }
         return new;
     }
@@ -254,14 +254,14 @@ Posic insertAfterLst(Lista L, Posic p, Item info)
         {
             ((ListaInfo *)L)->final = new;
         }
-        ((ListaInfo *)L)->length++;
+        (((ListaInfo *)L)->length)++;
 
         // Ajeita o ID das próximas
-        aux->ID++;
+        (aux->ID)++;
         while (aux->prox != NULL)
         {
             aux = aux->prox;
-            aux->ID++;
+            (aux->ID)++;
         }
         return new;
     }
