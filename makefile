@@ -1,9 +1,6 @@
 # Nome do projeto
 PROJETO = ted
 
-# Pasta de saída
-OUTPUT = output/
-
 # Arquivos fonte
 FONTES = learquivo.c arqsvg.c path.c listadupla.c geo.c main.c 
 
@@ -37,5 +34,9 @@ $(OUTPUT)%.o: %.c
 # Regra para limpar os arquivos objeto e o executável
 clean:
 	rm -rf $(OUTPUT) $(PROJETO)
+
+# Regra para executar o programa com o Valgrind
+run:
+	valgrind --leak-check=full $(OUTPUT)$(PROJETO)
 
 .PHONY: all clean
