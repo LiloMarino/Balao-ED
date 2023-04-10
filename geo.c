@@ -113,9 +113,30 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             t->corp = getParametroI(linha, 5);
             t->a = getParametroI(linha, 6);
             t->txto = getParametroDepoisI(linha, 7);
-            t->fFamily = strdup(style->fFamily);
-            t->fWeight = strdup(style->fWeight);
-            t->fSize = strdup(style->fSize);
+            if (style->fFamily != NULL)
+            {
+                t->fFamily = strdup(style->fFamily);
+            }
+            else
+            {
+                t->fFamily = NULL;
+            }
+            if (style->fWeight != NULL)
+            {
+                t->fWeight = strdup(style->fWeight);
+            }
+            else
+            {
+                t->fWeight = NULL;
+            }
+            if (style->fSize != NULL)
+            {
+                t->fSize = strdup(style->fSize);
+            }
+            else
+            {
+                t->fSize = NULL;
+            }
             insertLst(Tex, t);
         }
         else
