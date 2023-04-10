@@ -144,7 +144,7 @@ void removeLst(Lista L, Posic p)
     rmv = (ListaDupla *)p;
 
     // Verifica se é o primeiro elemento da lista
-    if (rmv->ID == 0)
+    if (rmv == ((ListaInfo *)L)->inicio)
     {
         if (rmv->prox != NULL)
         {
@@ -167,7 +167,7 @@ void removeLst(Lista L, Posic p)
     }
 
     // Se for o último elemento da lista
-    if (rmv->ID + 1 == ((ListaInfo *)L)->length)
+    if (rmv == ((ListaInfo *)L)->final)
     {
         ((ListaInfo *)L)->final = rmv->ant;
     }
@@ -313,22 +313,6 @@ Posic getPreviousLst(Lista L, Posic p)
     {
         return ((ListaDupla *)p)->ant;
     }
-}
-
-void PrintLista(Lista L)
-{
-    ListaDupla *p;
-    printf("\n");
-    printf("====== Lista ======\n");
-    for (p = ((ListaInfo *)L)->inicio; p != NULL; p = p->prox)
-        printf("%p ID: %d\n", p->info, p->ID);
-    if (p != NULL)
-    {
-        printf("Inicio: %p ID: %d\n", ((ListaInfo *)L)->inicio->info, ((ListaInfo *)L)->inicio->ID);
-        printf("Fim: %p ID: %d\n", ((ListaInfo *)L)->final->info, ((ListaInfo *)L)->final->ID);
-    }
-    printf("Tamanho: %d\n", ((ListaInfo *)L)->length);
-    printf("\n");
 }
 
 void killLst(Lista L)

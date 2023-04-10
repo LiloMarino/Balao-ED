@@ -93,9 +93,6 @@ indicado por p. Se p for o primeiro elemento da lista, retorna NIL.
 p deve indicar um elemento existente em L. */
 Posic getPreviousLst(Lista L, Posic p);
 
-/* Imprime a lista no terminal mostrando seus endereços e IDs */
-void PrintLista(Lista L);
-
 /** Libera toda memoria alocada pela lista. */
 void killLst(Lista L);
 

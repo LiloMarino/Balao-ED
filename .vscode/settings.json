@@ -40,6 +40,7 @@
         "listadupla.h": "c",
         "stdbool.h": "c",
         "learquivo.h": "c",
-        "geo.h": "c"
+        "geo.h": "c",
+        "qry.h": "c"
     }
 }

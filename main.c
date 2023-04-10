@@ -18,6 +18,7 @@ int main()
 
     InterpretaGeo(A, Cir, Ret, Tex, Lin);
 
+
     Iterador J = createIterador(Ret, false);
 
     while (!isIteratorEmpty(Ret, J))
