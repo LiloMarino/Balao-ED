@@ -2,7 +2,7 @@
 PROJETO = ted
 
 # Arquivos fonte
-FONTES = learquivo.c arqsvg.c path.c listadupla.c geo.c main.c 
+FONTES = learquivo.c arqsvg.c path.c listadupla.c geo_qry.c main.c 
 
 # Pasta de saída
 OUTPUT = output/
@@ -10,6 +10,10 @@ OUTPUT = output/
 # Cria a pasta de saída se ela não existir
 $(shell mkdir -p $(OUTPUT))
 $(shell cp 02-planta-cidade.geo $(OUTPUT))
+$(shell cp foto-dl-gira-atira.qry $(OUTPUT))
+$(shell cp foto-gira-atira.qry $(OUTPUT))
+$(shell cp gira-atira.qry $(OUTPUT))
+$(shell cp sobrevoo.qry $(OUTPUT))
 
 # Arquivos objeto na pasta de saída
 OBJETOS = $(addprefix $(OUTPUT), $(FONTES:.c=.o))

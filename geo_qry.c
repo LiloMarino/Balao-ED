@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "geo.h"
+#include "qry.h"
 #include "arqsvg.h"
 #include "leArquivo.h"
 #include "listadupla.h"
@@ -45,6 +46,10 @@ typedef struct StRetangulo Retangulo;
 typedef struct StLinha Linha;
 typedef struct StTxtStyle EstiloTxt;
 typedef struct StTexto Texto;
+
+/*========================================================================================================== *
+ * Funções GEO                                                                                               *
+ *========================================================================================================== */
 
 ArqGeo abreLeituraGeo(char *fn)
 {
@@ -227,4 +232,131 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
     escreveTextoSvg(fsvg, t->x, t->y, t->txto, deco);
     free(fontWeight);
     free(textAnchor);
+}
+
+/*========================================================================================================== *
+ * Funções QRY                                                                                               *
+ *========================================================================================================== */
+
+ArqQry abreLeituraQry(char *fn)
+{
+    ArqQry fqry;
+    fqry = fopen(fn, "r");
+    return fqry;
+}
+
+void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
+{
+    char comando[3],forma;
+    int ID;
+    char *linha = NULL;
+    while (leLinha(fqry, &linha))
+    {
+        sscanf(linha, "%s", comando);
+        if ((strcmp(comando, "b?") != 0) || (strcmp(comando, "c?") != 0))
+        {
+            sscanf(linha, "%s %d", comando, &ID);
+            Posic p = ProcuraID(ID,Circ,Ret,Tex,Lin,forma);
+            if (strcmp(comando, "mv") == 0)
+            {
+            }
+            else if (strcmp(comando, "g") == 0)
+            {
+            }
+            else if (strcmp(comando, "ff") == 0)
+            {
+            }
+            else if (strcmp(comando, "tf") == 0)
+            {
+            }
+            else if (strcmp(comando, "df") == 0)
+            {
+            }
+            else if (strcmp(comando, "d") == 0)
+            {
+            }
+            else
+            {
+                printf("Comando desconhecido: %s\n", comando);
+            }
+        }
+        else
+        {
+            if (strcmp(comando, "b?") == 0)
+            {
+            }
+            else if (strcmp(comando, "c?") == 0)
+            {
+            }
+            else
+            {
+                printf("Comando desconhecido: %s\n", comando);
+            }
+        }
+    }
+}
+
+void fechaQry(ArqQry fqry)
+{
+    fclose(fqry);
+}
+
+Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
+{
+    Iterador T = createIterador(Tex, false);
+    Iterador C = createIterador(Circ, false);
+    Iterador R = createIterador(Ret, false);
+    Iterador L = createIterador(Lin, false);
+    while (!isIteratorEmpty(Tex, T))
+    {
+        Texto *t = (Texto *)getIteratorNext(Tex, T);
+        if (t->ID == ID)
+        {
+            killIterator(T);
+            killIterator(C);
+            killIterator(R);
+            killIterator(L);
+            forma = 'T';
+            return t;
+        }
+    }
+    while (!isIteratorEmpty(Circ, C))
+    {
+        Circulo *c = (Circulo *)getIteratorNext(Circ, C);
+        if (c->ID == ID)
+        {
+            killIterator(T);
+            killIterator(C);
+            killIterator(R);
+            killIterator(L);
+            forma = 'C';
+            return c;
+        }
+    }
+    while (!isIteratorEmpty(Ret, R))
+    {
+        Retangulo *r = (Retangulo *)getIteratorNext(Ret, R);
+        if (r->ID == ID)
+        {
+            killIterator(T);
+            killIterator(C);
+            killIterator(R);
+            killIterator(L);
+            forma = 'R'
+            return r;
+        }
+    }
+    while (!isIteratorEmpty(Lin, L))
+    {
+        Linha *l = (Linha *)getIteratorNext(Lin, L);
+        if (l->ID == ID)
+        {
+            killIterator(T);
+            killIterator(C);
+            killIterator(R);
+            killIterator(L);
+            forma = 'L'
+            return l;
+        }
+    }
 }

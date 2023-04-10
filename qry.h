@@ -53,4 +53,7 @@ a rotação corrente,quantos disparos já efetuou e os
 identificadores dos elementos que acertou até o momento.*/
 void ReportCaca();
 
+/*Procura o objeto de identificação ID nas 4 listas e retorna a sua posição na lista e seu tipo*/
+Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma);
+
 #endif

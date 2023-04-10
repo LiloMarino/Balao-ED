@@ -41,6 +41,7 @@
         "stdbool.h": "c",
         "learquivo.h": "c",
         "geo.h": "c",
-        "qry.h": "c"
+        "qry.h": "c",
+        "arqsvg.h": "c"
     }
 }
