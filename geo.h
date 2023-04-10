@@ -7,7 +7,6 @@
 #include "listadupla.h"
 #include "arqsvg.h"
 
-typedef void *Lista;
 typedef void *ArqGeo;
 
 /*
@@ -16,7 +15,7 @@ typedef void *ArqGeo;
  */
 ArqGeo abreLeituraGeo(char *fn);
 
-/*A função recebe o nome de um arquivo .geo interpreta e acrescenta os elementos as listas*/
+/*A função recebe um arquivo .geo interpreta e acrescenta os elementos as listas*/
 void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin);
 
 /* Fecha o arquivo fgeo. */
