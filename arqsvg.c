@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef void *ArqSvg;
-
 ArqSvg abreEscritaSvg(char *fn)
 {
     ArqSvg fsvg = fopen(fn, "w");

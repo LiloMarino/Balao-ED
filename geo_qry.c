@@ -247,7 +247,7 @@ ArqQry abreLeituraQry(char *fn)
 
 void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 {
-    char comando[3],forma;
+    char comando[3], forma;
     int ID;
     char *linha = NULL;
     while (leLinha(fqry, &linha))
@@ -256,10 +256,9 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
         if ((strcmp(comando, "b?") != 0) || (strcmp(comando, "c?") != 0))
         {
             sscanf(linha, "%s %d", comando, &ID);
-            Posic p = ProcuraID(ID,Circ,Ret,Tex,Lin,forma);
+            Posic p = ProcuraID(ID, Circ, Ret, Tex, Lin, forma);
             if (strcmp(comando, "mv") == 0)
             {
-                
             }
             else if (strcmp(comando, "g") == 0)
             {
@@ -300,6 +299,38 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 void fechaQry(ArqQry fqry)
 {
     fclose(fqry);
+}
+
+void Move(Posic P, float dx, float dy, char forma)
+{
+    if (forma == 'T')
+    {
+        Texto *t = (Texto *)P;
+        t->x += dx;
+        t->y += dy;
+    }
+    else if (forma == 'C')
+    {
+        Circulo *c = (Circulo *)P;
+        c->x += dx;
+        c->y += dy;
+    }
+    else if (forma == 'R')
+    {
+        Retangulo *r = (Retangulo *)P;
+        r->x += dx;
+        r->y += dy;
+    }
+    else if (forma == 'L')
+    {
+        Linha *l = (Linha *)P;
+        l->x += dx;
+        l->y += dy;
+    }
+    else
+    {
+        return;
+    }
 }
 
 Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
