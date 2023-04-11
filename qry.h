@@ -25,7 +25,7 @@ void fechaQry(ArqQry fqry);
 void Move(Posic P, float dx, float dy, char forma[], FILE* log);
 
 /*Rotaciona figura texto de identificador i em grs graus*/
-void Rotaciona(Posic P, float grs);
+void Rotaciona(Posic P, float grs, FILE* log);
 
 /*Define os parâmetros de foco da foto (raio, produndidade, altura) do balão ID*/
 void FocoDaFoto(Posic P, float raio, float prof, float alt);

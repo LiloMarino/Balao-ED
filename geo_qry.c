@@ -272,8 +272,11 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             else if (strcmp(comando, "g") == 0)
             {
                 float grs;
+                char prefix[] = "rotaciona";
+                log = CriaLog(prefix);
                 sscanf(linha, "%s %d %f", comando, &ID, &grs);
-                Rotaciona(p,grs);
+                Rotaciona(p,grs,log);
+                fclose(log);
             }
             else if (strcmp(comando, "ff") == 0)
             {
@@ -372,11 +375,28 @@ void Move(Posic P, float dx, float dy, char forma[], FILE* log)
     }
 }
 
-void Rotaciona(Posic P, float grs)
+void Rotaciona(Posic P, float grs, FILE* log)
 {
     char rotacao[30];
+    float rot;
     Texto *t = (Texto *)P;
-    sprintf(rotacao,"%f %f %f",grs,t->x,t->y);
+    fprintf(log, "Rotacionou:\n");
+    fprintf(log, "ID: %d\n", t->ID);
+    fprintf(log, "De:\n");
+    if(t->rotacao != NULL)
+    {
+        char *token = strtok(t->rotacao, " ");
+        rot = atof(token);  
+    }
+    else
+    {
+        rot = 0;
+    }
+    fprintf(log, "Graus: %f°\n", rot);
+    rot += grs;
+    fprintf(log, "Para:\n");
+    fprintf(log, "Graus: %f°\n", rot);
+    sprintf(rotacao,"%f %f %f",rot,t->x,t->y);
     t->rotacao = strdup(rotacao);
 }
 
