@@ -6,6 +6,7 @@
 #include "arqsvg.h"
 #include "learquivo.h"
 #include "listadupla.h"
+#include "fila_estatica.h"
 
 /*========================================================================================================== *
  * Funções GEO                                                                                               *
@@ -51,7 +52,6 @@ typedef struct StRetangulo Retangulo;
 typedef struct StLinha Linha;
 typedef struct StTxtStyle EstiloTxt;
 typedef struct StTexto Texto;
-
 
 ArqGeo abreLeituraGeo(char *fn)
 {
@@ -231,7 +231,7 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
             fontWeight = strdup("normal");
         }
     }
-    preparaDecoracaoTexto(&deco, 0, t->fFamily, NULL, fontWeight, t->fSize, t->corb, t->corp, textAnchor,t->rotacao);
+    preparaDecoracaoTexto(&deco, 0, t->fFamily, NULL, fontWeight, t->fSize, t->corb, t->corp, textAnchor, t->rotacao);
     escreveTextoSvg(fsvg, t->x, t->y, t->txto, deco);
     free(fontWeight);
     free(textAnchor);
@@ -245,6 +245,7 @@ struct StBalao
 {
     int ID;
     float raio, prof, alt;
+    Fila camera[10]; // Balao tem 10 cameras com capacidade de 15 fotos cada
 };
 
 typedef struct StBalao Balao;
@@ -271,41 +272,48 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
         {
             sscanf(linha, "%s %d", comando, &ID);
             Posic p = ProcuraID(ID, Circ, Ret, Tex, Lin, forma);
-            if (strcmp(comando, "mv") == 0)
+            if (p != NULL)
             {
-                float dx, dy;
-                char prefix[] = "move";
-                log = CriaLog(prefix);
-                sscanf(linha, "%s %d %f %f", comando, &ID, &dx, &dy);
-                Move(p, dx, dy, forma,log);
-                fclose(log);
-            }
-            else if (strcmp(comando, "g") == 0)
-            {
-                float grs;
-                char prefix[] = "rotaciona";
-                log = CriaLog(prefix);
-                sscanf(linha, "%s %d %f", comando, &ID, &grs);
-                Rotaciona(p,grs,log);
-                fclose(log);
-            }
-            else if (strcmp(comando, "ff") == 0)
-            {
-                float prof,raio,alt;
-                FocoDaFoto(Baloes,p,ID,raio,prof,alt);
-            }
-            else if (strcmp(comando, "tf") == 0)
-            {
-            }
-            else if (strcmp(comando, "df") == 0)
-            {
-            }
-            else if (strcmp(comando, "d") == 0)
-            {
+                if (strcmp(comando, "mv") == 0)
+                {
+                    float dx, dy;
+                    char prefix[] = "move";
+                    log = CriaLog(prefix);
+                    sscanf(linha, "%s %d %f %f", comando, &ID, &dx, &dy);
+                    Move(p, dx, dy, forma, log);
+                    fclose(log);
+                }
+                else if (strcmp(comando, "g") == 0)
+                {
+                    float grs;
+                    char prefix[] = "rotaciona";
+                    log = CriaLog(prefix);
+                    sscanf(linha, "%s %d %f", comando, &ID, &grs);
+                    Rotaciona(p, grs, log);
+                    fclose(log);
+                }
+                else if (strcmp(comando, "ff") == 0)
+                {
+                    float prof, raio, alt;
+                    FocoDaFoto(Baloes, p, ID, raio, prof, alt);
+                }
+                else if (strcmp(comando, "tf") == 0)
+                {
+                }
+                else if (strcmp(comando, "df") == 0)
+                {
+                }
+                else if (strcmp(comando, "d") == 0)
+                {
+                }
+                else
+                {
+                    printf("Comando desconhecido: %s\n", comando);
+                }
             }
             else
             {
-                printf("Comando desconhecido: %s\n", comando);
+                printf("ID não encontrado: %d\n", ID);
             }
         }
         else
@@ -329,7 +337,7 @@ void fechaQry(ArqQry fqry)
     fclose(fqry);
 }
 
-void Move(Posic P, float dx, float dy, char forma[], FILE* log)
+void Move(Posic P, float dx, float dy, char forma[], FILE *log)
 {
     fprintf(log, "Moveu:\n");
     if (forma[0] == 'T')
@@ -388,7 +396,7 @@ void Move(Posic P, float dx, float dy, char forma[], FILE* log)
     }
 }
 
-void Rotaciona(Posic P, float grs, FILE* log)
+void Rotaciona(Posic P, float grs, FILE *log)
 {
     char rotacao[30];
     float rot;
@@ -396,10 +404,10 @@ void Rotaciona(Posic P, float grs, FILE* log)
     fprintf(log, "Rotacionou:\n");
     fprintf(log, "ID: %d\n", t->ID);
     fprintf(log, "De:\n");
-    if(t->rotacao != NULL)
+    if (t->rotacao != NULL)
     {
         char *token = strtok(t->rotacao, " ");
-        rot = atof(token);  
+        rot = atof(token);
     }
     else
     {
@@ -409,17 +417,17 @@ void Rotaciona(Posic P, float grs, FILE* log)
     rot += grs;
     fprintf(log, "Para:\n");
     fprintf(log, "Graus: %f°\n", rot);
-    sprintf(rotacao,"%f %f %f",rot,t->x,t->y);
+    sprintf(rotacao, "%f %f %f", rot, t->x, t->y);
     t->rotacao = strdup(rotacao);
 }
 
 void FocoDaFoto(Lista Bal, int ID, float raio, float prof, float alt)
 {
-    //Procura o balão na lista Bal
+    // Procura o balão na lista Bal
     Iterador B = createIterador(Bal, false);
-    while (!isIteratorEmpty(Bal,B))
+    while (!isIteratorEmpty(Bal, B))
     {
-        Balao *b = (Balao *)getIteratorNext(Bal,B);
+        Balao *b = (Balao *)getIteratorNext(Bal, B);
         if (b->ID == ID)
         {
             b->alt = alt;
@@ -428,13 +436,42 @@ void FocoDaFoto(Lista Bal, int ID, float raio, float prof, float alt)
             return;
         }
     }
-    //Não existe o balão na lista
+
+    // O balão ainda não foi criado na lista
     Balao *b = (Balao *)malloc(sizeof(Balao));
     b->ID = ID;
     b->alt = alt;
     b->prof = prof;
     b->raio = raio;
-    insertLst(Bal,b);
+    for (int i; i < 10, i++)
+    {
+        b->fotos[i] = criarFila(15);
+    }
+    insertLst(Bal, b);
+}
+
+void TiraFoto(Lista Bal, int ID)
+{
+    // Procura o balão na lista Bal
+    Iterador B = createIterador(Bal, false);
+    while (!isIteratorEmpty(Bal, B))
+    {
+        Balao *b = (Balao *)getIteratorNext(Bal, B);
+        if (b->ID == ID)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (inserirFila(b->fotos[i],ProcessaFoto()))
+                { 
+                    // Foto criada com sucesso
+                    return;
+                }
+            }
+            // Limite de fotos atingido
+            return;
+        }
+    }
+    // Não existe o balão na lista então não tem foto
     return;
 }
 

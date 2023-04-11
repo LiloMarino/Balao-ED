@@ -6,6 +6,7 @@
  */
 #include "arqsvg.h"
 #include "listadupla.h"
+#include "fila_estatica.h"
 
 typedef void *ArqQry;
 
@@ -31,7 +32,7 @@ void Rotaciona(Posic P, float grs, FILE* log);
 void FocoDaFoto(Lista L, int ID, float raio, float prof, float alt);
 
 /*Balão ID tira foto e coloca no final da lista l (0..9)*/
-void TiraFoto(Posic P, Lista L);
+void TiraFoto(Lista Bal, int ID);
 
 /*Envia fotos da lista L do balão dado pelo ID para a base.
 Base categoriza cada foto*/
@@ -58,5 +59,8 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[
 
 /*Elabora os logs dos arquivos em uma pasta log*/
 FILE* CriaLog(char prefix[]);
+
+/* Verifica todos os itens dentro do range da foto e cria uma lista contendo eles*/
+Lista ProcessaFoto()
 
 #endif
