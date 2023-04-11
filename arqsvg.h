@@ -104,7 +104,7 @@ acima.
 void preparaDecoracaoTexto(char **deco, int decoLen,
                            char *fontFamily, char *fontStyle,
                            char *fontWeight, char *fontSize, char *corBorda,
-                           char *fontColor, char *textAnchor);
+                           char *fontColor, char *textAnchor, char *rotacao);
 
 /*
   Insere no arquivo svg o texto txt na coordenada (x,y).

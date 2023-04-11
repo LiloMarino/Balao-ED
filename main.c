@@ -7,11 +7,14 @@
 #include "arqsvg.h"
 #include "listadupla.h"
 
-void OperaSVG(int n, Lista Circ, Lista Ret, Lista Tex, Lista Lin);
+void OperaSVG(int n[], Lista Circ, Lista Ret, Lista Tex, Lista Lin);
 
 int main()
 {
-    int n = 0;
+    int n[1];
+    n[0] = 0;
+    
+    ArqQry B;
 
     Lista Cir = createLst(-1);
     Lista Ret = createLst(-1);
@@ -23,7 +26,7 @@ int main()
     OperaSVG(n, Cir, Ret, Tex, Lin);
     fechaGeo(A);
 
-    ArqQry B = abreLeituraQry("sobrevoo.qry");
+    B = abreLeituraQry("sobrevoo.qry");
     InterpretaQry(B,Cir,Ret,Tex,Lin);
     OperaSVG(n, Cir, Ret, Tex, Lin);
     fechaQry(B);
@@ -49,11 +52,11 @@ int main()
     killLst(Tex);
 }
 
-void OperaSVG(int n, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
+void OperaSVG(int n[], Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 {
     char nomearq[30];
-    sprintf(nomearq, "teste-%d.svg", n);
-    n++;
+    sprintf(nomearq, "teste-%d.svg", n[0]);
+    n[0]++;
 
     ArqSvg B = abreEscritaSvg(nomearq);
 

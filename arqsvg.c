@@ -6,7 +6,8 @@
 ArqSvg abreEscritaSvg(char *fn)
 {
     ArqSvg fsvg = fopen(fn, "w");
-    if(fsvg == NULL) {
+    if (fsvg == NULL)
+    {
         return NULL;
     }
     fprintf(fsvg, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%%\" height=\"100%%\" viewBox=\"-100 -100 500 500\">\n");
@@ -60,7 +61,7 @@ void preparaDecoracao(char **deco, int decoLen, char *corBorda, char *corPreench
         strcat(decoracao, "\" ");
     }
     decoLen = strlen(decoracao);
-    *deco = malloc((decoLen+1) * sizeof(char));
+    *deco = malloc((decoLen + 1) * sizeof(char));
     strcpy(*deco, decoracao);
 }
 
@@ -79,7 +80,7 @@ void escreveLinhaSvg(ArqSvg fsvg, double x1, double y1, double x2, double y2, ch
     fprintf(fsvg, " <line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" %s/>\n", x1, y1, x2, y2, deco);
 }
 
-void preparaDecoracaoTexto(char **deco, int decoLen, char *fontFamily, char *fontStyle, char *fontWeight, char *fontSize, char *corBorda, char *fontColor, char *textAnchor)
+void preparaDecoracaoTexto(char **deco, int decoLen, char *fontFamily, char *fontStyle, char *fontWeight, char *fontSize, char *corBorda, char *fontColor, char *textAnchor, char *rotacao)
 {
     char decoracao[200];
     decoracao[0] = '\0';
@@ -125,8 +126,14 @@ void preparaDecoracaoTexto(char **deco, int decoLen, char *fontFamily, char *fon
         strcat(decoracao, textAnchor);
         strcat(decoracao, "\" ");
     }
+    if (rotacao != NULL)
+    {
+        strcat(decoracao, "transform =\"rotate(");
+        strcat(decoracao, rotacao);
+        strcat(decoracao, ")\"");
+    }
     decoLen = strlen(decoracao);
-    *deco = malloc((decoLen+1) * sizeof(char));
+    *deco = malloc((decoLen + 1) * sizeof(char));
     strcpy(*deco, decoracao);
 }
 

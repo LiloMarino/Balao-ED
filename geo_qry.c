@@ -39,6 +39,7 @@ struct StTexto
     double x, y;
     char *corb, *corp, *txto, *fFamily, *fWeight, *fSize;
     char *a;
+    char *rotacao;
 };
 
 typedef struct StCirculo Circulo;
@@ -118,6 +119,7 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             t->corp = getParametroI(linha, 5);
             t->a = getParametroI(linha, 6);
             t->txto = getParametroDepoisI(linha, 7);
+            t->rotacao = NULL;
             if (style->fFamily != NULL)
             {
                 t->fFamily = strdup(style->fFamily);
@@ -228,7 +230,7 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
             fontWeight = strdup("normal");
         }
     }
-    preparaDecoracaoTexto(&deco, 0, t->fFamily, NULL, fontWeight, t->fSize, t->corb, t->corp, textAnchor);
+    preparaDecoracaoTexto(&deco, 0, t->fFamily, NULL, fontWeight, t->fSize, t->corb, t->corp, textAnchor,t->rotacao);
     escreveTextoSvg(fsvg, t->x, t->y, t->txto, deco);
     free(fontWeight);
     free(textAnchor);
@@ -265,6 +267,9 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             }
             else if (strcmp(comando, "g") == 0)
             {
+                float grs;
+                sscanf(linha, "%s %d %f", comando, &ID, &grs);
+                Rotaciona(p,grs);
             }
             else if (strcmp(comando, "ff") == 0)
             {
@@ -308,54 +313,55 @@ void Move(Posic P, float dx, float dy, char forma[])
 {
     char prefix[] = "move";
     FILE *log = CriaLog(prefix);
+    fprintf(log, "Moveu\n");
     if (forma[0] == 'T')
     {
         Texto *t = (Texto *)P;
         fprintf(log, "Texto\n");
-        fprintf(log, "%d\n", t->ID);
-        fprintf(log, "Antes\n");
+        fprintf(log, "ID: %d\n", t->ID);
+        fprintf(log, "De\n");
         fprintf(log, "x:%f y:%f\n", t->x, t->y);
         t->x += dx;
         t->y += dy;
-        fprintf(log, "Depois\n");
+        fprintf(log, "Para\n");
         fprintf(log, "x:%f y:%f\n", t->x, t->y);
     }
     else if (forma[0] == 'C')
     {
         Circulo *c = (Circulo *)P;
         fprintf(log, "Circulo\n");
-        fprintf(log, "%d\n", c->ID);
-        fprintf(log, "Antes\n");
+        fprintf(log, "ID: %d\n", c->ID);
+        fprintf(log, "De\n");
         fprintf(log, "x:%f y:%f\n", c->x, c->y);
         c->x += dx;
         c->y += dy;
-        fprintf(log, "Depois\n");
+        fprintf(log, "Para\n");
         fprintf(log, "x:%f y:%f\n", c->x, c->y);
     }
     else if (forma[0] == 'R')
     {
         Retangulo *r = (Retangulo *)P;
         fprintf(log, "Retangulo\n");
-        fprintf(log, "%d\n", r->ID);
-        fprintf(log, "Antes\n");
+        fprintf(log, "ID: %d\n", r->ID);
+        fprintf(log, "De\n");
         fprintf(log, "x:%f y:%f\n", r->x, r->y);
         r->x += dx;
         r->y += dy;
-        fprintf(log, "Depois\n");
+        fprintf(log, "Para\n");
         fprintf(log, "x:%f y:%f\n", r->x, r->y);
     }
     else if (forma[0] == 'L')
     {
         Linha *l = (Linha *)P;
         fprintf(log, "Linha\n");
-        fprintf(log, "%d\n", l->ID);
-        fprintf(log, "Antes\n");
+        fprintf(log, "ID:%d\n", l->ID);
+        fprintf(log, "De\n");
         fprintf(log, "x1:%f y1:%f x2:%f y2:%f\n", l->x1, l->y1, l->x2, l->y2);
         l->x1 += dx;
         l->y1 += dy;
         l->x2 += dx;
         l->y2 += dy;
-        fprintf(log, "Depois\n");
+        fprintf(log, "Para\n");
         fprintf(log, "x1:%f y1:%f x2:%f y2:%f\n", l->x1, l->y1, l->x2, l->y2);
     }
     else
@@ -363,6 +369,14 @@ void Move(Posic P, float dx, float dy, char forma[])
         return;
     }
     fclose(log);
+}
+
+void Rotaciona(Posic P, float grs)
+{
+    char rotacao[30];
+    Texto *t = (Texto *)P;
+    sprintf(rotacao,"%f %f %f",grs,t->x,t->y);
+    t->rotacao = strdup(rotacao);
 }
 
 Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[])

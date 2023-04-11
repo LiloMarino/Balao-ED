@@ -24,7 +24,7 @@ OBJETOS = $(addprefix $(OUTPUT), $(FONTES:.c=.o))
 # Compilador e opções de compilação
 CC = gcc
 CFLAGS = -Wall -Wextra -pedantic-errors -g -O0 -fstack-protector-all 
-
+# -std=c99
 # Regra padrão
 all: $(OUTPUT)$(PROJETO)
 
