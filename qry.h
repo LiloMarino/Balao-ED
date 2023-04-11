@@ -28,7 +28,7 @@ void Move(Posic P, float dx, float dy, char forma[], FILE* log);
 void Rotaciona(Posic P, float grs, FILE* log);
 
 /*Define os parâmetros de foco da foto (raio, produndidade, altura) do balão ID*/
-void FocoDaFoto(Posic P, float raio, float prof, float alt);
+void FocoDaFoto(Lista L, int ID, float raio, float prof, float alt);
 
 /*Balão ID tira foto e coloca no final da lista l (0..9)*/
 void TiraFoto(Posic P, Lista L);

@@ -7,6 +7,10 @@
 #include "learquivo.h"
 #include "listadupla.h"
 
+/*========================================================================================================== *
+ * Funções GEO                                                                                               *
+ *========================================================================================================== */
+
 struct StCirculo
 {
     int ID;
@@ -48,9 +52,6 @@ typedef struct StLinha Linha;
 typedef struct StTxtStyle EstiloTxt;
 typedef struct StTexto Texto;
 
-/*========================================================================================================== *
- * Funções GEO                                                                                               *
- *========================================================================================================== */
 
 ArqGeo abreLeituraGeo(char *fn)
 {
@@ -240,6 +241,14 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
  * Funções QRY                                                                                               *
  *========================================================================================================== */
 
+struct StBalao
+{
+    int ID;
+    float raio, prof, alt;
+};
+
+typedef struct StBalao Balao;
+
 ArqQry abreLeituraQry(char *fn)
 {
     ArqQry fqry;
@@ -253,10 +262,12 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
     int ID;
     char *linha = NULL;
     FILE *log;
+    Lista Baloes = createLst(-1);
+
     while (leLinha(fqry, &linha))
     {
         sscanf(linha, "%s", comando);
-        if ((strcmp(comando, "b?") != 0) || (strcmp(comando, "c?") != 0))
+        if ((strcmp(comando, "b?") != 0) && (strcmp(comando, "c?") != 0))
         {
             sscanf(linha, "%s %d", comando, &ID);
             Posic p = ProcuraID(ID, Circ, Ret, Tex, Lin, forma);
@@ -280,6 +291,8 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             }
             else if (strcmp(comando, "ff") == 0)
             {
+                float prof,raio,alt;
+                FocoDaFoto(Baloes,p,ID,raio,prof,alt);
             }
             else if (strcmp(comando, "tf") == 0)
             {
@@ -398,6 +411,31 @@ void Rotaciona(Posic P, float grs, FILE* log)
     fprintf(log, "Graus: %f°\n", rot);
     sprintf(rotacao,"%f %f %f",rot,t->x,t->y);
     t->rotacao = strdup(rotacao);
+}
+
+void FocoDaFoto(Lista Bal, int ID, float raio, float prof, float alt)
+{
+    //Procura o balão na lista Bal
+    Iterador B = createIterador(Bal, false);
+    while (!isIteratorEmpty(Bal,B))
+    {
+        Balao *b = (Balao *)getIteratorNext(Bal,B);
+        if (b->ID == ID)
+        {
+            b->alt = alt;
+            b->prof = prof;
+            b->raio = raio;
+            return;
+        }
+    }
+    //Não existe o balão na lista
+    Balao *b = (Balao *)malloc(sizeof(Balao));
+    b->ID = ID;
+    b->alt = alt;
+    b->prof = prof;
+    b->raio = raio;
+    insertLst(Bal,b);
+    return;
 }
 
 Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[])
