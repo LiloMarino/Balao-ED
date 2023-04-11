@@ -1,7 +1,7 @@
 #include "fila_estatica.h"
 #include <stdlib.h>
 
-struct FilaEstatica
+struct StFilaEstatica
 {
     Item *elementos;
     int capacidade;
@@ -10,9 +10,11 @@ struct FilaEstatica
     int tamanho;
 };
 
+typedef struct StFilaEstatica FilaEstatica;
+
 Fila criarFila(int capacidade)
 {
-    Fila fila = malloc(sizeof(struct FilaEstatica));
+    Fila fila = malloc(sizeof(FilaEstatica));
     fila->elementos = malloc(capacidade * sizeof(Item));
     fila->capacidade = capacidade;
     fila->inicio = 0;
