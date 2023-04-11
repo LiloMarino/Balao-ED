@@ -252,6 +252,7 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
     char comando[2], forma[1];
     int ID;
     char *linha = NULL;
+    FILE *log;
     while (leLinha(fqry, &linha))
     {
         sscanf(linha, "%s", comando);
@@ -262,8 +263,11 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             if (strcmp(comando, "mv") == 0)
             {
                 float dx, dy;
+                char prefix[] = "move";
+                log = CriaLog(prefix);
                 sscanf(linha, "%s %d %f %f", comando, &ID, &dx, &dy);
-                Move(p, dx, dy, forma);
+                Move(p, dx, dy, forma,log);
+                fclose(log);
             }
             else if (strcmp(comando, "g") == 0)
             {
@@ -309,11 +313,9 @@ void fechaQry(ArqQry fqry)
     fclose(fqry);
 }
 
-void Move(Posic P, float dx, float dy, char forma[])
+void Move(Posic P, float dx, float dy, char forma[], FILE* log)
 {
-    char prefix[] = "move";
-    FILE *log = CriaLog(prefix);
-    fprintf(log, "Moveu\n");
+    fprintf(log, "Moveu:\n");
     if (forma[0] == 'T')
     {
         Texto *t = (Texto *)P;
@@ -368,7 +370,6 @@ void Move(Posic P, float dx, float dy, char forma[])
     {
         return;
     }
-    fclose(log);
 }
 
 void Rotaciona(Posic P, float grs)
@@ -437,6 +438,7 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[
             return l;
         }
     }
+    return NULL;
 }
 
 FILE *CriaLog(char prefix[])

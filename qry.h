@@ -22,7 +22,7 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin);
 void fechaQry(ArqQry fqry);
 
 /*Move figura/texto de identificador i de dx (no eixo x) e dy (no eixo y)*/
-void Move(Posic P, float dx, float dy, char forma[]);
+void Move(Posic P, float dx, float dy, char forma[], FILE* log);
 
 /*Rotaciona figura texto de identificador i em grs graus*/
 void Rotaciona(Posic P, float grs);
