@@ -7,9 +7,11 @@ FONTES = learquivo.c arqsvg.c path.c listadupla.c geo_qry.c main.c
 
 # Pasta de saída
 OUTPUT = output/
+LOGS = output/logs/
 
 # Cria a pasta de saída se ela não existir
 $(shell mkdir -p $(OUTPUT))
+$(shell mkdir -p $(LOGS))
 $(shell cp 02-planta-cidade.geo $(OUTPUT))
 $(shell cp foto-dl-gira-atira.qry $(OUTPUT))
 $(shell cp foto-gira-atira.qry $(OUTPUT))

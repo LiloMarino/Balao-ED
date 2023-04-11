@@ -56,4 +56,7 @@ void ReportCaca();
 /*Procura o objeto de identificação ID nas 4 listas e retorna a sua posição na lista e seu tipo*/
 Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma);
 
+/*Elabora os logs dos arquivos em uma pasta log*/
+FILE* CriaLog(char prefix[]);
+
 #endif

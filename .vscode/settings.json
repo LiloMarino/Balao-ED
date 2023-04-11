@@ -42,6 +42,7 @@
         "learquivo.h": "c",
         "geo.h": "c",
         "qry.h": "c",
-        "arqsvg.h": "c"
+        "arqsvg.h": "c",
+        "stat.h": "c"
     }
 }

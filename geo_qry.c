@@ -303,8 +303,11 @@ void fechaQry(ArqQry fqry)
 
 void Move(Posic P, float dx, float dy, char forma)
 {
+    char prefix[] = "move";
+    FILE* log = CriaLog(prefix);
     if (forma == 'T')
     {
+        fprintf(log, "Texto %f %f\n", dx, dy);
         Texto *t = (Texto *)P;
         t->x += dx;
         t->y += dy;
@@ -324,8 +327,10 @@ void Move(Posic P, float dx, float dy, char forma)
     else if (forma == 'L')
     {
         Linha *l = (Linha *)P;
-        l->x += dx;
-        l->y += dy;
+        l->x1 += dx;
+        l->y1 += dy;
+        l->x2 += dx;
+        l->y2 += dy;
     }
     else
     {
@@ -333,7 +338,8 @@ void Move(Posic P, float dx, float dy, char forma)
     }
 }
 
-Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
+
+Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma) 
 {
     Iterador T = createIterador(Tex, false);
     Iterador C = createIterador(Circ, false);
@@ -391,4 +397,27 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
             return l;
         }
     }
+}
+
+FILE* CriaLog(char prefix[])
+{
+    char nomearq[50];
+    int n = 1;
+    sprintf(nomearq, "logs/%s-log%d.txt", prefix, n);
+
+    // Verifica se o arquivo já existe
+    while(fopen(nomearq,"r") != NULL) 
+    {
+        n++;
+        sprintf(nomearq, "logs/%s-log%d.txt", prefix, n);
+    }
+
+    //Cria o arquivo com o nome gerado
+    FILE* arq = fopen(nomearq, "w"); 
+    if(arq == NULL) {
+        printf("Erro ao criar arquivo de log!\n");
+        exit(1);
+    }
+
+    return arq;
 }
