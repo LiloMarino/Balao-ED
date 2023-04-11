@@ -4,7 +4,7 @@
 #include "geo.h"
 #include "qry.h"
 #include "arqsvg.h"
-#include "leArquivo.h"
+#include "learquivo.h"
 #include "listadupla.h"
 
 struct StCirculo
@@ -60,7 +60,7 @@ ArqGeo abreLeituraGeo(char *fn)
 
 void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 {
-    char comando[3];
+    char comando[2];
     char *linha = NULL;
     EstiloTxt *style = malloc(sizeof(EstiloTxt));
     style->fFamily = strdup("arial");
@@ -247,7 +247,7 @@ ArqQry abreLeituraQry(char *fn)
 
 void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 {
-    char comando[3], forma;
+    char comando[2], forma[1];
     int ID;
     char *linha = NULL;
     while (leLinha(fqry, &linha))
@@ -259,6 +259,9 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             Posic p = ProcuraID(ID, Circ, Ret, Tex, Lin, forma);
             if (strcmp(comando, "mv") == 0)
             {
+                float dx, dy;
+                sscanf(linha, "%s %d %f %f", comando, &ID, &dx, &dy);
+                Move(p, dx, dy, forma);
             }
             else if (strcmp(comando, "g") == 0)
             {
@@ -301,45 +304,68 @@ void fechaQry(ArqQry fqry)
     fclose(fqry);
 }
 
-void Move(Posic P, float dx, float dy, char forma)
+void Move(Posic P, float dx, float dy, char forma[])
 {
     char prefix[] = "move";
-    FILE* log = CriaLog(prefix);
-    if (forma == 'T')
+    FILE *log = CriaLog(prefix);
+    if (forma[0] == 'T')
     {
-        fprintf(log, "Texto %f %f\n", dx, dy);
         Texto *t = (Texto *)P;
+        fprintf(log, "Texto\n");
+        fprintf(log, "%d\n", t->ID);
+        fprintf(log, "Antes\n");
+        fprintf(log, "x:%f y:%f\n", t->x, t->y);
         t->x += dx;
         t->y += dy;
+        fprintf(log, "Depois\n");
+        fprintf(log, "x:%f y:%f\n", t->x, t->y);
     }
-    else if (forma == 'C')
+    else if (forma[0] == 'C')
     {
         Circulo *c = (Circulo *)P;
+        fprintf(log, "Circulo\n");
+        fprintf(log, "%d\n", c->ID);
+        fprintf(log, "Antes\n");
+        fprintf(log, "x:%f y:%f\n", c->x, c->y);
         c->x += dx;
         c->y += dy;
+        fprintf(log, "Depois\n");
+        fprintf(log, "x:%f y:%f\n", c->x, c->y);
     }
-    else if (forma == 'R')
+    else if (forma[0] == 'R')
     {
         Retangulo *r = (Retangulo *)P;
+        fprintf(log, "Retangulo\n");
+        fprintf(log, "%d\n", r->ID);
+        fprintf(log, "Antes\n");
+        fprintf(log, "x:%f y:%f\n", r->x, r->y);
         r->x += dx;
         r->y += dy;
+        fprintf(log, "Depois\n");
+        fprintf(log, "x:%f y:%f\n", r->x, r->y);
     }
-    else if (forma == 'L')
+    else if (forma[0] == 'L')
     {
         Linha *l = (Linha *)P;
+        fprintf(log, "Linha\n");
+        fprintf(log, "%d\n", l->ID);
+        fprintf(log, "Antes\n");
+        fprintf(log, "x1:%f y1:%f x2:%f y2:%f\n", l->x1, l->y1, l->x2, l->y2);
         l->x1 += dx;
         l->y1 += dy;
         l->x2 += dx;
         l->y2 += dy;
+        fprintf(log, "Depois\n");
+        fprintf(log, "x1:%f y1:%f x2:%f y2:%f\n", l->x1, l->y1, l->x2, l->y2);
     }
     else
     {
         return;
     }
+    fclose(log);
 }
 
-
-Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma) 
+Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[])
 {
     Iterador T = createIterador(Tex, false);
     Iterador C = createIterador(Circ, false);
@@ -354,7 +380,7 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
             killIterator(C);
             killIterator(R);
             killIterator(L);
-            forma = 'T';
+            forma[0] = 'T';
             return t;
         }
     }
@@ -367,7 +393,7 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
             killIterator(C);
             killIterator(R);
             killIterator(L);
-            forma = 'C';
+            forma[0] = 'C';
             return c;
         }
     }
@@ -380,7 +406,7 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
             killIterator(C);
             killIterator(R);
             killIterator(L);
-            forma = 'R';
+            forma[0] = 'R';
             return r;
         }
     }
@@ -393,28 +419,29 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
             killIterator(C);
             killIterator(R);
             killIterator(L);
-            forma = 'L';
+            forma[0] = 'L';
             return l;
         }
     }
 }
 
-FILE* CriaLog(char prefix[])
+FILE *CriaLog(char prefix[])
 {
     char nomearq[50];
     int n = 1;
     sprintf(nomearq, "logs/%s-log%d.txt", prefix, n);
 
     // Verifica se o arquivo já existe
-    while(fopen(nomearq,"r") != NULL) 
+    while (fopen(nomearq, "r") != NULL)
     {
         n++;
         sprintf(nomearq, "logs/%s-log%d.txt", prefix, n);
     }
 
-    //Cria o arquivo com o nome gerado
-    FILE* arq = fopen(nomearq, "w"); 
-    if(arq == NULL) {
+    // Cria o arquivo com o nome gerado
+    FILE *arq = fopen(nomearq, "w");
+    if (arq == NULL)
+    {
         printf("Erro ao criar arquivo de log!\n");
         exit(1);
     }

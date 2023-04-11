@@ -22,7 +22,7 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin);
 void fechaQry(ArqQry fqry);
 
 /*Move figura/texto de identificador i de dx (no eixo x) e dy (no eixo y)*/
-void Move(Posic P, float dx, float dy, char forma);
+void Move(Posic P, float dx, float dy, char forma[]);
 
 /*Rotaciona figura texto de identificador i em grs graus*/
 void Rotaciona(Posic P, float grs);
@@ -54,7 +54,7 @@ identificadores dos elementos que acertou até o momento.*/
 void ReportCaca();
 
 /*Procura o objeto de identificação ID nas 4 listas e retorna a sua posição na lista e seu tipo*/
-Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma);
+Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[]);
 
 /*Elabora os logs dos arquivos em uma pasta log*/
 FILE* CriaLog(char prefix[]);

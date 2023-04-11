@@ -30,6 +30,11 @@
             "cwd": "/mnt/g/Outros computadores/Meu laptop/Faculdade/EstruturadeDados/output",
             "binaryPath": "/mnt/g/Outros computadores/Meu laptop/Faculdade/EstruturadeDados/output/ted",
             "binaryArgs": []
+        },
+        {
+            "cwd": "/home/lilo/Faculdade/EstruturaDeDados/output",
+            "binaryPath": "/home/lilo/Faculdade/EstruturaDeDados/output/ted",
+            "binaryArgs": []
         }
     ],
     "files.associations": {
