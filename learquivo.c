@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef void *ArqCmds;
-
 ArqCmds abreArquivoCmd(char *fn)
 {
     ArqCmds ac;
@@ -42,7 +40,8 @@ bool leLinha(ArqCmds ac, char **buf)
 char* getParametroI(char *buf, int i)
 {
     char *paramI = NULL;
-    char *bufcopia = strdup(buf);
+    char *bufcopia;
+    bufcopia = strdup(buf);
     paramI = strtok(bufcopia, " ");
     for (int j = 0; j < i; j++)
     {

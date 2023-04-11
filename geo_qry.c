@@ -259,6 +259,7 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             Posic p = ProcuraID(ID,Circ,Ret,Tex,Lin,forma);
             if (strcmp(comando, "mv") == 0)
             {
+                
             }
             else if (strcmp(comando, "g") == 0)
             {
@@ -342,7 +343,7 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
             killIterator(C);
             killIterator(R);
             killIterator(L);
-            forma = 'R'
+            forma = 'R';
             return r;
         }
     }
@@ -355,7 +356,7 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma)
             killIterator(C);
             killIterator(R);
             killIterator(L);
-            forma = 'L'
+            forma = 'L';
             return l;
         }
     }
