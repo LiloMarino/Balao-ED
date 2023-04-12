@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "geo.h"
 #include "qry.h"
 #include "arqsvg.h"
@@ -302,7 +303,7 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
                 {
                     char prefix[] = "foto";
                     log = CriaLog(prefix);
-                    TiraFoto(Circ,Ret,Tex,Lin,Baloes,ID);
+                    TiraFoto(Circ, Ret, Tex, Lin, Baloes, ID);
                     fclose(log);
                 }
                 else if (strcmp(comando, "df") == 0)
@@ -604,25 +605,44 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Posic Balloon, P
 bool VerificaRetangulo(Item info, Posic R)
 {
     Retangulo *r = (Retangulo *)info;
-    return false;
+    Retangulo *foto = (Retangulo *)R;
+    //Template VerificaPonto(foto->x,,foto->larg,foto->y,,foto->alt) 
+    return(VerificaPonto(foto->x,r->x,foto->larg,foto->y,r->y,foto->alt) || VerificaPonto(foto->x,r->larg,foto->larg,foto->y,r->alt,foto->alt));
 }
 
 bool VerificaCirculo(Item info, Posic R)
 {
     Circulo *c = (Circulo *)info;
-    return false;
+    Retangulo *foto = (Retangulo *)R;
+    float PYSUP = (c->y)+(c->raio);
+    float PYINF = (c->y)-(c->raio);
+    float PXDIR =
+    float PXESQ = 
+    return (VerificaPonto(foto->x,,foto->larg,foto->y,,foto->alt));
 }
 
 bool VerificaTexto(Item info, Posic R)
 {
     Texto *t = (Texto *)info;
-    return false;
+    Retangulo *foto = (Retangulo *)R;
+    return (VerificaPonto(foto->x,t->x,foto->larg,foto->y,t->y,foto->alt));
 }
 
 bool VerificaLinha(Item info, Posic R)
 {
     Linha *l = (Linha *)info;
-    return false;
+    Retangulo *foto = (Retangulo *)R;
+    return(VerificaPonto(foto->x,l->x1,foto->larg,foto->y,l->y1,foto->alt) || VerificaPonto(foto->x,l->x2,foto->larg,foto->y,l->y2,foto->alt));
+}
+
+bool VerificaIntervalo(float Inicio, float P, float Fim)
+{
+    return ((Inicio < P) && (P < Fim));
+}
+
+bool VerificaPonto(float Axsup,float Px,float Axinf,float Aysup,float Py,float Ayinf)
+{
+    return ((VerificaIntervalo(Axsup,Px,Axinf) && VerificaIntervalo(Aysup,Py,Ayinf)));
 }
 
 Lista ConcatLst(Lista L1, Lista L2)

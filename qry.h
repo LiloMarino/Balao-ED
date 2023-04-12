@@ -75,6 +75,12 @@ bool VerificaTexto(Item info, Posic R);
 /*Verifica se uma linha está dentro da foto que está sendo tirada pelo balão*/
 bool VerificaLinha(Item info, Posic R);
 
+/*Verifica se P está dentro do intervalo*/
+bool VerificaIntervalo(float Inicio, float P, float Fim);
+
+/*Verifica se o ponto está dentro da área*/
+bool VerificaPonto();
+
 /* Concatena a lista 1 com a lista 2 */
 Lista ConcatLst(Lista L1, Lista L2);
 
