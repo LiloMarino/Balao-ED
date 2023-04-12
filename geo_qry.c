@@ -295,14 +295,15 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
                 else if (strcmp(comando, "ff") == 0)
                 {
                     float prof, raio, alt;
-                    char prefix[] = "foco";
-                    log = CriaLog(prefix);
                     sscanf(linha, "%s %d %f %f %f", comando, &ID, &raio, &prof, &alt);
                     FocoDaFoto(Baloes, ID, raio, prof, alt);
-                    fclose(log);
                 }
                 else if (strcmp(comando, "tf") == 0)
                 {
+                    char prefix[] = "foto";
+                    log = CriaLog(prefix);
+                    TiraFoto(Circ,Ret,Tex,Lin,Baloes,ID);
+                    fclose(log);
                 }
                 else if (strcmp(comando, "df") == 0)
                 {
