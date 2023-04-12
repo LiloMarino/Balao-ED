@@ -245,7 +245,7 @@ struct StBalao
 {
     int ID;
     float raio, prof, alt;
-    Fila camera[10]; // Balao tem 10 cameras com capacidade de 15 fotos cada
+    Fila cameras[10]; // Balao tem 10 cameras com capacidade de 15 fotos cada
 };
 
 typedef struct StBalao Balao;
@@ -295,7 +295,7 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
                 else if (strcmp(comando, "ff") == 0)
                 {
                     float prof, raio, alt;
-                    FocoDaFoto(Baloes, p, ID, raio, prof, alt);
+                    FocoDaFoto(Baloes, ID, raio, prof, alt);
                 }
                 else if (strcmp(comando, "tf") == 0)
                 {
@@ -443,14 +443,14 @@ void FocoDaFoto(Lista Bal, int ID, float raio, float prof, float alt)
     b->alt = alt;
     b->prof = prof;
     b->raio = raio;
-    for (int i; i < 10, i++)
+    for (int i; i < 10; i++)
     {
-        b->fotos[i] = criarFila(15);
+        b->cameras[i] = criarFila(15);
     }
     insertLst(Bal, b);
 }
 
-void TiraFoto(Lista Bal, int ID)
+void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID)
 {
     // Procura o balão na lista Bal
     Iterador B = createIterador(Bal, false);
@@ -461,8 +461,8 @@ void TiraFoto(Lista Bal, int ID)
         {
             for (int i = 0; i < 10; i++)
             {
-                if (inserirFila(b->fotos[i],ProcessaFoto()))
-                { 
+                if (inserirFila(b->cameras[i], ProcessaFoto()))
+                {
                     // Foto criada com sucesso
                     return;
                 }
@@ -558,4 +558,39 @@ FILE *CriaLog(char prefix[])
     }
 
     return arq;
+}
+
+Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin)
+{
+    Lista C = filter(Circ, VerificaFoto);
+    Lista R = filter(Ret, VerificaFoto);
+    Lista T = filter(Tex, VerificaFoto);
+    Lista L = filter(Lin, VerificaFoto);
+    Lista Parte1 = ConcatLst(C,R);
+    Lista Parte2 = ConcatLst(Parte1,T);
+    Lista Foto = ConcatLst(Parte2,L);
+    killLst(C);
+    killLst(R);
+    killLst(T);
+    killLst(L);
+    killLst(Parte1);
+    killLst(Parte2);
+    return Foto;
+}
+
+Lista ConcatLst(Lista L1, Lista L2)
+{
+    //Concatena a Lista 1 com a Lista 2
+    Lista L3 = createLst(-1);
+    insertLst(L3, getFirstLst(L1));
+    while (!isEmptyLst(L1))
+    {
+        insertLst(L3, popLst(L1));
+    }
+    insertLst(L3, getFirstLst(L2));
+    while (!isEmptyLst(L2))
+    {
+        insertLst(L3, popLst(L2));
+    }
+    return L3;
 }

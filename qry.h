@@ -23,10 +23,10 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin);
 void fechaQry(ArqQry fqry);
 
 /*Move figura/texto de identificador i de dx (no eixo x) e dy (no eixo y)*/
-void Move(Posic P, float dx, float dy, char forma[], FILE* log);
+void Move(Posic P, float dx, float dy, char forma[], FILE *log);
 
 /*Rotaciona figura texto de identificador i em grs graus*/
-void Rotaciona(Posic P, float grs, FILE* log);
+void Rotaciona(Posic P, float grs, FILE *log);
 
 /*Define os parâmetros de foco da foto (raio, produndidade, altura) do balão ID*/
 void FocoDaFoto(Lista L, int ID, float raio, float prof, float alt);
@@ -57,10 +57,15 @@ void ReportCaca();
 /*Procura o objeto de identificação ID nas 4 listas e retorna a sua posição na lista e seu tipo*/
 Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[]);
 
-/*Elabora os logs dos arquivos em uma pasta log*/
-FILE* CriaLog(char prefix[]);
+/*Elabora os logs dos arquivos em uma pasta log baseado em um prefixo*/
+FILE *CriaLog(char prefix[]);
 
 /* Verifica todos os itens dentro do range da foto e cria uma lista contendo eles*/
-Lista ProcessaFoto()
+Lista ProcessaFoto();
+
+bool VerificaFoto();
+
+/* Concatena a lista 1 com a lista 2 */
+Lista ConcatLst(Lista L1, Lista L2);
 
 #endif
