@@ -406,14 +406,14 @@ Lista map(Lista L, Apply f)
 // A função "filter" é similar à função "map", porém seleciona apenas os elementos que satisfazem a condição imposta por "f".
 // Ela recebe uma Lista "L" e um ponteiro para uma função "f" que retorna true ou false.
 // A função retorna uma nova lista contendo apenas os itens que satisfazem a condição.
-Lista filter(Lista L, Check f)
+Lista filter(Lista L, Check f, Posic p)
 {
     Lista novaLista = createLst(((ListaInfo *)L)->capac);
     Iterador it = createIterador(L, false);
     while (!isIteratorEmpty(L, it))
     {
         Item item = getIteratorNext(L, it);
-        if (f(item))
+        if (f(item, p))
         {
             insertLst(novaLista, item);
         }

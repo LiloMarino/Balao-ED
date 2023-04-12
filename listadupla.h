@@ -134,7 +134,7 @@ void killIterator(Iterador it);
  **/
 
 typedef Item (*Apply)(Item item);
-typedef bool (*Check)(Item item);
+typedef bool (*Check)(Item item, Posic p);
 typedef void (*ApplyClosure)(Item item, Clausura c);
 
 /** Cria uma nova lista. Aplica a funcao f a cada item de L
@@ -146,7 +146,7 @@ Lista map(Lista L, Apply f);
    Cria uma nova lista contendo os itens de L para os quais a
    invocacao da funcao f retornar verdeira.
  */
-Lista filter(Lista L, Check f);
+Lista filter(Lista L, Check f, Posic P);
 
 /**
    Aplica a funcao f a cada elemento de L, possivelmente, atualizando

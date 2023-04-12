@@ -461,7 +461,7 @@ void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID)
         {
             for (int i = 0; i < 10; i++)
             {
-                if (inserirFila(b->cameras[i], ProcessaFoto()))
+                if (inserirFila(b->cameras[i], ProcessaFoto(Circ,Ret,Tex,Lin,ProcuraID(ID,Circ,Ret,Tex,Lin,"T"),b)))
                 {
                     // Foto criada com sucesso
                     return;
@@ -560,15 +560,33 @@ FILE *CriaLog(char prefix[])
     return arq;
 }
 
-Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin)
+Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Posic Balloon, Posic Camera)
 {
-    Lista C = filter(Circ, VerificaFoto);
-    Lista R = filter(Ret, VerificaFoto);
-    Lista T = filter(Tex, VerificaFoto);
-    Lista L = filter(Lin, VerificaFoto);
-    Lista Parte1 = ConcatLst(C,R);
-    Lista Parte2 = ConcatLst(Parte1,T);
-    Lista Foto = ConcatLst(Parte2,L);
+    // Verifica a área da foto e cria um retângulo dela
+    Texto *Bal = (Texto *)Balloon;
+    Balao *Cam = (Balao *)Camera;
+    float x1, y1, x2, y2;
+    x1 = Bal->x - (Cam->raio);
+    y1 = Bal->y + (Cam->prof);
+    x2 = Bal->x + (Cam->raio);
+    y2 = Bal->y + (Cam->prof) + (Cam->alt);
+    Retangulo *r = malloc(sizeof(Retangulo));
+    r->ID = 9999;
+    r->corb = strdup("#FF0000");
+    r->x = x1;
+    r->y = y1;
+    r->larg = x2;
+    r->alt = y2;
+    Posic Area = insertLst(Ret, r);
+
+    // Verifica quais elementos estão presentes na foto
+    Lista C = filter(Circ, VerificaCirculo, Area);
+    Lista R = filter(Ret, VerificaRetangulo, Area);
+    Lista T = filter(Tex, VerificaTexto, Area);
+    Lista L = filter(Lin, VerificaLinha, Area);
+    Lista Parte1 = ConcatLst(C, R);
+    Lista Parte2 = ConcatLst(Parte1, T);
+    Lista Foto = ConcatLst(Parte2, L);
     killLst(C);
     killLst(R);
     killLst(T);
@@ -578,9 +596,33 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin)
     return Foto;
 }
 
+bool VerificaRetangulo(Item info, Posic R)
+{
+    Retangulo *r = (Retangulo *)info;
+    return false;
+}
+
+bool VerificaCirculo(Item info, Posic R)
+{
+    Circulo *c = (Circulo *)info;
+    return false;
+}
+
+bool VerificaTexto(Item info, Posic R)
+{
+    Texto *t = (Texto *)info;
+    return false;
+}
+
+bool VerificaLinha(Item info, Posic R)
+{
+    Linha *l = (Linha *)info;
+    return false;
+}
+
 Lista ConcatLst(Lista L1, Lista L2)
 {
-    //Concatena a Lista 1 com a Lista 2
+    // Concatena a Lista 1 com a Lista 2
     Lista L3 = createLst(-1);
     insertLst(L3, getFirstLst(L1));
     while (!isEmptyLst(L1))

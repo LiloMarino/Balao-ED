@@ -32,7 +32,7 @@ void Rotaciona(Posic P, float grs, FILE *log);
 void FocoDaFoto(Lista L, int ID, float raio, float prof, float alt);
 
 /*Balão ID tira foto e coloca no final da lista l (0..9)*/
-void TiraFoto(Lista Bal, int ID);
+void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID);
 
 /*Envia fotos da lista L do balão dado pelo ID para a base.
 Base categoriza cada foto*/
@@ -60,10 +60,20 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[
 /*Elabora os logs dos arquivos em uma pasta log baseado em um prefixo*/
 FILE *CriaLog(char prefix[]);
 
-/* Verifica todos os itens dentro do range da foto e cria uma lista contendo eles*/
-Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin);
+/* Verifica todos os itens dentro da área da foto e cria uma lista contendo eles*/
+Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Posic Balloon, Posic Camera);
 
-bool VerificaFoto();
+/*Verifica se um retangulo está dentro da foto que está sendo tirada pelo balão*/
+bool VerificaRetangulo(Item info, Posic R);
+
+/*Verifica se um circulo está dentro da foto que está sendo tirada pelo balão*/
+bool VerificaCirculo(Item info, Posic R);
+
+/*Verifica se um texto está dentro da foto que está sendo tirada pelo balão*/
+bool VerificaTexto(Item info, Posic R);
+
+/*Verifica se uma linha está dentro da foto que está sendo tirada pelo balão*/
+bool VerificaLinha(Item info, Posic R);
 
 /* Concatena a lista 1 com a lista 2 */
 Lista ConcatLst(Lista L1, Lista L2);

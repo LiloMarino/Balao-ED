@@ -7,6 +7,7 @@
 #include "arqsvg.h"
 #include "listadupla.h"
 
+/*=============================================PARA TESTES======================================================*/
 void OperaSVG(int n[], Lista Circ, Lista Ret, Lista Tex, Lista Lin);
 
 int main()
