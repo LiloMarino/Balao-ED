@@ -61,7 +61,7 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[
 FILE *CriaLog(char prefix[]);
 
 /* Verifica todos os itens dentro do range da foto e cria uma lista contendo eles*/
-Lista ProcessaFoto();
+Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin);
 
 bool VerificaFoto();
 
