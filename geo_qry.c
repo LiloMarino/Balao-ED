@@ -295,7 +295,11 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
                 else if (strcmp(comando, "ff") == 0)
                 {
                     float prof, raio, alt;
+                    char prefix[] = "foco";
+                    log = CriaLog(prefix);
+                    sscanf(linha, "%s %d %f %f %f", comando, &ID, &raio, &prof, &alt);
                     FocoDaFoto(Baloes, ID, raio, prof, alt);
+                    fclose(log);
                 }
                 else if (strcmp(comando, "tf") == 0)
                 {
@@ -461,7 +465,7 @@ void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID)
         {
             for (int i = 0; i < 10; i++)
             {
-                if (inserirFila(b->cameras[i], ProcessaFoto(Circ,Ret,Tex,Lin,ProcuraID(ID,Circ,Ret,Tex,Lin,"T"),b)))
+                if (inserirFila(b->cameras[i], ProcessaFoto(Circ, Ret, Tex, Lin, ProcuraID(ID, Circ, Ret, Tex, Lin, "T"), b)))
                 {
                     // Foto criada com sucesso
                     return;
