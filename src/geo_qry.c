@@ -596,7 +596,7 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     r->pont = 5;
     r->x = Bal->x - (Cam->raio);
     r->y = Bal->y + (Cam->prof);
-    r->larg = 2*(Cam->raio);
+    r->larg = 2 * (Cam->raio);
     r->alt = (Cam->alt);
     Posic Area = insertLst(Ret, r);
 
@@ -661,44 +661,86 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
 bool VerificaRetangulo(Item info, Posic R)
 {
     Retangulo *r = (Retangulo *)info;
-    Retangulo *foto = (Retangulo *)R;
-    // Template VerificaPonto(foto->x,,foto->larg,foto->y,,foto->alt)
-    return (VerificaPonto(foto->x, r->x, foto->larg, foto->y, r->y, foto->alt) || VerificaPonto(foto->x, r->larg, foto->larg, foto->y, r->alt, foto->alt));
+    Retangulo *foto = (Retangulo *)getLst(R);
+    // Template VerificaPonto(foto->x,,foto->x+foto->larg,foto->y,,foto->y+foto->alt)
+    if (VerificaPonto(foto->x, r->x, foto->x + foto->larg, foto->y, r->y, foto->y + foto->alt) || VerificaPonto(foto->x, r->larg, foto->x + foto->larg, foto->y, r->alt, foto->y + foto->alt))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool VerificaCirculo(Item info, Posic R)
 {
     Circulo *c = (Circulo *)info;
-    Retangulo *foto = (Retangulo *)R;
+    Retangulo *foto = (Retangulo *)getLst(R);
     float PYSUP = (c->y) + (c->raio);
     float PYINF = (c->y) - (c->raio);
     float PXDIR = (c->x) + (c->raio);
     float PXESQ = (c->x) - (c->raio);
-    return (VerificaPonto(foto->x, c->x, foto->larg, foto->y, PYSUP, foto->alt) || VerificaPonto(foto->x, c->x, foto->larg, foto->y, PYINF, foto->alt) || VerificaPonto(foto->x, PXDIR, foto->larg, foto->y, c->y, foto->alt) || VerificaPonto(foto->x, PXESQ, foto->larg, foto->y, c->y, foto->alt));
+    if (VerificaPonto(foto->x, c->x, foto->x + foto->larg, foto->y, PYSUP, foto->y + foto->alt) || VerificaPonto(foto->x, c->x, foto->x + foto->larg, foto->y, PYINF, foto->y + foto->alt) || VerificaPonto(foto->x, PXDIR, foto->x + foto->larg, foto->y, c->y, foto->y + foto->alt) || VerificaPonto(foto->x, PXESQ, foto->x + foto->larg, foto->y, c->y, foto->y + foto->alt))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool VerificaTexto(Item info, Posic R)
 {
     Texto *t = (Texto *)info;
-    Retangulo *foto = (Retangulo *)R;
-    return (VerificaPonto(foto->x, t->x, foto->larg, foto->y, t->y, foto->alt));
+    Retangulo *foto = (Retangulo *)getLst(R);
+    if (VerificaPonto(foto->x, t->x, foto->x + foto->larg, foto->y, t->y, foto->y + foto->alt))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool VerificaLinha(Item info, Posic R)
 {
     Linha *l = (Linha *)info;
-    Retangulo *foto = (Retangulo *)R;
-    return (VerificaPonto(foto->x, l->x1, foto->larg, foto->y, l->y1, foto->alt) || VerificaPonto(foto->x, l->x2, foto->larg, foto->y, l->y2, foto->alt));
+    Retangulo *foto = (Retangulo *)getLst(R);
+    if (VerificaPonto(foto->x, l->x1, foto->x + foto->larg, foto->y, l->y1, foto->y + foto->alt) || VerificaPonto(foto->x, l->x2, foto->x + foto->larg, foto->y, l->y2, foto->y + foto->alt))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool VerificaIntervalo(float Inicio, float P, float Fim)
 {
-    return ((Inicio <= P) && (P <= Fim));
+    if ((Inicio <= P) && (P <= Fim))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool VerificaPonto(float Axsup, float Px, float Axinf, float Aysup, float Py, float Ayinf)
 {
-    return ((VerificaIntervalo(Axsup, Px, Axinf) && VerificaIntervalo(Aysup, Py, Ayinf)));
+    if ((VerificaIntervalo(Axsup, Px, Axinf) && VerificaIntervalo(Aysup, Py, Ayinf)))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
