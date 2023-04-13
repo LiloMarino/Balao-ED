@@ -7,6 +7,7 @@
 #include "arqsvg.h"
 #include "learquivo.h"
 #include "listadupla.h"
+#include "path.h"
 #include "fila.h"
 
 /*========================================================================================================== *
@@ -318,6 +319,14 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
                 }
                 else if (strcmp(comando, "df") == 0)
                 {
+                    char prefix[] = "pontuação";
+                    int i;
+                    char *sfx;
+                    sscanf(linha, "%s %d %d", comando, &ID, &i);
+                    sfx = getParametroI(linha, 3);
+                    log = CriaLog(prefix);
+                    PontuaFoto(Baloes, ID, i, sfx);
+                    fclose(log);
                 }
                 else if (strcmp(comando, "d") == 0)
                 {
@@ -492,7 +501,7 @@ void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FI
     return;
 }
 
-void PontuaFoto(Lista Bal, int i, ArqSvg sfx)
+void PontuaFoto(Lista Bal, int ID, int i, char sfx[])
 {
     Iterador B = createIterador(Bal, false);
     while (!isIteratorEmpty(Bal, B))
@@ -500,9 +509,43 @@ void PontuaFoto(Lista Bal, int i, ArqSvg sfx)
         Balao *b = (Balao *)getIteratorNext(Bal, B);
         if (b->ID == ID)
         {
-            b->cameras[i];
+            ImprimeFoto(b->cameras[i], sfx);
         }
     }
+}
+
+void ImprimeFoto(Lista Foto, char sfx[])
+{
+    Figura AUX;
+    Posic P;
+    P = &AUX;
+    AUX.tipo = 'C';
+    Lista Circ = filter(Foto, VerificaTipo, P);
+    AUX.tipo = 'R';
+    Lista Ret = filter(Foto, VerificaTipo, P);
+    AUX.tipo = 'T';
+    Lista Tex = filter(Foto, VerificaTipo, P);
+    AUX.tipo = 'L';
+    Lista Lin = filter(Foto, VerificaTipo, P);
+    char nome[50], *path, *nomeArq, *extArq;
+    splitPath(sfx, &path, &nomeArq, &extArq);
+    strcpy(nome, nomeArq);
+    strcat(nome, ".sfx");
+    strcat(nome, extArq);
+    OperaSVG(nome, Circ, Ret, Tex, Lin);
+    killLst(Circ);
+    killLst(Ret);
+    killLst(Lin);
+    killLst(Tex);
+}
+
+bool VerificaTipo(Item item, Posic p)
+{
+    if (((Figura *)p)->tipo == ((Figura *)item)->tipo)
+    {
+        return true;
+    }
+    return false;
 }
 
 Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[])
@@ -766,13 +809,6 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
         {
             if (forma[0] == 'C')
             {
-                Figura *F = malloc(sizeof(Figura));
-                F->figura = getFirstLst(L1);
-                F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
-                F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
-                F->tipo = 'C';
-                F->ID = ((Circulo *)F->figura)->ID;
-                insertLst(L3, F);
                 while (!isEmptyLst(L1))
                 {
                     Figura *F = malloc(sizeof(Figura));
@@ -787,13 +823,6 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
             }
             else if (forma[0] == 'R')
             {
-                Figura *F = malloc(sizeof(Figura));
-                F->figura = getFirstLst(L1);
-                F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
-                F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
-                F->tipo = 'R';
-                F->ID = ((Retangulo *)F->figura)->ID;
-                insertLst(L3, F);
                 while (!isEmptyLst(L1))
                 {
                     Figura *F = malloc(sizeof(Figura));
@@ -807,13 +836,6 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
             }
             else if (forma[0] == 'T')
             {
-                Figura *F = malloc(sizeof(Figura));
-                F->figura = getFirstLst(L1);
-                F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
-                F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
-                F->tipo = 'T';
-                F->ID = ((Texto *)F->figura)->ID;
-                insertLst(L3, F);
                 while (!isEmptyLst(L1))
                 {
                     Figura *F = malloc(sizeof(Figura));
@@ -827,13 +849,6 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
             }
             else if (forma[0] == 'L')
             {
-                Figura *F = malloc(sizeof(Figura));
-                F->figura = getFirstLst(L1);
-                F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
-                F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
-                F->tipo = 'L';
-                F->ID = ((Linha *)F->figura)->ID;
-                insertLst(L3, F);
                 while (!isEmptyLst(L1))
                 {
                     Figura *F = malloc(sizeof(Figura));
@@ -863,13 +878,6 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
         {
             if (forma[1] == 'C')
             {
-                Figura *F = malloc(sizeof(Figura));
-                F->figura = getFirstLst(L2);
-                F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
-                F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
-                F->tipo = 'C';
-                F->ID = ((Circulo *)F->figura)->ID;
-                insertLst(L3, F);
                 while (!isEmptyLst(L2))
                 {
                     Figura *F = malloc(sizeof(Figura));
@@ -884,13 +892,6 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
             }
             else if (forma[1] == 'R')
             {
-                Figura *F = malloc(sizeof(Figura));
-                F->figura = getFirstLst(L2);
-                F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
-                F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
-                F->tipo = 'R';
-                F->ID = ((Retangulo *)F->figura)->ID;
-                insertLst(L3, F);
                 while (!isEmptyLst(L2))
                 {
                     Figura *F = malloc(sizeof(Figura));
@@ -904,13 +905,6 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
             }
             else if (forma[1] == 'T')
             {
-                Figura *F = malloc(sizeof(Figura));
-                F->figura = getFirstLst(L2);
-                F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
-                F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
-                F->tipo = 'T';
-                F->ID = ((Texto *)F->figura)->ID;
-                insertLst(L3, F);
                 while (!isEmptyLst(L2))
                 {
                     Figura *F = malloc(sizeof(Figura));
@@ -924,13 +918,6 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
             }
             else if (forma[1] == 'L')
             {
-                Figura *F = malloc(sizeof(Figura));
-                F->figura = getFirstLst(L2);
-                F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
-                F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
-                F->tipo = 'L';
-                F->ID = ((Linha *)F->figura)->ID;
-                insertLst(L3, F);
                 while (!isEmptyLst(L2))
                 {
                     Figura *F = malloc(sizeof(Figura));
@@ -955,13 +942,9 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
     return L3;
 }
 
-void OperaSVG(int n[], Lista Circ, Lista Ret, Lista Tex, Lista Lin)
+void OperaSVG(char nome[], Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 {
-    char nomearq[30];
-    sprintf(nomearq, "teste-%d.svg", n[0]);
-    n[0]++;
-
-    ArqSvg B = abreEscritaSvg(nomearq);
+    ArqSvg B = abreEscritaSvg(nome);
 
     Iterador R = createIterador(Ret, false);
 

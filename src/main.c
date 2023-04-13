@@ -9,8 +9,7 @@
 
 int main()
 {
-    int n[1];
-    n[0] = 0;
+    char nome[50] = "mapa01.svg";
     
     ArqQry B;
 
@@ -21,12 +20,12 @@ int main()
 
     ArqGeo A = abreLeituraGeo("02-planta-cidade.geo");
     InterpretaGeo(A, Cir, Ret, Tex, Lin);
-    OperaSVG(n, Cir, Ret, Tex, Lin);
+    OperaSVG(nome, Cir, Ret, Tex, Lin);
     fechaGeo(A);
-
+    strcpy(nome,"mapa02.svg");
     B = abreLeituraQry("sobrevoo.qry");
     InterpretaQry(B,Cir,Ret,Tex,Lin);
-    OperaSVG(n, Cir, Ret, Tex, Lin);
+    OperaSVG(nome, Cir, Ret, Tex, Lin);
     fechaQry(B);
 
     killLst(Cir);

@@ -36,7 +36,13 @@ void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FI
 
 /*Envia fotos da lista L do balão dado pelo ID para a base.
 Base categoriza cada foto*/
-void PontuaFoto(Posic P, Lista L, ArqSvg sfx);
+void PontuaFoto(Lista Bal, int ID, int i, char sfx[]);
+
+/*Recebe a foto e a imprime no SVG*/
+void ImprimeFoto(Lista Foto, char sfx[]);
+
+/*Verifica se o tipo da figura do item é igual ao da figura indicada por p*/
+bool VerificaTipo(Item item, Posic p);
 
 /*Caça de identificador ID dispara bomba de capacidade capac (A, B ou C) a uma distância
 dist. Caso o disparo atinja um balão, clona os elementos contidos nas fotos que não foram
@@ -85,6 +91,6 @@ bool VerificaPonto(float Axsup, float Px, float Axinf, float Aysup, float Py, fl
 Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r);
 
 /*=============================================PARA TESTES======================================================*/
-void OperaSVG(int n[], Lista Circ, Lista Ret, Lista Tex, Lista Lin);
+void OperaSVG(char nome[], Lista Circ, Lista Ret, Lista Tex, Lista Lin);
 
 #endif

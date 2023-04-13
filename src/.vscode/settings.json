@@ -40,6 +40,11 @@
             "cwd": "/home/lilo/Faculdade/EstruturaDeDados/src",
             "binaryPath": "/home/lilo/Faculdade/EstruturaDeDados/src/ted",
             "binaryArgs": []
+        },
+        {
+            "cwd": "/home/lilo/Faculdade/Balao-ED/src",
+            "binaryPath": "/home/lilo/Faculdade/Balao-ED/src/ted",
+            "binaryArgs": []
         }
     ],
     "files.associations": {
