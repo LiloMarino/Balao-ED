@@ -60,7 +60,7 @@ void preparaDecoracao(char **deco, int decoLen, char *corBorda, char *corPreench
         strcat(decoracao, strTransparenciaBorda);
         strcat(decoracao, "\" ");
     }
-    if()
+    if(pontilhadoBorda >= 0)
     {
         char strPontilhadoBorda[20];
         sprintf(strPontilhadoBorda, "%lf", pontilhadoBorda);

@@ -43,7 +43,7 @@ atribuir NULL (para char *) ou valores negativos (double) ao respectivo parametr
 void preparaDecoracao(char **deco, int decoLen,
                       char *corBorda, char *corPreenchimento,
                       char *larguraBorda, double transparencia,
-                      double transparenciaPreenchimento, double transparenciaBorda,double pontilhadoBorda);
+                      double transparenciaPreenchimento, double transparenciaBorda, double pontilhadoBorda);
 
 /*
    Insere uma circunferencia com centro em (xc,yc) de raio r. Atributos de formatacao
@@ -69,13 +69,13 @@ podem preparadas por meio da operacao preparaDecoracao.
  */
 void escreveLinhaSvg(ArqSvg fsvg, double x1, double y1, double x2, double y2, char *deco);
 
-/* Font style: 
+/* Font style:
 const char *FS_NORMAL = "normal";
 const char *FS_ITALIC = "italic";
 const char *FS_OBLIQUE = "oblique";
 */
 
-/* Font weight 
+/* Font weight
 
 const char *FW_NORMAL = "normal";
 const char *FW_BOLD = "bold";

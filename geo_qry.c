@@ -7,7 +7,7 @@
 #include "arqsvg.h"
 #include "learquivo.h"
 #include "listadupla.h"
-#include "fila_estatica.h"
+#include "fila.h"
 
 /*========================================================================================================== *
  * Funções GEO                                                                                               *
@@ -178,7 +178,7 @@ void CriaRetanguloSvg(ArqSvg fsvg, Item info)
 {
     Retangulo *r = (Retangulo *)info;
     char *deco = NULL;
-    preparaDecoracao(&deco, 0, r->corb, r->corp, NULL, -1, -1, -1,r->pont);
+    preparaDecoracao(&deco, 0, r->corb, r->corp, NULL, -1, -1, -1, r->pont);
     escreveRetanguloSvg(fsvg, r->x, r->y, r->larg, r->alt, deco);
 }
 
@@ -186,7 +186,7 @@ void CriaCirculoSvg(ArqSvg fsvg, Item info)
 {
     Circulo *c = (Circulo *)info;
     char *deco = NULL;
-    preparaDecoracao(&deco, 0, c->corb, c->corp, NULL, -1, -1, -1,-1,-1);
+    preparaDecoracao(&deco, 0, c->corb, c->corp, NULL, -1, -1, -1, -1);
     escreveCirculoSvg(fsvg, c->x, c->y, c->raio, deco);
 }
 
@@ -194,7 +194,7 @@ void CriaLinhaSvg(ArqSvg fsvg, Item info)
 {
     Linha *l = (Linha *)info;
     char *deco = NULL;
-    preparaDecoracao(&deco, 0, l->cor, NULL, NULL, -1, -1, -1,-1);
+    preparaDecoracao(&deco, 0, l->cor, NULL, NULL, -1, -1, -1, -1);
     escreveLinhaSvg(fsvg, l->x1, l->y1, l->x2, l->y2, deco);
 }
 
@@ -461,7 +461,7 @@ void FocoDaFoto(Lista Bal, int ID, float raio, float prof, float alt)
     b->raio = raio;
     for (int i; i < 10; i++)
     {
-        b->cameras[i] = criarFila(15);
+        b->cameras[i] = createQueue();
     }
     insertLst(Bal, b);
 }
@@ -477,9 +477,10 @@ void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FI
         {
             for (int i = 0; i < 10; i++)
             {
-                if (inserirFila(b->cameras[i], ProcessaFoto(Circ, Ret, Tex, Lin, ID, b)))
+                if (!isQueueFull(b->cameras[i]))
                 {
                     // Foto criada com sucesso
+                    insertQueue(b->cameras[i], ProcessaFoto(Circ, Ret, Tex, Lin, ID, b, log));
                     return;
                 }
             }
@@ -619,7 +620,7 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     }
     killIterator(AUX);
 
-    Iterador AUX = createIterador(R, false);
+    AUX = createIterador(R, false);
     while (!isIteratorEmpty(L, AUX))
     {
         Item item = getIteratorNext(L, AUX);
@@ -628,7 +629,7 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     }
     killIterator(AUX);
 
-    Iterador AUX = createIterador(T, false);
+    AUX = createIterador(T, false);
     while (!isIteratorEmpty(L, AUX))
     {
         Item item = getIteratorNext(L, AUX);
@@ -637,19 +638,19 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     }
     killIterator(AUX);
 
-    Iterador AUX = createIterador(L, false);
+    AUX = createIterador(L, false);
     while (!isIteratorEmpty(L, AUX))
     {
         Item item = getIteratorNext(L, AUX);
         fprintf(log, "Linha ID: %d\n", ((Linha *)item)->ID);
-        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Linha *)item)->x), fabs(r->y - ((Linha *)item)->y));
+        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Linha *)item)->x1), fabs(r->y - ((Linha *)item)->y1));
     }
     killIterator(AUX);
 
     // Prepara a foto para o armazenamento
-    Lista Parte1 = ConcatLst(C, R, "CR");
-    Lista Parte2 = ConcatLst(Parte1, T, "0T");
-    Lista Foto = ConcatLst(Parte2, L, "0L");
+    Lista Parte1 = ConcatLst(C, R, "CR", R);
+    Lista Parte2 = ConcatLst(Parte1, T, "0T", R);
+    Lista Foto = ConcatLst(Parte2, L, "0L", R);
     killLst(C);
     killLst(R);
     killLst(T);
@@ -702,7 +703,7 @@ bool VerificaPonto(float Axsup, float Px, float Axinf, float Aysup, float Py, fl
     return ((VerificaIntervalo(Axsup, Px, Axinf) && VerificaIntervalo(Aysup, Py, Ayinf)));
 }
 
-Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
+Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
 {
     Lista L3 = createLst(-1);
     // Para a lista L1
@@ -712,8 +713,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
         {
             Figura *F = malloc(sizeof(Figura));
             F->figura = getFirstLst(L1);
-            F->dx = fabs(r->x - ((Circulo *)F->figura)->x);
-            F->dy = fabs(r->y - ((Circulo *)F->figura)->y);
+            F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
+            F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
             F->tipo = 'C';
             F->ID = ((Circulo *)F->figura)->ID;
             insertLst(L3, F);
@@ -721,8 +722,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
             {
                 Figura *F = malloc(sizeof(Figura));
                 F->figura = popLst(L1);
-                F->dx = fabs(r->x - ((Circulo *)F->figura)->x);
-                F->dy = fabs(r->y - ((Circulo *)F->figura)->y);
+                F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
+                F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
                 F->tipo = 'C';
                 F->ID = ((Circulo *)F->figura)->ID;
                 insertLst(L3, F);
@@ -733,8 +734,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
         {
             Figura *F = malloc(sizeof(Figura));
             F->figura = getFirstLst(L1);
-            F->dx = fabs(r->x - ((Retangulo *)F->figura)->x);
-            F->dy = fabs(r->y - ((Retangulo *)F->figura)->y);
+            F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
+            F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
             F->tipo = 'R';
             F->ID = ((Retangulo *)F->figura)->ID;
             insertLst(L3, F);
@@ -742,8 +743,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
             {
                 Figura *F = malloc(sizeof(Figura));
                 F->figura = popLst(L1);
-                F->dx = fabs(r->x - ((Retangulo *)F->figura)->x);
-                F->dy = fabs(r->y - ((Retangulo *)F->figura)->y);
+                F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
+                F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
                 F->tipo = 'R';
                 F->ID = ((Retangulo *)F->figura)->ID;
                 insertLst(L3, F);
@@ -753,8 +754,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
         {
             Figura *F = malloc(sizeof(Figura));
             F->figura = getFirstLst(L1);
-            F->dx = fabs(r->x - ((Texto *)F->figura)->x);
-            F->dy = fabs(r->y - ((Texto *)F->figura)->y);
+            F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
+            F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
             F->tipo = 'T';
             F->ID = ((Texto *)F->figura)->ID;
             insertLst(L3, F);
@@ -762,8 +763,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
             {
                 Figura *F = malloc(sizeof(Figura));
                 F->figura = popLst(L1);
-                F->dx = fabs(r->x - ((Texto *)F->figura)->x);
-                F->dy = fabs(r->y - ((Texto *)F->figura)->y);
+                F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
+                F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
                 F->tipo = 'T';
                 F->ID = ((Texto *)F->figura)->ID;
                 insertLst(L3, F);
@@ -773,8 +774,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
         {
             Figura *F = malloc(sizeof(Figura));
             F->figura = getFirstLst(L1);
-            F->dx = fabs(r->x - ((Linha *)F->figura)->x);
-            F->dy = fabs(r->y - ((Linha *)F->figura)->y);
+            F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
+            F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
             F->tipo = 'L';
             F->ID = ((Linha *)F->figura)->ID;
             insertLst(L3, F);
@@ -782,8 +783,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
             {
                 Figura *F = malloc(sizeof(Figura));
                 F->figura = popLst(L1);
-                F->dx = fabs(r->x - ((Linha *)F->figura)->x);
-                F->dy = fabs(r->y - ((Linha *)F->figura)->y);
+                F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
+                F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
                 F->tipo = 'L';
                 F->ID = ((Linha *)F->figura)->ID;
                 insertLst(L3, F);
@@ -805,8 +806,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
         {
             Figura *F = malloc(sizeof(Figura));
             F->figura = getFirstLst(L2);
-            F->dx = fabs(r->x - ((Circulo *)F->figura)->x);
-            F->dy = fabs(r->y - ((Circulo *)F->figura)->y);
+            F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
+            F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
             F->tipo = 'C';
             F->ID = ((Circulo *)F->figura)->ID;
             insertLst(L3, F);
@@ -814,8 +815,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
             {
                 Figura *F = malloc(sizeof(Figura));
                 F->figura = popLst(L2);
-                F->dx = fabs(r->x - ((Circulo *)F->figura)->x);
-                F->dy = fabs(r->y - ((Circulo *)F->figura)->y);
+                F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
+                F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
                 F->tipo = 'C';
                 F->ID = ((Circulo *)F->figura)->ID;
                 insertLst(L3, F);
@@ -826,8 +827,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
         {
             Figura *F = malloc(sizeof(Figura));
             F->figura = getFirstLst(L2);
-            F->dx = fabs(r->x - ((Retangulo *)F->figura)->x);
-            F->dy = fabs(r->y - ((Retangulo *)F->figura)->y);
+            F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
+            F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
             F->tipo = 'R';
             F->ID = ((Retangulo *)F->figura)->ID;
             insertLst(L3, F);
@@ -835,8 +836,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
             {
                 Figura *F = malloc(sizeof(Figura));
                 F->figura = popLst(L2);
-                F->dx = fabs(r->x - ((Retangulo *)F->figura)->x);
-                F->dy = fabs(r->y - ((Retangulo *)F->figura)->y);
+                F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
+                F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
                 F->tipo = 'R';
                 F->ID = ((Retangulo *)F->figura)->ID;
                 insertLst(L3, F);
@@ -846,8 +847,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
         {
             Figura *F = malloc(sizeof(Figura));
             F->figura = getFirstLst(L2);
-            F->dx = fabs(r->x - ((Texto *)F->figura)->x);
-            F->dy = fabs(r->y - ((Texto *)F->figura)->y);
+            F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
+            F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
             F->tipo = 'T';
             F->ID = ((Texto *)F->figura)->ID;
             insertLst(L3, F);
@@ -855,8 +856,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
             {
                 Figura *F = malloc(sizeof(Figura));
                 F->figura = popLst(L2);
-                F->dx = fabs(r->x - ((Texto *)F->figura)->x);
-                F->dy = fabs(r->y - ((Texto *)F->figura)->y);
+                F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
+                F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
                 F->tipo = 'T';
                 F->ID = ((Texto *)F->figura)->ID;
                 insertLst(L3, F);
@@ -866,8 +867,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
         {
             Figura *F = malloc(sizeof(Figura));
             F->figura = getFirstLst(L2);
-            F->dx = fabs(r->x - ((Linha *)F->figura)->x);
-            F->dy = fabs(r->y - ((Linha *)F->figura)->y);
+            F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
+            F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
             F->tipo = 'L';
             F->ID = ((Linha *)F->figura)->ID;
             insertLst(L3, F);
@@ -875,8 +876,8 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
             {
                 Figura *F = malloc(sizeof(Figura));
                 F->figura = popLst(L2);
-                F->dx = fabs(r->x - ((Linha *)F->figura)->x);
-                F->dy = fabs(r->y - ((Linha *)F->figura)->y);
+                F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
+                F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
                 F->tipo = 'L';
                 F->ID = ((Linha *)F->figura)->ID;
                 insertLst(L3, F);

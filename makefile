@@ -3,7 +3,7 @@ PROJETO = ted
 ALUNO = Murilo Aldigueri Marino
 
 # Arquivos fonte
-FONTES = learquivo.c arqsvg.c path.c listadupla.c geo_qry.c main.c 
+FONTES = learquivo.c arqsvg.c path.c listadupla.c geo_qry.c main.c fila.c
 
 # Pasta de saída
 OUTPUT = output/
@@ -23,7 +23,7 @@ OBJETOS = $(addprefix $(OUTPUT), $(FONTES:.c=.o))
 
 # Compilador e opções de compilação
 CC = gcc
-CFLAGS = -Wall -Wextra -pedantic-errors -g -O0 -fstack-protector-all 
+CFLAGS = -Wall -Wextra -pedantic-errors -g -O0 -fstack-protector-all -lm
 # -std=c99
 # Regra padrão
 all: $(OUTPUT)$(PROJETO)

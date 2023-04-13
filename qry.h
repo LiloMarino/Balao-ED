@@ -6,7 +6,7 @@
  */
 #include "arqsvg.h"
 #include "listadupla.h"
-#include "fila_estatica.h"
+#include "fila.h"
 
 typedef void *ArqQry;
 
@@ -32,7 +32,7 @@ void Rotaciona(Posic P, float grs, FILE *log);
 void FocoDaFoto(Lista L, int ID, float raio, float prof, float alt);
 
 /*Balão ID tira foto e coloca no final da lista l (0..9)*/
-void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID);
+void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FILE *log);
 
 /*Envia fotos da lista L do balão dado pelo ID para a base.
 Base categoriza cada foto*/
@@ -79,9 +79,9 @@ bool VerificaLinha(Item info, Posic R);
 bool VerificaIntervalo(float Inicio, float P, float Fim);
 
 /*Verifica se o ponto está dentro da área*/
-bool VerificaPonto();
+bool VerificaPonto(float Axsup, float Px, float Axinf, float Aysup, float Py, float Ayinf);
 
 /* Concatena a lista de formas 1 com a lista formas 2 */
-Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R);
+Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r);
 
 #endif
