@@ -6,7 +6,6 @@
 struct StListaDupla
 {
     Item info;
-    int ID;
     struct StListaDupla *prox;
     struct StListaDupla *ant;
 };
@@ -92,7 +91,6 @@ Posic insertLst(Lista L, Item info)
         aux->info = info;
         aux->prox = NULL;
         aux->ant = NULL;
-        aux->ID = 0;
 
         // Verifica se a lista está vazia
         if (((ListaInfo *)L)->inicio == NULL)
@@ -105,7 +103,6 @@ Posic insertLst(Lista L, Item info)
             p = ((ListaInfo *)L)->final;
             aux->ant = p;
             p->prox = aux;
-            aux->ID = (p->ID)++;
         }
         (((ListaInfo *)L)->length)++;
         ((ListaInfo *)L)->final = aux;
@@ -151,7 +148,6 @@ void removeLst(Lista L, Posic p)
             ((ListaInfo *)L)->inicio = rmv->prox;
             rmv->prox->ant = rmv->ant;
             aux = rmv->prox;
-            (aux->ID)--;
         }
         else
         {
@@ -163,7 +159,6 @@ void removeLst(Lista L, Posic p)
         rmv->prox->ant = rmv->ant;
         rmv->ant->prox = rmv->prox;
         aux = rmv->prox;
-        (aux->ID)--;
     }
 
     // Se for o último elemento da lista
@@ -173,16 +168,6 @@ void removeLst(Lista L, Posic p)
     }
     (((ListaInfo *)L)->length)--;
     free(rmv);
-
-    // Ajeita o ID das próximas
-    if (((ListaInfo *)L)->length != 0)
-    {
-        while (aux->prox != NULL)
-        {
-            aux = aux->prox;
-            (aux->ID)--;
-        }
-    }
 }
 
 Item getLst(Posic p)
@@ -207,7 +192,6 @@ Posic insertBefore(Lista L, Posic p, Item info)
         new->prox = aux;
         aux->ant = new;
         new->ant = aux->ant;
-        new->ID = aux->ID;
         if (new->ant != NULL)
         {
             new->ant->prox = new;
@@ -218,13 +202,6 @@ Posic insertBefore(Lista L, Posic p, Item info)
         }
         (((ListaInfo *)L)->length)++;
 
-        // Ajeita o ID das próximas
-        (aux->ID)++;
-        while (aux->prox != NULL)
-        {
-            aux = aux->prox;
-            (aux->ID)++;
-        }
         return new;
     }
 }
@@ -245,7 +222,6 @@ Posic insertAfterLst(Lista L, Posic p, Item info)
         new->ant = aux;
         aux->prox = new;
         new->prox = aux->prox;
-        new->ID = aux->ID;
         if (new->prox != NULL)
         {
             new->prox->ant = new;
@@ -256,13 +232,6 @@ Posic insertAfterLst(Lista L, Posic p, Item info)
         }
         (((ListaInfo *)L)->length)++;
 
-        // Ajeita o ID das próximas
-        (aux->ID)++;
-        while (aux->prox != NULL)
-        {
-            aux = aux->prox;
-            (aux->ID)++;
-        }
         return new;
     }
 }
