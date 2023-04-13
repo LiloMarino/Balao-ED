@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "learquivo.h"
 
 void splitPath(char *fullPath, char **path, char **nomeArq, char **extArq)
 {
@@ -23,7 +24,7 @@ void splitPath(char *fullPath, char **path, char **nomeArq, char **extArq)
     char *ultimabarra = strrchr(fullPath, '/');
     if (ultimabarra == NULL)
     {
-        *path = strdup("");
+        *path = my_strdup("");
     }
     else
     {
@@ -35,7 +36,7 @@ void splitPath(char *fullPath, char **path, char **nomeArq, char **extArq)
     char *ultimoponto = strrchr(fullPath, '.');
     if (ultimoponto == NULL)
     {
-        *extArq = strdup("");
+        *extArq = my_strdup("");
         if (ultimabarra == NULL)
         {
             *nomeArq = malloc((strlen(fullPath) + 1)*sizeof(char));
@@ -146,11 +147,11 @@ void getFileName(char *fullPath, char **fileName)
     char *ultimabarra = strrchr(fullPath, '/');
     if (ultimabarra == NULL)
     {
-        *fileName = strdup(fullPath);
+        *fileName = my_strdup(fullPath);
     }
     else
     {
-        *fileName = strdup(ultimabarra + 1);
+        *fileName = my_strdup(ultimabarra + 1);
     }
 }
 
@@ -168,7 +169,7 @@ void getPath(char *fullPath, char **path)
     char *ultimabarra = strrchr(fullPath, '/');
     if (ultimabarra == NULL)
     {
-        *path = strdup("");
+        *path = my_strdup("");
     }
     else
     {

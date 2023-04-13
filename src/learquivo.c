@@ -41,13 +41,13 @@ char* getParametroI(char *buf, int i)
 {
     char *paramI = NULL;
     char *bufcopia;
-    bufcopia = strdup(buf);
+    bufcopia = my_strdup(buf);
     paramI = strtok(bufcopia, " ");
     for (int j = 0; j < i; j++)
     {
         paramI = strtok(NULL, " ");
     }
-    paramI = strdup(paramI);
+    paramI = my_strdup(paramI);
     free(bufcopia);
     return paramI;
 }
@@ -55,7 +55,7 @@ char* getParametroI(char *buf, int i)
 char* getParametroDepoisI(char *buf, int i)
 {
     char *paramI = NULL;
-    char *bufcopia = strdup(buf);
+    char *bufcopia = my_strdup(buf);
     for (int j = 0; j < i-1; j++)
     {
         if (j == 0)
@@ -66,6 +66,14 @@ char* getParametroDepoisI(char *buf, int i)
     }
     paramI = strtok(NULL, "");
     return paramI;
+}
+
+char *my_strdup(const char *src) {
+    char *dst = malloc(strlen(src) + 1); 
+    if (dst != NULL) {
+        strcpy(dst, src); 
+    }
+    return dst; 
 }
 
 void fechaArquivoCmd(ArqCmds ac)

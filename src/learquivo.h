@@ -28,4 +28,7 @@ char* getParametroDepoisI(char *buf, int i);
 /*Fecha o arquivo aberto pela função abreArquivoCmd */
 void fechaArquivoCmd(ArqCmds ac);
 
+/*Versão do strdup para C99*/
+char *my_strdup(const char *src);
+
 #endif

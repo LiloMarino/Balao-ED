@@ -67,7 +67,7 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
     char comando[2];
     char *linha = NULL;
     EstiloTxt *style = malloc(sizeof(EstiloTxt));
-    style->fFamily = strdup("arial");
+    style->fFamily = my_strdup("arial");
     style->fWeight = NULL;
     style->fSize = NULL;
     while (leLinha(fgeo, &linha))
@@ -126,7 +126,7 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             t->rotacao = NULL;
             if (style->fFamily != NULL)
             {
-                t->fFamily = strdup(style->fFamily);
+                t->fFamily = my_strdup(style->fFamily);
             }
             else
             {
@@ -134,7 +134,7 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             }
             if (style->fWeight != NULL)
             {
-                t->fWeight = strdup(style->fWeight);
+                t->fWeight = my_strdup(style->fWeight);
             }
             else
             {
@@ -142,7 +142,7 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             }
             if (style->fSize != NULL)
             {
-                t->fSize = strdup(style->fSize);
+                t->fSize = my_strdup(style->fSize);
             }
             else
             {
@@ -205,33 +205,33 @@ void CriaTextoSvg(ArqSvg fsvg, Item info)
     char *deco = NULL, *fontWeight = NULL, *textAnchor = NULL;
     if (*(t->a) == 'i')
     {
-        textAnchor = strdup("start");
+        textAnchor = my_strdup("start");
     }
     else if (*(t->a) == 'f')
     {
-        textAnchor = strdup("end");
+        textAnchor = my_strdup("end");
     }
     else
     {
-        textAnchor = strdup("middle");
+        textAnchor = my_strdup("middle");
     }
     if (t->fWeight != NULL)
     {
         if (strcmp(t->fWeight, "l") == 0)
         {
-            fontWeight = strdup("lighter");
+            fontWeight = my_strdup("lighter");
         }
         else if (strcmp(t->fWeight, "b") == 0)
         {
-            fontWeight = strdup("bold");
+            fontWeight = my_strdup("bold");
         }
         else if (strcmp(t->fWeight, "b+") == 0)
         {
-            fontWeight = strdup("bolder");
+            fontWeight = my_strdup("bolder");
         }
         else
         {
-            fontWeight = strdup("normal");
+            fontWeight = my_strdup("normal");
         }
     }
     preparaDecoracaoTexto(&deco, 0, t->fFamily, NULL, fontWeight, t->fSize, t->corb, t->corp, textAnchor, t->rotacao);
@@ -443,7 +443,7 @@ void Rotaciona(Posic P, float grs, FILE *log)
     fprintf(log, "Para:\n");
     fprintf(log, "Graus: %f°\n", rot);
     sprintf(rotacao, "%f %f %f", rot, t->x, t->y);
-    t->rotacao = strdup(rotacao);
+    t->rotacao = my_strdup(rotacao);
 }
 
 void FocoDaFoto(Lista Bal, int ID, float raio, float prof, float alt)
@@ -651,8 +651,8 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     // Verifica a área da foto e cria um retângulo dela
     Retangulo *r = malloc(sizeof(Retangulo));
     r->ID = 9999;
-    r->corb = strdup("#FF0000");
-    r->corp = strdup("none");
+    r->corb = my_strdup("#FF0000");
+    r->corp = my_strdup("none");
     r->pont = 5;
     r->x = Bal->x - (Cam->raio);
     r->y = Bal->y + (Cam->prof);
