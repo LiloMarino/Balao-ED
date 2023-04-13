@@ -509,13 +509,17 @@ void PontuaFoto(Lista Bal, int ID, int i, char sfx[])
         Balao *b = (Balao *)getIteratorNext(Bal, B);
         if (b->ID == ID)
         {
-            ImprimeFoto(b->cameras[i], sfx);
+            ImprimeFoto(getDataQueue(b->cameras[i]), sfx);
         }
     }
 }
 
 void ImprimeFoto(Lista Foto, char sfx[])
 {
+    if (Foto == NULL)
+    {
+        return;
+    }
     Figura AUX;
     Posic P;
     P = &AUX;
@@ -527,7 +531,7 @@ void ImprimeFoto(Lista Foto, char sfx[])
     Lista Tex = filter(Foto, VerificaTipo, P);
     AUX.tipo = 'L';
     Lista Lin = filter(Foto, VerificaTipo, P);
-    char nome[50], *path, *nomeArq, *extArq;
+    char nome[50], *path = NULL, *nomeArq = NULL, *extArq = NULL;
     splitPath(sfx, &path, &nomeArq, &extArq);
     strcpy(nome, nomeArq);
     strcat(nome, ".sfx");

@@ -37,6 +37,8 @@ clean:
 	rm -f *.o $(PROJ_NAME)
 	rm -rf $(LOGS)
 
+run:
+	valgrind --leak-check=full /home/lilo/Faculdade/Balao-ED/src/ted
 #
 # EMPACOTAR PARA ENTREGA
 #
