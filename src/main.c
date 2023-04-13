@@ -32,21 +32,6 @@ int main()
     OperaSVG(n, Cir, Ret, Tex, Lin);
     fechaQry(B);
 
-    B = abreLeituraQry("foto-dl-gira-atira.qry");
-    InterpretaQry(B,Cir,Ret,Tex,Lin);
-    OperaSVG(n, Cir, Ret, Tex, Lin);
-    fechaQry(B);
-
-    B = abreLeituraQry("foto-gira-atira.qry");
-    InterpretaQry(B,Cir,Ret,Tex,Lin);
-    OperaSVG(n, Cir, Ret, Tex, Lin);
-    fechaQry(B);
-
-    B = abreLeituraQry("gira-atira.qry");
-    InterpretaQry(B,Cir,Ret,Tex,Lin);
-    OperaSVG(n, Cir, Ret, Tex, Lin);
-    fechaQry(B);
-
     killLst(Cir);
     killLst(Ret);
     killLst(Lin);

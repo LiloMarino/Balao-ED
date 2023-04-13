@@ -132,10 +132,10 @@ Item popLst(Lista L)
     {
         lista->final = NULL; // Caso contrário, a lista ficou vazia e o ponteiro final também deve ser atualizado para NULL
     }
-    Item item = aux->info; 
-    free(aux);            
-    (lista->length)--;       
-    return item;          
+    Item item = aux->info;
+    free(aux);
+    (lista->length)--;
+    return item;
 }
 
 void removeLst(Lista L, Posic p)
@@ -320,11 +320,14 @@ void killLst(Lista L)
     ListaDupla *rmv, *p;
     rmv = ((ListaInfo *)L)->inicio;
     p = ((ListaInfo *)L)->inicio;
-    while (p->prox != NULL)
+    if (p != NULL)
     {
-        p = p->prox;
-        free(rmv);
-        rmv = p;
+        while (p->prox != NULL)
+        {
+            p = p->prox;
+            free(rmv);
+            rmv = p;
+        }
     }
     if (rmv != NULL)
     {
@@ -356,13 +359,20 @@ Iterador createIterador(Lista L, bool reverso)
 
 bool isIteratorEmpty(Lista L, Iterador it)
 {
-    if (((IteratorInfo *)it)->reverso)
+    if (it != NULL)
     {
-        return (((IteratorInfo *)it)->curr == ((ListaDupla *)getFirstLst(L))->ant);
+        if (((IteratorInfo *)it)->reverso)
+        {
+            return (((IteratorInfo *)it)->curr == NULL);
+        }
+        else
+        {
+            return (((IteratorInfo *)it)->curr == NULL);
+        }
     }
     else
     {
-        return (((IteratorInfo *)it)->curr == ((ListaDupla *)getLastLst(L))->prox);
+        return true;
     }
 }
 

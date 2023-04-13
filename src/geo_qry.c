@@ -459,7 +459,7 @@ void FocoDaFoto(Lista Bal, int ID, float raio, float prof, float alt)
     b->alt = alt;
     b->prof = prof;
     b->raio = raio;
-    for (int i; i < 10; i++)
+    for (int i = 0; i < 10; i++)
     {
         b->cameras[i] = createQueue();
     }
@@ -579,7 +579,8 @@ FILE *CriaLog(char prefix[])
 
 Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Camera, FILE *log)
 {
-    Texto *Bal = (Texto *)ProcuraID(ID, Circ, Ret, Tex, Lin, "T");
+    char forma[] = "T";
+    Texto *Bal = (Texto *)ProcuraID(ID, Circ, Ret, Tex, Lin, forma);
     Balao *Cam = (Balao *)Camera;
     fprintf(log, "Foto Tirada\n");
     fprintf(log, "Por Balao ID: %d\n", ID);
@@ -596,6 +597,8 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     Retangulo *r = malloc(sizeof(Retangulo));
     r->ID = 9999;
     r->corb = strdup("#FF0000");
+    r->corp = strdup("none");
+    r->pont = 5;
     r->x = x1;
     r->y = y1;
     r->larg = x2;
@@ -707,189 +710,196 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
 {
     Lista L3 = createLst(-1);
     // Para a lista L1
-    if (forma[0] != '0')
+    if (!isEmptyLst(L1))
     {
-        if (forma[0] == 'C')
+        if (forma[0] != '0')
         {
-            Figura *F = malloc(sizeof(Figura));
-            F->figura = getFirstLst(L1);
-            F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
-            F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
-            F->tipo = 'C';
-            F->ID = ((Circulo *)F->figura)->ID;
-            insertLst(L3, F);
-            while (!isEmptyLst(L1))
+            if (forma[0] == 'C')
             {
                 Figura *F = malloc(sizeof(Figura));
-                F->figura = popLst(L1);
+                F->figura = getFirstLst(L1);
                 F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
                 F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
                 F->tipo = 'C';
                 F->ID = ((Circulo *)F->figura)->ID;
                 insertLst(L3, F);
-                insertLst(L3, F);
+                while (!isEmptyLst(L1))
+                {
+                    Figura *F = malloc(sizeof(Figura));
+                    F->figura = popLst(L1);
+                    F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
+                    F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
+                    F->tipo = 'C';
+                    F->ID = ((Circulo *)F->figura)->ID;
+                    insertLst(L3, F);
+                    insertLst(L3, F);
+                }
             }
-        }
-        else if (forma[0] == 'R')
-        {
-            Figura *F = malloc(sizeof(Figura));
-            F->figura = getFirstLst(L1);
-            F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
-            F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
-            F->tipo = 'R';
-            F->ID = ((Retangulo *)F->figura)->ID;
-            insertLst(L3, F);
-            while (!isEmptyLst(L1))
+            else if (forma[0] == 'R')
             {
                 Figura *F = malloc(sizeof(Figura));
-                F->figura = popLst(L1);
+                F->figura = getFirstLst(L1);
                 F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
                 F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
                 F->tipo = 'R';
                 F->ID = ((Retangulo *)F->figura)->ID;
                 insertLst(L3, F);
+                while (!isEmptyLst(L1))
+                {
+                    Figura *F = malloc(sizeof(Figura));
+                    F->figura = popLst(L1);
+                    F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
+                    F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
+                    F->tipo = 'R';
+                    F->ID = ((Retangulo *)F->figura)->ID;
+                    insertLst(L3, F);
+                }
             }
-        }
-        else if (forma[0] == 'T')
-        {
-            Figura *F = malloc(sizeof(Figura));
-            F->figura = getFirstLst(L1);
-            F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
-            F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
-            F->tipo = 'T';
-            F->ID = ((Texto *)F->figura)->ID;
-            insertLst(L3, F);
-            while (!isEmptyLst(L1))
+            else if (forma[0] == 'T')
             {
                 Figura *F = malloc(sizeof(Figura));
-                F->figura = popLst(L1);
+                F->figura = getFirstLst(L1);
                 F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
                 F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
                 F->tipo = 'T';
                 F->ID = ((Texto *)F->figura)->ID;
                 insertLst(L3, F);
+                while (!isEmptyLst(L1))
+                {
+                    Figura *F = malloc(sizeof(Figura));
+                    F->figura = popLst(L1);
+                    F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
+                    F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
+                    F->tipo = 'T';
+                    F->ID = ((Texto *)F->figura)->ID;
+                    insertLst(L3, F);
+                }
             }
-        }
-        else if (forma[0] == 'L')
-        {
-            Figura *F = malloc(sizeof(Figura));
-            F->figura = getFirstLst(L1);
-            F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
-            F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
-            F->tipo = 'L';
-            F->ID = ((Linha *)F->figura)->ID;
-            insertLst(L3, F);
-            while (!isEmptyLst(L1))
+            else if (forma[0] == 'L')
             {
                 Figura *F = malloc(sizeof(Figura));
-                F->figura = popLst(L1);
+                F->figura = getFirstLst(L1);
                 F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
                 F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
                 F->tipo = 'L';
                 F->ID = ((Linha *)F->figura)->ID;
                 insertLst(L3, F);
+                while (!isEmptyLst(L1))
+                {
+                    Figura *F = malloc(sizeof(Figura));
+                    F->figura = popLst(L1);
+                    F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
+                    F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
+                    F->tipo = 'L';
+                    F->ID = ((Linha *)F->figura)->ID;
+                    insertLst(L3, F);
+                }
+            }
+        }
+        else
+        {
+            insertLst(L3, getFirstLst(L1));
+            while (!isEmptyLst(L1))
+            {
+                insertLst(L3, popLst(L1));
             }
         }
     }
-    else
-    {
-        insertLst(L3, getFirstLst(L1));
-        while (!isEmptyLst(L1))
-        {
-            insertLst(L3, popLst(L1));
-        }
-    }
+
     // Para a lista L2
-    if (forma[1] != '0')
+    if (!isEmptyLst(L2))
     {
-        if (forma[1] == 'C')
+        if (forma[1] != '0')
         {
-            Figura *F = malloc(sizeof(Figura));
-            F->figura = getFirstLst(L2);
-            F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
-            F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
-            F->tipo = 'C';
-            F->ID = ((Circulo *)F->figura)->ID;
-            insertLst(L3, F);
-            while (!isEmptyLst(L2))
+            if (forma[1] == 'C')
             {
                 Figura *F = malloc(sizeof(Figura));
-                F->figura = popLst(L2);
+                F->figura = getFirstLst(L2);
                 F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
                 F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
                 F->tipo = 'C';
                 F->ID = ((Circulo *)F->figura)->ID;
                 insertLst(L3, F);
-                insertLst(L3, F);
+                while (!isEmptyLst(L2))
+                {
+                    Figura *F = malloc(sizeof(Figura));
+                    F->figura = popLst(L2);
+                    F->dx = fabs(((Retangulo *)r)->x - ((Circulo *)F->figura)->x);
+                    F->dy = fabs(((Retangulo *)r)->y - ((Circulo *)F->figura)->y);
+                    F->tipo = 'C';
+                    F->ID = ((Circulo *)F->figura)->ID;
+                    insertLst(L3, F);
+                    insertLst(L3, F);
+                }
             }
-        }
-        else if (forma[1] == 'R')
-        {
-            Figura *F = malloc(sizeof(Figura));
-            F->figura = getFirstLst(L2);
-            F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
-            F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
-            F->tipo = 'R';
-            F->ID = ((Retangulo *)F->figura)->ID;
-            insertLst(L3, F);
-            while (!isEmptyLst(L2))
+            else if (forma[1] == 'R')
             {
                 Figura *F = malloc(sizeof(Figura));
-                F->figura = popLst(L2);
+                F->figura = getFirstLst(L2);
                 F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
                 F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
                 F->tipo = 'R';
                 F->ID = ((Retangulo *)F->figura)->ID;
                 insertLst(L3, F);
+                while (!isEmptyLst(L2))
+                {
+                    Figura *F = malloc(sizeof(Figura));
+                    F->figura = popLst(L2);
+                    F->dx = fabs(((Retangulo *)r)->x - ((Retangulo *)F->figura)->x);
+                    F->dy = fabs(((Retangulo *)r)->y - ((Retangulo *)F->figura)->y);
+                    F->tipo = 'R';
+                    F->ID = ((Retangulo *)F->figura)->ID;
+                    insertLst(L3, F);
+                }
             }
-        }
-        else if (forma[1] == 'T')
-        {
-            Figura *F = malloc(sizeof(Figura));
-            F->figura = getFirstLst(L2);
-            F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
-            F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
-            F->tipo = 'T';
-            F->ID = ((Texto *)F->figura)->ID;
-            insertLst(L3, F);
-            while (!isEmptyLst(L2))
+            else if (forma[1] == 'T')
             {
                 Figura *F = malloc(sizeof(Figura));
-                F->figura = popLst(L2);
+                F->figura = getFirstLst(L2);
                 F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
                 F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
                 F->tipo = 'T';
                 F->ID = ((Texto *)F->figura)->ID;
                 insertLst(L3, F);
+                while (!isEmptyLst(L2))
+                {
+                    Figura *F = malloc(sizeof(Figura));
+                    F->figura = popLst(L2);
+                    F->dx = fabs(((Retangulo *)r)->x - ((Texto *)F->figura)->x);
+                    F->dy = fabs(((Retangulo *)r)->y - ((Texto *)F->figura)->y);
+                    F->tipo = 'T';
+                    F->ID = ((Texto *)F->figura)->ID;
+                    insertLst(L3, F);
+                }
             }
-        }
-        else if (forma[1] == 'L')
-        {
-            Figura *F = malloc(sizeof(Figura));
-            F->figura = getFirstLst(L2);
-            F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
-            F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
-            F->tipo = 'L';
-            F->ID = ((Linha *)F->figura)->ID;
-            insertLst(L3, F);
-            while (!isEmptyLst(L2))
+            else if (forma[1] == 'L')
             {
                 Figura *F = malloc(sizeof(Figura));
-                F->figura = popLst(L2);
+                F->figura = getFirstLst(L2);
                 F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
                 F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
                 F->tipo = 'L';
                 F->ID = ((Linha *)F->figura)->ID;
                 insertLst(L3, F);
+                while (!isEmptyLst(L2))
+                {
+                    Figura *F = malloc(sizeof(Figura));
+                    F->figura = popLst(L2);
+                    F->dx = fabs(((Retangulo *)r)->x - ((Linha *)F->figura)->x1);
+                    F->dy = fabs(((Retangulo *)r)->y - ((Linha *)F->figura)->y1);
+                    F->tipo = 'L';
+                    F->ID = ((Linha *)F->figura)->ID;
+                    insertLst(L3, F);
+                }
             }
         }
-    }
-    else
-    {
-        insertLst(L3, getFirstLst(L2));
-        while (!isEmptyLst(L2))
+        else
         {
-            insertLst(L3, popLst(L2));
+            insertLst(L3, getFirstLst(L2));
+            while (!isEmptyLst(L2))
+            {
+                insertLst(L3, popLst(L2));
+            }
         }
     }
     return L3;
