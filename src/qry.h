@@ -84,4 +84,7 @@ bool VerificaPonto(float Axsup, float Px, float Axinf, float Aysup, float Py, fl
 /* Concatena a lista de formas 1 com a lista formas 2 */
 Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r);
 
+/*=============================================PARA TESTES======================================================*/
+void OperaSVG(int n[], Lista Circ, Lista Ret, Lista Tex, Lista Lin);
+
 #endif

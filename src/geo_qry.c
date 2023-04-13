@@ -492,6 +492,19 @@ void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FI
     return;
 }
 
+void PontuaFoto(Lista Bal, int i, ArqSvg sfx)
+{
+    Iterador B = createIterador(Bal, false);
+    while (!isIteratorEmpty(Bal, B))
+    {
+        Balao *b = (Balao *)getIteratorNext(Bal, B);
+        if (b->ID == ID)
+        {
+            b->cameras[i];
+        }
+    }
+}
+
 Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[])
 {
     Iterador T = createIterador(Tex, false);
@@ -940,4 +953,40 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
         }
     }
     return L3;
+}
+
+void OperaSVG(int n[], Lista Circ, Lista Ret, Lista Tex, Lista Lin)
+{
+    char nomearq[30];
+    sprintf(nomearq, "teste-%d.svg", n[0]);
+    n[0]++;
+
+    ArqSvg B = abreEscritaSvg(nomearq);
+
+    Iterador R = createIterador(Ret, false);
+
+    while (!isIteratorEmpty(Ret, R))
+        CriaRetanguloSvg(B, getIteratorNext(Ret, R));
+
+    Iterador L = createIterador(Lin, false);
+
+    while (!isIteratorEmpty(Lin, L))
+        CriaLinhaSvg(B, getIteratorNext(Lin, L));
+
+    Iterador C = createIterador(Circ, false);
+
+    while (!isIteratorEmpty(Circ, C))
+        CriaCirculoSvg(B, getIteratorNext(Circ, C));
+
+    Iterador T = createIterador(Tex, false);
+
+    while (!isIteratorEmpty(Tex, T))
+        CriaTextoSvg(B, getIteratorNext(Tex, T));
+
+    killIterator(R);
+    killIterator(L);
+    killIterator(C);
+    killIterator(T);
+
+    fechaSvg(B);
 }

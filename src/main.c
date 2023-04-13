@@ -7,9 +7,6 @@
 #include "arqsvg.h"
 #include "listadupla.h"
 
-/*=============================================PARA TESTES======================================================*/
-void OperaSVG(int n[], Lista Circ, Lista Ret, Lista Tex, Lista Lin);
-
 int main()
 {
     int n[1];
@@ -38,38 +35,3 @@ int main()
     killLst(Tex);
 }
 
-void OperaSVG(int n[], Lista Circ, Lista Ret, Lista Tex, Lista Lin)
-{
-    char nomearq[30];
-    sprintf(nomearq, "teste-%d.svg", n[0]);
-    n[0]++;
-
-    ArqSvg B = abreEscritaSvg(nomearq);
-
-    Iterador R = createIterador(Ret, false);
-
-    while (!isIteratorEmpty(Ret, R))
-        CriaRetanguloSvg(B, getIteratorNext(Ret, R));
-
-    Iterador L = createIterador(Lin, false);
-
-    while (!isIteratorEmpty(Lin, L))
-        CriaLinhaSvg(B, getIteratorNext(Lin, L));
-
-    Iterador C = createIterador(Circ, false);
-
-    while (!isIteratorEmpty(Circ, C))
-        CriaCirculoSvg(B, getIteratorNext(Circ, C));
-
-    Iterador T = createIterador(Tex, false);
-
-    while (!isIteratorEmpty(Tex, T))
-        CriaTextoSvg(B, getIteratorNext(Tex, T));
-
-    killIterator(R);
-    killIterator(L);
-    killIterator(C);
-    killIterator(T);
-
-    fechaSvg(B);
-}
