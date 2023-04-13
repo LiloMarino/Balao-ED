@@ -43,7 +43,7 @@ atribuir NULL (para char *) ou valores negativos (double) ao respectivo parametr
 void preparaDecoracao(char **deco, int decoLen,
                       char *corBorda, char *corPreenchimento,
                       char *larguraBorda, double transparencia,
-                      double transparenciaPreenchimento, double transparenciaBorda);
+                      double transparenciaPreenchimento, double transparenciaBorda,double pontilhadoBorda);
 
 /*
    Insere uma circunferencia com centro em (xc,yc) de raio r. Atributos de formatacao

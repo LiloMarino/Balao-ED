@@ -61,7 +61,7 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[
 FILE *CriaLog(char prefix[]);
 
 /* Verifica todos os itens dentro da área da foto e cria uma lista contendo eles*/
-Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Posic Balloon, Posic Camera);
+Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Camera, FILE *log);
 
 /*Verifica se um retangulo está dentro da foto que está sendo tirada pelo balão*/
 bool VerificaRetangulo(Item info, Posic R);
@@ -81,7 +81,7 @@ bool VerificaIntervalo(float Inicio, float P, float Fim);
 /*Verifica se o ponto está dentro da área*/
 bool VerificaPonto();
 
-/* Concatena a lista 1 com a lista 2 */
-Lista ConcatLst(Lista L1, Lista L2);
+/* Concatena a lista de formas 1 com a lista formas 2 */
+Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R);
 
 #endif

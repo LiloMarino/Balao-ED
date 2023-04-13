@@ -23,7 +23,7 @@ struct StCirculo
 struct StRetangulo
 {
     int ID;
-    double x, y, larg, alt;
+    double x, y, larg, alt, pont;
     char *corb, *corp;
 };
 
@@ -86,6 +86,7 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
             sscanf(linha, "%s %d %lf %lf %lf %lf", comando, &r->ID, &r->x, &r->y, &r->larg, &r->alt);
             r->corb = getParametroI(linha, 6);
             r->corp = getParametroI(linha, 7);
+            r->pont = -1;
             insertLst(Ret, r);
         }
         else if (strcmp(comando, "l") == 0)
@@ -177,7 +178,7 @@ void CriaRetanguloSvg(ArqSvg fsvg, Item info)
 {
     Retangulo *r = (Retangulo *)info;
     char *deco = NULL;
-    preparaDecoracao(&deco, 0, r->corb, r->corp, NULL, -1, -1, -1);
+    preparaDecoracao(&deco, 0, r->corb, r->corp, NULL, -1, -1, -1,r->pont);
     escreveRetanguloSvg(fsvg, r->x, r->y, r->larg, r->alt, deco);
 }
 
@@ -185,7 +186,7 @@ void CriaCirculoSvg(ArqSvg fsvg, Item info)
 {
     Circulo *c = (Circulo *)info;
     char *deco = NULL;
-    preparaDecoracao(&deco, 0, c->corb, c->corp, NULL, -1, -1, -1);
+    preparaDecoracao(&deco, 0, c->corb, c->corp, NULL, -1, -1, -1,-1,-1);
     escreveCirculoSvg(fsvg, c->x, c->y, c->raio, deco);
 }
 
@@ -193,7 +194,7 @@ void CriaLinhaSvg(ArqSvg fsvg, Item info)
 {
     Linha *l = (Linha *)info;
     char *deco = NULL;
-    preparaDecoracao(&deco, 0, l->cor, NULL, NULL, -1, -1, -1);
+    preparaDecoracao(&deco, 0, l->cor, NULL, NULL, -1, -1, -1,-1);
     escreveLinhaSvg(fsvg, l->x1, l->y1, l->x2, l->y2, deco);
 }
 
@@ -249,7 +250,16 @@ struct StBalao
     Fila cameras[10]; // Balao tem 10 cameras com capacidade de 15 fotos cada
 };
 
+struct StFigura
+{
+    int ID;
+    Item figura;
+    float dx, dy;
+    char tipo;
+};
+
 typedef struct StBalao Balao;
+typedef struct StFigura Figura;
 
 ArqQry abreLeituraQry(char *fn)
 {
@@ -303,7 +313,7 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
                 {
                     char prefix[] = "foto";
                     log = CriaLog(prefix);
-                    TiraFoto(Circ, Ret, Tex, Lin, Baloes, ID);
+                    TiraFoto(Circ, Ret, Tex, Lin, Baloes, ID, log);
                     fclose(log);
                 }
                 else if (strcmp(comando, "df") == 0)
@@ -456,7 +466,7 @@ void FocoDaFoto(Lista Bal, int ID, float raio, float prof, float alt)
     insertLst(Bal, b);
 }
 
-void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID)
+void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FILE *log)
 {
     // Procura o balão na lista Bal
     Iterador B = createIterador(Bal, false);
@@ -467,7 +477,7 @@ void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID)
         {
             for (int i = 0; i < 10; i++)
             {
-                if (inserirFila(b->cameras[i], ProcessaFoto(Circ, Ret, Tex, Lin, ProcuraID(ID, Circ, Ret, Tex, Lin, "T"), b)))
+                if (inserirFila(b->cameras[i], ProcessaFoto(Circ, Ret, Tex, Lin, ID, b)))
                 {
                     // Foto criada com sucesso
                     return;
@@ -566,11 +576,17 @@ FILE *CriaLog(char prefix[])
     return arq;
 }
 
-Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Posic Balloon, Posic Camera)
+Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Camera, FILE *log)
 {
-    // Verifica a área da foto e cria um retângulo dela
-    Texto *Bal = (Texto *)Balloon;
+    Texto *Bal = (Texto *)ProcuraID(ID, Circ, Ret, Tex, Lin, "T");
     Balao *Cam = (Balao *)Camera;
+    fprintf(log, "Foto Tirada\n");
+    fprintf(log, "Por Balao ID: %d\n", ID);
+    fprintf(log, "Parâmetros da foto\n");
+    fprintf(log, "Altitude: %f\n", Cam->alt);
+    fprintf(log, "Profundidade: %f\n", Cam->prof);
+    fprintf(log, "Raio: %f\n", Cam->raio);
+    // Verifica a área da foto e cria um retângulo dela
     float x1, y1, x2, y2;
     x1 = Bal->x - (Cam->raio);
     y1 = Bal->y + (Cam->prof);
@@ -590,9 +606,50 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Posic Balloon, P
     Lista R = filter(Ret, VerificaRetangulo, Area);
     Lista T = filter(Tex, VerificaTexto, Area);
     Lista L = filter(Lin, VerificaLinha, Area);
-    Lista Parte1 = ConcatLst(C, R);
-    Lista Parte2 = ConcatLst(Parte1, T);
-    Lista Foto = ConcatLst(Parte2, L);
+
+    // Produz os dados de registro
+    fprintf(log, "Elementos presentes na foto\n");
+
+    Iterador AUX = createIterador(C, false);
+    while (!isIteratorEmpty(L, AUX))
+    {
+        Item item = getIteratorNext(L, AUX);
+        fprintf(log, "Circulo ID: %d\n", ((Circulo *)item)->ID);
+        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Circulo *)item)->x), fabs(r->y - ((Circulo *)item)->y));
+    }
+    killIterator(AUX);
+
+    Iterador AUX = createIterador(R, false);
+    while (!isIteratorEmpty(L, AUX))
+    {
+        Item item = getIteratorNext(L, AUX);
+        fprintf(log, "Retângulo ID: %d\n", ((Retangulo *)item)->ID);
+        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Retangulo *)item)->x), fabs(r->y - ((Retangulo *)item)->y));
+    }
+    killIterator(AUX);
+
+    Iterador AUX = createIterador(T, false);
+    while (!isIteratorEmpty(L, AUX))
+    {
+        Item item = getIteratorNext(L, AUX);
+        fprintf(log, "Texto ID: %d\n", ((Texto *)item)->ID);
+        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Texto *)item)->x), fabs(r->y - ((Texto *)item)->y));
+    }
+    killIterator(AUX);
+
+    Iterador AUX = createIterador(L, false);
+    while (!isIteratorEmpty(L, AUX))
+    {
+        Item item = getIteratorNext(L, AUX);
+        fprintf(log, "Linha ID: %d\n", ((Linha *)item)->ID);
+        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Linha *)item)->x), fabs(r->y - ((Linha *)item)->y));
+    }
+    killIterator(AUX);
+
+    // Prepara a foto para o armazenamento
+    Lista Parte1 = ConcatLst(C, R, "CR");
+    Lista Parte2 = ConcatLst(Parte1, T, "0T");
+    Lista Foto = ConcatLst(Parte2, L, "0L");
     killLst(C);
     killLst(R);
     killLst(T);
@@ -606,58 +663,233 @@ bool VerificaRetangulo(Item info, Posic R)
 {
     Retangulo *r = (Retangulo *)info;
     Retangulo *foto = (Retangulo *)R;
-    //Template VerificaPonto(foto->x,,foto->larg,foto->y,,foto->alt) 
-    return(VerificaPonto(foto->x,r->x,foto->larg,foto->y,r->y,foto->alt) || VerificaPonto(foto->x,r->larg,foto->larg,foto->y,r->alt,foto->alt));
+    // Template VerificaPonto(foto->x,,foto->larg,foto->y,,foto->alt)
+    return (VerificaPonto(foto->x, r->x, foto->larg, foto->y, r->y, foto->alt) || VerificaPonto(foto->x, r->larg, foto->larg, foto->y, r->alt, foto->alt));
 }
 
 bool VerificaCirculo(Item info, Posic R)
 {
     Circulo *c = (Circulo *)info;
     Retangulo *foto = (Retangulo *)R;
-    float PYSUP = (c->y)+(c->raio);
-    float PYINF = (c->y)-(c->raio);
-    float PXDIR =
-    float PXESQ = 
-    return (VerificaPonto(foto->x,,foto->larg,foto->y,,foto->alt));
+    float PYSUP = (c->y) + (c->raio);
+    float PYINF = (c->y) - (c->raio);
+    float PXDIR = (c->x) + (c->raio);
+    float PXESQ = (c->x) - (c->raio);
+    return (VerificaPonto(foto->x, c->x, foto->larg, foto->y, PYSUP, foto->alt) || VerificaPonto(foto->x, c->x, foto->larg, foto->y, PYINF, foto->alt) || VerificaPonto(foto->x, PXDIR, foto->larg, foto->y, c->y, foto->alt) || VerificaPonto(foto->x, PXESQ, foto->larg, foto->y, c->y, foto->alt));
 }
 
 bool VerificaTexto(Item info, Posic R)
 {
     Texto *t = (Texto *)info;
     Retangulo *foto = (Retangulo *)R;
-    return (VerificaPonto(foto->x,t->x,foto->larg,foto->y,t->y,foto->alt));
+    return (VerificaPonto(foto->x, t->x, foto->larg, foto->y, t->y, foto->alt));
 }
 
 bool VerificaLinha(Item info, Posic R)
 {
     Linha *l = (Linha *)info;
     Retangulo *foto = (Retangulo *)R;
-    return(VerificaPonto(foto->x,l->x1,foto->larg,foto->y,l->y1,foto->alt) || VerificaPonto(foto->x,l->x2,foto->larg,foto->y,l->y2,foto->alt));
+    return (VerificaPonto(foto->x, l->x1, foto->larg, foto->y, l->y1, foto->alt) || VerificaPonto(foto->x, l->x2, foto->larg, foto->y, l->y2, foto->alt));
 }
 
 bool VerificaIntervalo(float Inicio, float P, float Fim)
 {
-    return ((Inicio < P) && (P < Fim));
+    return ((Inicio <= P) && (P <= Fim));
 }
 
-bool VerificaPonto(float Axsup,float Px,float Axinf,float Aysup,float Py,float Ayinf)
+bool VerificaPonto(float Axsup, float Px, float Axinf, float Aysup, float Py, float Ayinf)
 {
-    return ((VerificaIntervalo(Axsup,Px,Axinf) && VerificaIntervalo(Aysup,Py,Ayinf)));
+    return ((VerificaIntervalo(Axsup, Px, Axinf) && VerificaIntervalo(Aysup, Py, Ayinf)));
 }
 
-Lista ConcatLst(Lista L1, Lista L2)
+Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic R)
 {
-    // Concatena a Lista 1 com a Lista 2
     Lista L3 = createLst(-1);
-    insertLst(L3, getFirstLst(L1));
-    while (!isEmptyLst(L1))
+    // Para a lista L1
+    if (forma[0] != '0')
     {
-        insertLst(L3, popLst(L1));
+        if (forma[0] == 'C')
+        {
+            Figura *F = malloc(sizeof(Figura));
+            F->figura = getFirstLst(L1);
+            F->dx = fabs(r->x - ((Circulo *)F->figura)->x);
+            F->dy = fabs(r->y - ((Circulo *)F->figura)->y);
+            F->tipo = 'C';
+            F->ID = ((Circulo *)F->figura)->ID;
+            insertLst(L3, F);
+            while (!isEmptyLst(L1))
+            {
+                Figura *F = malloc(sizeof(Figura));
+                F->figura = popLst(L1);
+                F->dx = fabs(r->x - ((Circulo *)F->figura)->x);
+                F->dy = fabs(r->y - ((Circulo *)F->figura)->y);
+                F->tipo = 'C';
+                F->ID = ((Circulo *)F->figura)->ID;
+                insertLst(L3, F);
+                insertLst(L3, F);
+            }
+        }
+        else if (forma[0] == 'R')
+        {
+            Figura *F = malloc(sizeof(Figura));
+            F->figura = getFirstLst(L1);
+            F->dx = fabs(r->x - ((Retangulo *)F->figura)->x);
+            F->dy = fabs(r->y - ((Retangulo *)F->figura)->y);
+            F->tipo = 'R';
+            F->ID = ((Retangulo *)F->figura)->ID;
+            insertLst(L3, F);
+            while (!isEmptyLst(L1))
+            {
+                Figura *F = malloc(sizeof(Figura));
+                F->figura = popLst(L1);
+                F->dx = fabs(r->x - ((Retangulo *)F->figura)->x);
+                F->dy = fabs(r->y - ((Retangulo *)F->figura)->y);
+                F->tipo = 'R';
+                F->ID = ((Retangulo *)F->figura)->ID;
+                insertLst(L3, F);
+            }
+        }
+        else if (forma[0] == 'T')
+        {
+            Figura *F = malloc(sizeof(Figura));
+            F->figura = getFirstLst(L1);
+            F->dx = fabs(r->x - ((Texto *)F->figura)->x);
+            F->dy = fabs(r->y - ((Texto *)F->figura)->y);
+            F->tipo = 'T';
+            F->ID = ((Texto *)F->figura)->ID;
+            insertLst(L3, F);
+            while (!isEmptyLst(L1))
+            {
+                Figura *F = malloc(sizeof(Figura));
+                F->figura = popLst(L1);
+                F->dx = fabs(r->x - ((Texto *)F->figura)->x);
+                F->dy = fabs(r->y - ((Texto *)F->figura)->y);
+                F->tipo = 'T';
+                F->ID = ((Texto *)F->figura)->ID;
+                insertLst(L3, F);
+            }
+        }
+        else if (forma[0] == 'L')
+        {
+            Figura *F = malloc(sizeof(Figura));
+            F->figura = getFirstLst(L1);
+            F->dx = fabs(r->x - ((Linha *)F->figura)->x);
+            F->dy = fabs(r->y - ((Linha *)F->figura)->y);
+            F->tipo = 'L';
+            F->ID = ((Linha *)F->figura)->ID;
+            insertLst(L3, F);
+            while (!isEmptyLst(L1))
+            {
+                Figura *F = malloc(sizeof(Figura));
+                F->figura = popLst(L1);
+                F->dx = fabs(r->x - ((Linha *)F->figura)->x);
+                F->dy = fabs(r->y - ((Linha *)F->figura)->y);
+                F->tipo = 'L';
+                F->ID = ((Linha *)F->figura)->ID;
+                insertLst(L3, F);
+            }
+        }
     }
-    insertLst(L3, getFirstLst(L2));
-    while (!isEmptyLst(L2))
+    else
     {
-        insertLst(L3, popLst(L2));
+        insertLst(L3, getFirstLst(L1));
+        while (!isEmptyLst(L1))
+        {
+            insertLst(L3, popLst(L1));
+        }
+    }
+    // Para a lista L2
+    if (forma[1] != '0')
+    {
+        if (forma[1] == 'C')
+        {
+            Figura *F = malloc(sizeof(Figura));
+            F->figura = getFirstLst(L2);
+            F->dx = fabs(r->x - ((Circulo *)F->figura)->x);
+            F->dy = fabs(r->y - ((Circulo *)F->figura)->y);
+            F->tipo = 'C';
+            F->ID = ((Circulo *)F->figura)->ID;
+            insertLst(L3, F);
+            while (!isEmptyLst(L2))
+            {
+                Figura *F = malloc(sizeof(Figura));
+                F->figura = popLst(L2);
+                F->dx = fabs(r->x - ((Circulo *)F->figura)->x);
+                F->dy = fabs(r->y - ((Circulo *)F->figura)->y);
+                F->tipo = 'C';
+                F->ID = ((Circulo *)F->figura)->ID;
+                insertLst(L3, F);
+                insertLst(L3, F);
+            }
+        }
+        else if (forma[1] == 'R')
+        {
+            Figura *F = malloc(sizeof(Figura));
+            F->figura = getFirstLst(L2);
+            F->dx = fabs(r->x - ((Retangulo *)F->figura)->x);
+            F->dy = fabs(r->y - ((Retangulo *)F->figura)->y);
+            F->tipo = 'R';
+            F->ID = ((Retangulo *)F->figura)->ID;
+            insertLst(L3, F);
+            while (!isEmptyLst(L2))
+            {
+                Figura *F = malloc(sizeof(Figura));
+                F->figura = popLst(L2);
+                F->dx = fabs(r->x - ((Retangulo *)F->figura)->x);
+                F->dy = fabs(r->y - ((Retangulo *)F->figura)->y);
+                F->tipo = 'R';
+                F->ID = ((Retangulo *)F->figura)->ID;
+                insertLst(L3, F);
+            }
+        }
+        else if (forma[1] == 'T')
+        {
+            Figura *F = malloc(sizeof(Figura));
+            F->figura = getFirstLst(L2);
+            F->dx = fabs(r->x - ((Texto *)F->figura)->x);
+            F->dy = fabs(r->y - ((Texto *)F->figura)->y);
+            F->tipo = 'T';
+            F->ID = ((Texto *)F->figura)->ID;
+            insertLst(L3, F);
+            while (!isEmptyLst(L2))
+            {
+                Figura *F = malloc(sizeof(Figura));
+                F->figura = popLst(L2);
+                F->dx = fabs(r->x - ((Texto *)F->figura)->x);
+                F->dy = fabs(r->y - ((Texto *)F->figura)->y);
+                F->tipo = 'T';
+                F->ID = ((Texto *)F->figura)->ID;
+                insertLst(L3, F);
+            }
+        }
+        else if (forma[1] == 'L')
+        {
+            Figura *F = malloc(sizeof(Figura));
+            F->figura = getFirstLst(L2);
+            F->dx = fabs(r->x - ((Linha *)F->figura)->x);
+            F->dy = fabs(r->y - ((Linha *)F->figura)->y);
+            F->tipo = 'L';
+            F->ID = ((Linha *)F->figura)->ID;
+            insertLst(L3, F);
+            while (!isEmptyLst(L2))
+            {
+                Figura *F = malloc(sizeof(Figura));
+                F->figura = popLst(L2);
+                F->dx = fabs(r->x - ((Linha *)F->figura)->x);
+                F->dy = fabs(r->y - ((Linha *)F->figura)->y);
+                F->tipo = 'L';
+                F->ID = ((Linha *)F->figura)->ID;
+                insertLst(L3, F);
+            }
+        }
+    }
+    else
+    {
+        insertLst(L3, getFirstLst(L2));
+        while (!isEmptyLst(L2))
+        {
+            insertLst(L3, popLst(L2));
+        }
     }
     return L3;
 }

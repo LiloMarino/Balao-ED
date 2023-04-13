@@ -14,7 +14,7 @@ ArqSvg abreEscritaSvg(char *fn)
     return fsvg;
 }
 
-void preparaDecoracao(char **deco, int decoLen, char *corBorda, char *corPreenchimento, char *larguraBorda, double transparencia, double transparenciaPreenchimento, double transparenciaBorda)
+void preparaDecoracao(char **deco, int decoLen, char *corBorda, char *corPreenchimento, char *larguraBorda, double transparencia, double transparenciaPreenchimento, double transparenciaBorda,double pontilhadoBorda)
 {
     char decoracao[250];
     decoracao[0] = '\0';
@@ -58,6 +58,14 @@ void preparaDecoracao(char **deco, int decoLen, char *corBorda, char *corPreench
         sprintf(strTransparenciaBorda, "%f", transparenciaBorda);
         strcat(decoracao, "stroke-opacity=\"");
         strcat(decoracao, strTransparenciaBorda);
+        strcat(decoracao, "\" ");
+    }
+    if()
+    {
+        char strPontilhadoBorda[20];
+        sprintf(strPontilhadoBorda, "%lf", pontilhadoBorda);
+        strcat(decoracao, "stroke-dasharray=\"");
+        strcat(decoracao, strPontilhadoBorda);
         strcat(decoracao, "\" ");
     }
     decoLen = strlen(decoracao);
