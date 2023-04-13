@@ -7,6 +7,10 @@ OBJETOS=$(patsubst %.c,%.o,$(wildcard *.c))
 # compilador
 CC=gcc
 
+LOGS = logs/
+
+$(shell mkdir -p $(LOGS))
+
 # Flags
 CFLAGS= -ggdb -O0 -fstack-protector-all -Werror=implicit-function-declaration
 LDFLAGS= -O0
@@ -31,6 +35,7 @@ $(PROJ_NAME): $(OBJETOS)
 
 clean:
 	rm -f *.o $(PROJ_NAME)
+	rm -rf $(LOGS)
 
 #
 # EMPACOTAR PARA ENTREGA

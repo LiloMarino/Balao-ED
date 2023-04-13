@@ -589,20 +589,15 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     fprintf(log, "Profundidade: %f\n", Cam->prof);
     fprintf(log, "Raio: %f\n", Cam->raio);
     // Verifica a área da foto e cria um retângulo dela
-    float x1, y1, x2, y2;
-    x1 = Bal->x - (Cam->raio);
-    y1 = Bal->y + (Cam->prof);
-    x2 = Bal->x + (Cam->raio);
-    y2 = Bal->y + (Cam->prof) + (Cam->alt);
     Retangulo *r = malloc(sizeof(Retangulo));
     r->ID = 9999;
     r->corb = strdup("#FF0000");
     r->corp = strdup("none");
     r->pont = 5;
-    r->x = x1;
-    r->y = y1;
-    r->larg = x2;
-    r->alt = y2;
+    r->x = Bal->x - (Cam->raio);
+    r->y = Bal->y + (Cam->prof);
+    r->larg = 2*(Cam->raio);
+    r->alt = (Cam->alt);
     Posic Area = insertLst(Ret, r);
 
     // Verifica quais elementos estão presentes na foto
