@@ -37,6 +37,7 @@ int main(int argc, char **argv)
     FILE *log = CriaLog(nomeLog);
     
     InterpretaGeo(A, Cir, Ret, Tex, Lin);
+    OperaSVG(strcat(nomeLog,"-map"), Cir, Ret, Tex, Lin);
     InterpretaQry(B, Cir, Ret, Tex, Lin,log);
     OperaSVG(nomeLog, Cir, Ret, Tex, Lin);
 

@@ -172,7 +172,10 @@ void InterpretaGeo(ArqGeo fgeo, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 
 void fechaGeo(ArqGeo fgeo)
 {
-    fclose(fgeo);
+    if (fgeo != NULL)
+    {
+        fclose(fgeo);
+    }
 }
 
 void CriaRetanguloSvg(ArqSvg fsvg, Item info)
@@ -271,6 +274,10 @@ ArqQry abreLeituraQry(char *fn)
 
 void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FILE *log)
 {
+    if (fqry == NULL)
+    {
+        return;
+    }
     char comando[2], forma[1];
     int ID;
     char *linha = NULL;
@@ -345,7 +352,10 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FIL
 
 void fechaQry(ArqQry fqry)
 {
-    fclose(fqry);
+    if (fqry != NULL)
+    {
+        fclose(fqry);
+    }
 }
 
 void Move(Posic P, float dx, float dy, char forma[], FILE *log)
@@ -603,7 +613,7 @@ FILE *CriaLog(char nome[])
 {
     char nomearq[50];
     int n = 1;
-    sprintf(nomearq,"%s.txt",nome);
+    sprintf(nomearq, "%s.txt", nome);
 
     // Verifica se o arquivo já existe
     while (fopen(nomearq, "r") != NULL)

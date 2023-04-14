@@ -12,7 +12,7 @@ LOGS = logs/
 $(shell mkdir -p $(LOGS))
 
 # Flags
-CFLAGS= -ggdb -O0 -std=c99 -fstack-protector-all -Werror=implicit-function-declaration
+CFLAGS= -ggdb -O0 -std=c99 -fstack-protector-all -Werror=implicit-function-declaration -g
 LDFLAGS= -O0
 
 $(PROJ_NAME): $(OBJETOS)
@@ -32,6 +32,10 @@ $(PROJ_NAME): $(OBJETOS)
 #   #include "c.h"
 # 
 # a.o: a.h b.h c.h a.c
+
+debug: main.c $(LIBS)
+	gcc -g -Wall -Wextra -pedantic -std=c99 -I$(INC) $< $(LIBS) -o ted
+	gdb ./ted -ex "run -o /home/lilo/Faculdade/EstruturaDeDados/src/logs -e /home/lilo/Faculdade/EstruturaDeDados/src -f 02-planta-cidade.geo"
 
 clean:
 	rm -f *.o $(PROJ_NAME)
