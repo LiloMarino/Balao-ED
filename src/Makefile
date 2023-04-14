@@ -1,6 +1,6 @@
 PROJ_NAME=ted
 
-ALUNO= 
+ALUNO= muriloa
 LIBS=-lm 
 OBJETOS=$(patsubst %.c,%.o,$(wildcard *.c))
 

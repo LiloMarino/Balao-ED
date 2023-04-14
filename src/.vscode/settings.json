@@ -58,6 +58,7 @@
         "geo.h": "c",
         "qry.h": "c",
         "arqsvg.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "cmath": "c"
     }
 }

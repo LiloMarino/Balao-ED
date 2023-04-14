@@ -269,14 +269,12 @@ ArqQry abreLeituraQry(char *fn)
     return fqry;
 }
 
-void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
+void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FILE *log)
 {
     char comando[2], forma[1];
     int ID;
     char *linha = NULL;
-    FILE *log;
     Lista Baloes = createLst(-1);
-
     while (leLinha(fqry, &linha))
     {
         sscanf(linha, "%s", comando);
@@ -289,20 +287,14 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
                 if (strcmp(comando, "mv") == 0)
                 {
                     float dx, dy;
-                    char prefix[] = "move";
-                    log = CriaLog(prefix);
                     sscanf(linha, "%s %d %f %f", comando, &ID, &dx, &dy);
                     Move(p, dx, dy, forma, log);
-                    fclose(log);
                 }
                 else if (strcmp(comando, "g") == 0)
                 {
                     float grs;
-                    char prefix[] = "rotaciona";
-                    log = CriaLog(prefix);
                     sscanf(linha, "%s %d %f", comando, &ID, &grs);
                     Rotaciona(p, grs, log);
-                    fclose(log);
                 }
                 else if (strcmp(comando, "ff") == 0)
                 {
@@ -312,21 +304,15 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin)
                 }
                 else if (strcmp(comando, "tf") == 0)
                 {
-                    char prefix[] = "foto";
-                    log = CriaLog(prefix);
                     TiraFoto(Circ, Ret, Tex, Lin, Baloes, ID, log);
-                    fclose(log);
                 }
                 else if (strcmp(comando, "df") == 0)
                 {
-                    char prefix[] = "pontuação";
                     int i;
                     char *sfx;
                     sscanf(linha, "%s %d %d", comando, &ID, &i);
                     sfx = getParametroI(linha, 3);
-                    log = CriaLog(prefix);
                     PontuaFoto(Baloes, ID, i, sfx);
-                    fclose(log);
                 }
                 else if (strcmp(comando, "d") == 0)
                 {
@@ -613,17 +599,17 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[
     return NULL;
 }
 
-FILE *CriaLog(char prefix[])
+FILE *CriaLog(char nome[])
 {
     char nomearq[50];
     int n = 1;
-    sprintf(nomearq, "logs/%s-log%d.txt", prefix, n);
+    sprintf(nomearq,"%s.txt",nome);
 
     // Verifica se o arquivo já existe
     while (fopen(nomearq, "r") != NULL)
     {
         n++;
-        sprintf(nomearq, "logs/%s-log%d.txt", prefix, n);
+        sprintf(nomearq, "%s-%d.txt", nome, n);
     }
 
     // Cria o arquivo com o nome gerado

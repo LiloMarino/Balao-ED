@@ -1,6 +1,9 @@
 #ifndef PATH__
 #define PATH__
 
+
+typedef struct Args Argumentos;
+
 /*
    Este modulo prove funcoes para manipulacao de caminhos de arquivos.
    Basicamente, exitem 2 tipos de funcoes:
@@ -105,5 +108,10 @@ void getPath(char *fullPath, char **path);
    "aa/bb/cc/"  => "aa/bb/cc"
  */
 void normalizePath(char *path, char **normPath);
+
+/*Concatena os nomes do Geo e do Qry usados na execução do programa*/
+char *ConcatenaNomes(char *NomeGeo, char *NomeQry);
+
+void ArgumentosDeComando(char **pathEntry, char **arqGeo, char **pathExit, char **arqQry, int argc, char **argv);
 
 #endif

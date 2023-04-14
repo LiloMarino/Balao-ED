@@ -17,7 +17,7 @@ typedef void *ArqQry;
 ArqQry abreLeituraQry(char *fn);
 
 /*A função recebe um arquivo .qry interpreta e opera os elementos das listas*/
-void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin);
+void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FILE *log);
 
 /* Fecha o arquivo fqry. */
 void fechaQry(ArqQry fqry);
@@ -90,7 +90,7 @@ bool VerificaPonto(float Axsup, float Px, float Axinf, float Aysup, float Py, fl
 /* Concatena a lista de formas 1 com a lista formas 2 */
 Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r);
 
-/*=============================================PARA TESTES======================================================*/
+/*Opera os as listas criando o SVG conforme o nome*/
 void OperaSVG(char nome[], Lista Circ, Lista Ret, Lista Tex, Lista Lin);
 
 #endif

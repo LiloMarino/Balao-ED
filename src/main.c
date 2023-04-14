@@ -6,26 +6,42 @@
 #include "qry.h"
 #include "arqsvg.h"
 #include "listadupla.h"
+#include "path.h"
 
-int main()
+int main(int argc, char **argv)
 {
-    char nome[50] = "mapa01.svg";
-    
-    ArqQry B;
+    char *PathInput, *PathOutput, *nomeGeo, *nomeQry, *nomeLog;
+    ArgumentosDeComando(&PathInput,&nomeGeo, &PathOutput, &nomeQry,argc, argv);
+    if (PathInput[strlen(PathInput) - 1] != '/')
+    {
+        strcat(PathInput, "/");
+    }
+    if (PathOutput[strlen(PathOutput) - 1] != '/')
+    {
+        strcat(PathOutput, "/");
+    }
+    // EXEMPLO: e- pathe o- patho f- aaa.geo q- bbb.qry
+    char *relatorio = ConcatenaNomes(nomeGeo, nomeQry);
+
+    joinFilePath(PathInput,nomeGeo,&nomeGeo);
+    joinFilePath(PathInput,nomeQry,&nomeQry);
+    joinFilePath(PathOutput,relatorio,&nomeLog);
 
     Lista Cir = createLst(-1);
     Lista Ret = createLst(-1);
     Lista Lin = createLst(-1);
     Lista Tex = createLst(-1);
 
-    ArqGeo A = abreLeituraGeo("02-planta-cidade.geo");
+    ArqGeo A = abreLeituraGeo(nomeGeo);
+    ArqQry B = abreLeituraQry(nomeQry);
+    FILE *log = CriaLog(nomeLog);
+    
     InterpretaGeo(A, Cir, Ret, Tex, Lin);
-    OperaSVG(nome, Cir, Ret, Tex, Lin);
+    InterpretaQry(B, Cir, Ret, Tex, Lin,log);
+    OperaSVG(nomeLog, Cir, Ret, Tex, Lin);
+
+    fclose(log);
     fechaGeo(A);
-    strcpy(nome,"mapa02.svg");
-    B = abreLeituraQry("sobrevoo.qry");
-    InterpretaQry(B,Cir,Ret,Tex,Lin);
-    OperaSVG(nome, Cir, Ret, Tex, Lin);
     fechaQry(B);
 
     killLst(Cir);
@@ -33,4 +49,3 @@ int main()
     killLst(Lin);
     killLst(Tex);
 }
-
