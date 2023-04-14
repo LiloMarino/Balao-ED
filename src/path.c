@@ -84,11 +84,6 @@ void joinFilePath(char *path, char *fileName, char **fullPath)
     {
         return;
     }
-    if (*fullPath != NULL)
-    {
-        free(*fullPath);
-        *fullPath = NULL;
-    }
 
     if (strcmp("", path) != 0)
     {

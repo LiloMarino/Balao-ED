@@ -611,7 +611,7 @@ Posic ProcuraID(int ID, Lista Circ, Lista Ret, Lista Tex, Lista Lin, char forma[
 
 FILE *CriaLog(char nome[])
 {
-    char nomearq[50];
+    char nomearq[150];
     int n = 1;
     sprintf(nomearq, "%s.txt", nome);
 

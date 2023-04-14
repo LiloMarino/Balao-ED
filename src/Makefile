@@ -33,9 +33,6 @@ $(PROJ_NAME): $(OBJETOS)
 # 
 # a.o: a.h b.h c.h a.c
 
-debug: main.c $(LIBS)
-	gcc -g -Wall -Wextra -pedantic -std=c99 -I$(INC) $< $(LIBS) -o ted
-	gdb ./ted -ex "run -o /home/lilo/Faculdade/EstruturaDeDados/src/logs -e /home/lilo/Faculdade/EstruturaDeDados/src -f 02-planta-cidade.geo"
 
 clean:
 	rm -f *.o $(PROJ_NAME)

@@ -8,17 +8,25 @@
 #include "listadupla.h"
 #include "path.h"
 
-int main(int argc, char **argv)
+int main()
 {
+    char *args[] = {"./ted", "-e", "/home/lilo/Faculdade/EstruturaDeDados/src", "-f", "02-planta-cidade.geo", "-o", "/home/lilo/Faculdade/EstruturaDeDados/src/logs", "-q", "sobrevoo.qry", NULL};
+    int argc = sizeof(args) / sizeof(args[0]) - 1; // O último elemento deve ser NULL
     char *PathInput, *PathOutput, *nomeGeo, *nomeQry, *nomeLog;
-    ArgumentosDeComando(&PathInput,&nomeGeo, &PathOutput, &nomeQry,argc, argv);
+    ArgumentosDeComando(&PathInput,&nomeGeo, &PathOutput, &nomeQry,argc, args);
     if (PathInput[strlen(PathInput) - 1] != '/')
     {
-        strcat(PathInput, "/");
+        char *PathInput1 = malloc(strlen(PathInput) + 1);
+        strcpy(PathInput1, PathInput);
+        strcat(PathInput1, "/");
+        PathInput = PathInput1;
     }
     if (PathOutput[strlen(PathOutput) - 1] != '/')
     {
-        strcat(PathOutput, "/");
+        char *PathOutput1 = malloc(strlen(PathOutput) + 1);
+        strcpy(PathOutput1, PathOutput);
+        strcat(PathOutput1, "/");
+        PathOutput = PathOutput1;
     }
     // EXEMPLO: e- pathe o- patho f- aaa.geo q- bbb.qry
     char *relatorio = ConcatenaNomes(nomeGeo, nomeQry);
