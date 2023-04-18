@@ -10,7 +10,7 @@
 
 int main(int argc, char **argv)
 {
-    char *PathInput, *PathOutput, *nomeGeo, *nomeQry, *nomeLog;
+    char *PathInput = NULL, *PathOutput = NULL, *nomeGeo = NULL, *nomeQry = NULL, *nomeLog = NULL;
     ArgumentosDeComando(&PathInput,&nomeGeo, &PathOutput, &nomeQry,argc, argv);
     if (PathInput[strlen(PathInput) - 1] != '/')
     {

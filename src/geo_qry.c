@@ -622,7 +622,6 @@ FILE *CriaLog(char nome[])
     if (arq == NULL)
     {
         printf("Erro ao criar arquivo de log!\n");
-        exit(1);
     }
 
     return arq;

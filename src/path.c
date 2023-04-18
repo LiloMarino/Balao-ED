@@ -202,10 +202,14 @@ char *ConcatenaNomes(char *NomeGeo, char *NomeQry)
     strcpy(nome, NomeGeo);
     strtok(nome, ".");
     strcat(nome, "-");
+    
+    if(NomeQry != NULL)
+    {
     char *Qry = calloc(strlen(NomeQry) + 1, sizeof(char));
     strcpy(Qry, NomeQry);
     strtok(Qry, ".");
     strcat(nome, Qry);
+    }
 
     return nome;
 }

@@ -1,52 +1,5 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
-    "makefile.launchConfigurations": [
-        {
-            "cwd": "g:\\Outros computadores\\Meu laptop\\Faculdade\\EstruturadeDados",
-            "binaryPath": "g:\\Outros computadores\\Meu laptop\\Faculdade\\EstruturadeDados\\PROJETO_SVG",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "g:\\Outros computadores\\Meu laptop\\Faculdade\\EstruturadeDados",
-            "binaryPath": "g:\\Outros computadores\\Meu laptop\\Faculdade\\EstruturadeDados\\projetosvg",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "d:\\Desktop\\Faculdade\\EstruturadeDados",
-            "binaryPath": "d:\\Desktop\\Faculdade\\EstruturadeDados\\projetosvg",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "d:\\Desktop\\Faculdade\\EstruturadeDados",
-            "binaryPath": "d:\\Desktop\\Faculdade\\EstruturadeDados\\ted",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "g:\\Outros computadores\\Meu laptop\\Faculdade\\EstruturadeDados\\output",
-            "binaryPath": "g:\\Outros computadores\\Meu laptop\\Faculdade\\EstruturadeDados\\output\\ted",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "/mnt/g/Outros computadores/Meu laptop/Faculdade/EstruturadeDados/output",
-            "binaryPath": "/mnt/g/Outros computadores/Meu laptop/Faculdade/EstruturadeDados/output/ted",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "/home/lilo/Faculdade/EstruturaDeDados/output",
-            "binaryPath": "/home/lilo/Faculdade/EstruturaDeDados/output/ted",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "/home/lilo/Faculdade/EstruturaDeDados/src",
-            "binaryPath": "/home/lilo/Faculdade/EstruturaDeDados/src/ted",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "/home/lilo/Faculdade/Balao-ED/src",
-            "binaryPath": "/home/lilo/Faculdade/Balao-ED/src/ted",
-            "binaryArgs": []
-        }
-    ],
     "files.associations": {
         "string.h": "c",
         "stdio.h": "c",
@@ -60,5 +13,19 @@
         "arqsvg.h": "c",
         "stat.h": "c",
         "cmath": "c"
-    }
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/lilo/Faculdade/EstruturaDeDados/src",
+            "binaryPath": "/home/lilo/Faculdade/EstruturaDeDados/src/ted",
+            "binaryArgs": [
+                "-e",
+                "/home/lilo/Faculdade/EstruturaDeDados/src",
+                "-o",
+                "/home/lilo/Faculdade/EstruturaDeDados",
+                "-f",
+                "01-caca-fotos.geo"
+            ]
+        }
+    ]
 }
