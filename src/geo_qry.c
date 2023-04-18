@@ -272,7 +272,7 @@ ArqQry abreLeituraQry(char *fn)
     return fqry;
 }
 
-void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FILE *log)
+void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FILE *log, char *PathOutput)
 {
     if (fqry == NULL)
     {
@@ -284,6 +284,7 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FIL
     Lista Baloes = createLst(-1);
     while (leLinha(fqry, &linha))
     {
+        fprintf(log, "\n");
         sscanf(linha, "%s", comando);
         if ((strcmp(comando, "b?") != 0) && (strcmp(comando, "c?") != 0))
         {
@@ -311,15 +312,18 @@ void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FIL
                 }
                 else if (strcmp(comando, "tf") == 0)
                 {
-                    TiraFoto(Circ, Ret, Tex, Lin, Baloes, ID, log);
+                    int i;
+                    sscanf(linha, "%s %d %d", comando, &ID, &i);
+                    TiraFoto(Circ, Ret, Tex, Lin, Baloes, ID, log, i);
                 }
                 else if (strcmp(comando, "df") == 0)
                 {
                     int i;
-                    char *sfx;
+                    char *sfx, *sfxpath;
                     sscanf(linha, "%s %d %d", comando, &ID, &i);
                     sfx = getParametroI(linha, 3);
-                    PontuaFoto(Baloes, ID, i, sfx);
+                    joinFilePath(PathOutput, sfx, &sfxpath);
+                    PontuaFoto(Baloes, ID, i, sfxpath);
                 }
                 else if (strcmp(comando, "d") == 0)
                 {
@@ -471,7 +475,7 @@ void FocoDaFoto(Lista Bal, int ID, float raio, float prof, float alt)
     insertLst(Bal, b);
 }
 
-void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FILE *log)
+void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FILE *log, int i)
 {
     // Procura o balão na lista Bal
     Iterador B = createIterador(Bal, false);
@@ -480,16 +484,8 @@ void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FI
         Balao *b = (Balao *)getIteratorNext(Bal, B);
         if (b->ID == ID)
         {
-            for (int i = 0; i < 10; i++)
-            {
-                if (!isQueueFull(b->cameras[i]))
-                {
-                    // Foto criada com sucesso
-                    insertQueue(b->cameras[i], ProcessaFoto(Circ, Ret, Tex, Lin, ID, b, log));
-                    return;
-                }
-            }
-            // Limite de fotos atingido
+            // Foto criada com sucesso caso a lista não esteja cheia
+            insertQueue(b->cameras[i], ProcessaFoto(Circ, Ret, Tex, Lin, ID, b, log));
             return;
         }
     }
@@ -527,12 +523,11 @@ void ImprimeFoto(Lista Foto, char sfx[])
     Lista Tex = filter(Foto, VerificaTipo, P);
     AUX.tipo = 'L';
     Lista Lin = filter(Foto, VerificaTipo, P);
-    char nome[50], *path = NULL, *nomeArq = NULL, *extArq = NULL;
+    char *nomesfx = NULL, *path = NULL, *nomeArq = NULL, *extArq = NULL;
+    char ext[] = ".sfx";
     splitPath(sfx, &path, &nomeArq, &extArq);
-    strcpy(nome, nomeArq);
-    strcat(nome, ".sfx");
-    strcat(nome, extArq);
-    OperaSVG(nome, Circ, Ret, Tex, Lin);
+    joinAll(path, nomeArq, ext, &nomesfx);
+    //OperaSVG(nomesfx, Circ, Ret, Tex, Lin);
     killLst(Circ);
     killLst(Ret);
     killLst(Lin);
@@ -638,8 +633,7 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     char forma[] = "T";
     Texto *Bal = (Texto *)ProcuraID(ID, Circ, Ret, Tex, Lin, forma);
     Balao *Cam = (Balao *)Camera;
-    fprintf(log, "Foto Tirada\n");
-    fprintf(log, "Por Balao ID: %d\n", ID);
+    fprintf(log, "Foto Tirada Por Balao ID: %d\n\n", ID);
     fprintf(log, "Parâmetros da foto\n");
     fprintf(log, "Altitude: %f\n", Cam->alt);
     fprintf(log, "Profundidade: %f\n", Cam->prof);
@@ -663,14 +657,14 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     Lista L = filter(Lin, VerificaLinha, Area);
 
     // Produz os dados de registro
-    fprintf(log, "Elementos presentes na foto\n");
+    fprintf(log, "Elementos presentes na foto\n\n");
 
     Iterador AUX = createIterador(C, false);
     while (!isIteratorEmpty(L, AUX))
     {
         Item item = getIteratorNext(L, AUX);
         fprintf(log, "Circulo ID: %d\n", ((Circulo *)item)->ID);
-        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Circulo *)item)->x), fabs(r->y - ((Circulo *)item)->y));
+        fprintf(log, "dx:%f dy:%f\n\n", fabs(r->x - ((Circulo *)item)->x), fabs(r->y - ((Circulo *)item)->y));
     }
     killIterator(AUX);
 
@@ -679,7 +673,7 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     {
         Item item = getIteratorNext(L, AUX);
         fprintf(log, "Retângulo ID: %d\n", ((Retangulo *)item)->ID);
-        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Retangulo *)item)->x), fabs(r->y - ((Retangulo *)item)->y));
+        fprintf(log, "dx:%f dy:%f\n\n", fabs(r->x - ((Retangulo *)item)->x), fabs(r->y - ((Retangulo *)item)->y));
     }
     killIterator(AUX);
 
@@ -688,7 +682,7 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     {
         Item item = getIteratorNext(L, AUX);
         fprintf(log, "Texto ID: %d\n", ((Texto *)item)->ID);
-        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Texto *)item)->x), fabs(r->y - ((Texto *)item)->y));
+        fprintf(log, "dx:%f dy:%f\n\n", fabs(r->x - ((Texto *)item)->x), fabs(r->y - ((Texto *)item)->y));
     }
     killIterator(AUX);
 
@@ -697,7 +691,7 @@ Lista ProcessaFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, int ID, Posic Ca
     {
         Item item = getIteratorNext(L, AUX);
         fprintf(log, "Linha ID: %d\n", ((Linha *)item)->ID);
-        fprintf(log, "dx:%f dy:%f\n", fabs(r->x - ((Linha *)item)->x1), fabs(r->y - ((Linha *)item)->y1));
+        fprintf(log, "dx:%f dy:%f\n\n", fabs(r->x - ((Linha *)item)->x1), fabs(r->y - ((Linha *)item)->y1));
     }
     killIterator(AUX);
 
@@ -944,7 +938,10 @@ Lista ConcatLst(Lista L1, Lista L2, char forma[], Posic r)
 
 void OperaSVG(char nome[], Lista Circ, Lista Ret, Lista Tex, Lista Lin)
 {
-    ArqSvg B = abreEscritaSvg(nome);
+    char nomeSVG[200];
+    strcpy(nomeSVG, nome);
+    strcat(nomeSVG, ".svg");
+    ArqSvg B = abreEscritaSvg(nomeSVG);
 
     Iterador R = createIterador(Ret, false);
 

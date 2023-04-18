@@ -4,14 +4,6 @@
 #include <stdlib.h>
 #include "learquivo.h"
 
-typedef struct
-{
-    char *pathEntry;
-    char *arqGeo;
-    char *pathExit;
-    char *arqQry;
-} Args;
-
 void splitPath(char *fullPath, char **path, char **nomeArq, char **extArq)
 {
     if (*path != NULL)
@@ -39,7 +31,7 @@ void splitPath(char *fullPath, char **path, char **nomeArq, char **extArq)
         int tamanhoPath = strlen(fullPath) - strlen(ultimabarra) + 1;
         *path = malloc((tamanhoPath) * sizeof(char));
         strncpy(*path, fullPath, tamanhoPath);
-        (*path)[tamanhoPath - 1] = '\0';
+        (*path)[tamanhoPath] = '\0';
     }
     char *ultimoponto = strrchr(fullPath, '.');
     if (ultimoponto == NULL)
@@ -71,7 +63,7 @@ void splitPath(char *fullPath, char **path, char **nomeArq, char **extArq)
         {
             *nomeArq = malloc((strlen(ultimabarra) - strlen(ultimoponto) + 1) * sizeof(char));
             strncpy(*nomeArq, ultimabarra + 1, strlen(ultimabarra) - strlen(ultimoponto));
-            (*nomeArq)[strlen(ultimoponto) - 1] = '\0';
+            (*nomeArq)[strlen(ultimoponto) + 1] = '\0';
             *extArq = malloc((strlen(ultimoponto) + 2) * sizeof(char));
             strcpy(*extArq, ultimoponto);
         }

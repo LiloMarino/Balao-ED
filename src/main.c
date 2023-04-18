@@ -8,12 +8,10 @@
 #include "listadupla.h"
 #include "path.h"
 
-int main()
+int main(int argc, char **argv)
 {
-    char *args[] = {"./ted", "-e", "/home/lilo/Faculdade/EstruturaDeDados/src", "-f", "02-planta-cidade.geo", "-o", "/home/lilo/Faculdade/EstruturaDeDados/src/logs", "-q", "sobrevoo.qry", NULL};
-    int argc = sizeof(args) / sizeof(args[0]) - 1; // O último elemento deve ser NULL
     char *PathInput, *PathOutput, *nomeGeo, *nomeQry, *nomeLog;
-    ArgumentosDeComando(&PathInput,&nomeGeo, &PathOutput, &nomeQry,argc, args);
+    ArgumentosDeComando(&PathInput,&nomeGeo, &PathOutput, &nomeQry,argc, argv);
     if (PathInput[strlen(PathInput) - 1] != '/')
     {
         char *PathInput1 = malloc(strlen(PathInput) + 1);
@@ -45,8 +43,8 @@ int main()
     FILE *log = CriaLog(nomeLog);
     
     InterpretaGeo(A, Cir, Ret, Tex, Lin);
-    OperaSVG(strcat(nomeLog,"-map"), Cir, Ret, Tex, Lin);
-    InterpretaQry(B, Cir, Ret, Tex, Lin,log);
+    OperaSVG(nomeLog, Cir, Ret, Tex, Lin);
+    InterpretaQry(B, Cir, Ret, Tex, Lin,log,PathOutput);
     OperaSVG(nomeLog, Cir, Ret, Tex, Lin);
 
     fclose(log);

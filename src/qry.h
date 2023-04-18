@@ -17,7 +17,7 @@ typedef void *ArqQry;
 ArqQry abreLeituraQry(char *fn);
 
 /*A função recebe um arquivo .qry interpreta e opera os elementos das listas*/
-void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FILE *log);
+void InterpretaQry(ArqQry fqry, Lista Circ, Lista Ret, Lista Tex, Lista Lin, FILE *log, char *PathOutput);
 
 /* Fecha o arquivo fqry. */
 void fechaQry(ArqQry fqry);
@@ -32,7 +32,7 @@ void Rotaciona(Posic P, float grs, FILE *log);
 void FocoDaFoto(Lista L, int ID, float raio, float prof, float alt);
 
 /*Balão ID tira foto e coloca no final da lista l (0..9)*/
-void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FILE *log);
+void TiraFoto(Lista Circ, Lista Ret, Lista Tex, Lista Lin, Lista Bal, int ID, FILE *log, int i);
 
 /*Envia fotos da lista L do balão dado pelo ID para a base.
 Base categoriza cada foto*/

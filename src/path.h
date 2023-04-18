@@ -2,8 +2,6 @@
 #define PATH__
 
 
-typedef struct Args Argumentos;
-
 /*
    Este modulo prove funcoes para manipulacao de caminhos de arquivos.
    Basicamente, exitem 2 tipos de funcoes:
